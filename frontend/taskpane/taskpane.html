@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EY AI Pitch</title>
+    <link rel="stylesheet" href="./taskpane.css?v=dev-20260628-insert">
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="masthead">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h1>EY AI Pitch</h1>
+          <p>PowerPoint slide generation</p>
+        </div>
+      </header>
+
+      <section class="prompt-panel" aria-labelledby="prompt-label">
+        <label id="prompt-label" for="slidePrompt">Describe the slide you want</label>
+        <textarea
+          id="slidePrompt"
+          rows="12"
+          placeholder="Example: Generate a detailed Current State operating model for the Procure-to-Pay process..."
+        ></textarea>
+
+        <button id="generateButton" type="button">
+          Generate Slide
+        </button>
+      </section>
+
+      <section class="status-panel" aria-live="polite">
+        <span>Status:</span>
+        <strong id="statusText">Ready</strong>
+      </section>
+    </main>
+
+    <script src="./taskpane.js?v=dev-20260628-insert"></script>
+  </body>
+</html>

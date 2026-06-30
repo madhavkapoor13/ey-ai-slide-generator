@@ -1,0 +1,134 @@
+:root {
+  --ey-yellow: #ffe600;
+  --ink: #1f2328;
+  --muted: #66707a;
+  --border: #d8dee4;
+  --panel: #f7f8fa;
+  --button: #2d2d2d;
+  --button-hover: #111111;
+  --danger: #b42318;
+  --success: #16794c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 24px 20px;
+}
+
+.masthead {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 3px solid var(--ey-yellow);
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, var(--ey-yellow) 0 48%, transparent 49%),
+    var(--button);
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.masthead p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.prompt-panel {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+textarea {
+  width: 100%;
+  min-height: 230px;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+textarea:focus {
+  outline: 2px solid var(--ey-yellow);
+  outline-offset: 2px;
+  background: #ffffff;
+}
+
+button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--button);
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+button:hover:not(:disabled) {
+  background: var(--button-hover);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.status-panel {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status-panel strong {
+  color: var(--ink);
+}
+
+.status-panel strong.success {
+  color: var(--success);
+}
+
+.status-panel strong.error {
+  color: var(--danger);
+}

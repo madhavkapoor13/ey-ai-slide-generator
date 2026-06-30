@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:type="TaskPaneApp">
+  <Id>7f0df0b5-9b4f-4e92-9f77-6d1760d9f4c5</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>EY AI Pitch Prototype</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="EY AI Pitch"/>
+  <Description DefaultValue="Generate AI-assisted editable PowerPoint slides from inside PowerPoint."/>
+  <IconUrl DefaultValue="https://localhost:3000/assets/logo.png"/>
+  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/logo.png"/>
+  <SupportUrl DefaultValue="https://localhost:3000/taskpane/taskpane.html?v=dev-20260628-insert"/>
+  <AppDomains>
+    <AppDomain>https://localhost:3000</AppDomain>
+    <AppDomain>https://127.0.0.1:3000</AppDomain>
+    <AppDomain>https://localhost:8000</AppDomain>
+    <AppDomain>https://127.0.0.1:8000</AppDomain>
+  </AppDomains>
+  <Hosts>
+    <Host Name="Presentation"/>
+  </Hosts>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:3000/taskpane/taskpane.html?v=dev-20260628-insert"/>
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+</OfficeApp>

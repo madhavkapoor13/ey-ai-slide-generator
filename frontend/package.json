@@ -1,0 +1,22 @@
+{
+  "name": "ey-ai-pitch-powerpoint-addin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Phase 1 Office.js PowerPoint task pane add-in for EY AI Pitch.",
+  "scripts": {
+    "start": "office-addin-dev-certs install && http-server . -c-1 -S -C ~/.office-addin-dev-certs/localhost.crt -K ~/.office-addin-dev-certs/localhost.key -p 3000",
+    "start:http": "http-server . -c-1 -p 3000",
+    "validate": "office-addin-manifest validate manifest.xml",
+    "sideload": "office-addin-debugging start manifest.xml desktop --app powerpoint",
+    "stop": "office-addin-debugging stop manifest.xml"
+  },
+  "dependencies": {
+    "@microsoft/office-js": "^1.1.97"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "office-addin-debugging": "^6.0.3",
+    "office-addin-dev-certs": "^1.13.5",
+    "office-addin-manifest": "^2.1.5"
+  }
+}
