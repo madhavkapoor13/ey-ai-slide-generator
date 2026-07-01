@@ -1,0 +1,49 @@
+# backend/prompts/intent.txt
+# ==========================
+# System prompt for the Intent Classification LLM call.
+#
+# Sprint: 1
+# Module: backend/modules/intent.py → extract_intent()
+# Replaces: keyword heuristic in _classify()
+#
+# Instructions for Sprint 1 implementation
+# -----------------------------------------
+# Load this file at module initialisation:
+#
+#   INTENT_PROMPT = Path("backend/prompts/intent.txt").read_text()
+#
+# Pass it as the system message to the LLM. Expect a JSON response
+# with the following structure:
+#
+#   {
+#     "slide_type": "operating_model",   # or process_flow | comparison | current_future | unknown
+#     "confidence": 0.92,                # float 0.0–1.0
+#     "industry_signal": "Manufacturing",
+#     "tone": "executive"
+#   }
+#
+# TODO Sprint 1: write and iterate on the full prompt body below.
+# ---------------------------------------------------------------
+
+You are an expert management consulting slide analyst.
+
+Your task is to classify the user's slide request into one of the following types:
+- operating_model
+- process_flow
+- comparison
+- current_future
+- unknown
+
+Rules:
+- Return ONLY valid JSON. No markdown, no explanation.
+- Set confidence between 0.0 and 1.0 based on how clearly the request maps to a type.
+- Detect the industry vertical if possible (e.g. "Financial Services", "Healthcare").
+- Detect the tone (e.g. "executive", "operational", "analytical").
+
+Return JSON in EXACTLY this format:
+{
+  "slide_type": "operating_model",
+  "confidence": 0.92,
+  "industry_signal": "Financial Services",
+  "tone": "executive"
+}
