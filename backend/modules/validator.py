@@ -27,10 +27,14 @@ from __future__ import annotations
 
 import logging
 
+from backend.llm.prompt_loader import get_prompt
 from schemas.slide_spec import SlideSpec
 from schemas.validation import ValidationResult
 
 logger = logging.getLogger(__name__)
+
+# Pre-loaded for Sprint 5 validation LLM; placeholder pass-through does not use it yet.
+VALIDATION_PROMPT = get_prompt("validation")
 
 
 def validate_content(spec: SlideSpec) -> ValidationResult:
@@ -40,7 +44,7 @@ def validate_content(spec: SlideSpec) -> ValidationResult:
     This is a placeholder implementation that always passes the spec
     through as-is (``is_valid=True``, no issues, no claim metadata).
     Sprint 5 will introduce structural validation, hallucination detection,
-    and claim grounding checks using ``backend/prompts/validation.txt``.
+    and claim grounding checks using ``backend/ai/prompts/validation.md`` via ``prompt_loader``.
 
     Parameters
     ----------
@@ -59,7 +63,7 @@ def validate_content(spec: SlideSpec) -> ValidationResult:
       Phase 1 Pydantic schema (``OperatingModelSpec`` or process flow).
     - Extract factual claims from ``spec.raw_spec`` and verify them
       against ``EnterpriseContext.facts``.
-    - Load hallucination-detection prompt from ``backend/prompts/validation.txt``.
+    - Load hallucination-detection prompt from ``backend/ai/prompts/validation.md`` via ``prompt_loader``.
     - Populate ``ValidationResult.claims`` with per-claim ``ClaimMetadata``.
     - Set ``is_valid=False`` and populate ``issues`` on structural failures.
     """

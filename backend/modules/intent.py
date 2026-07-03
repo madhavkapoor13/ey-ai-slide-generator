@@ -25,9 +25,13 @@ from __future__ import annotations
 
 import logging
 
+from backend.llm.prompt_loader import get_prompt
 from schemas.intent import IntentResult
 
 logger = logging.getLogger(__name__)
+
+# Pre-loaded for Sprint 1 LLM classifier; keyword heuristic does not use it yet.
+INTENT_PROMPT = get_prompt("intent")
 
 # ---------------------------------------------------------------------------
 # Keyword signal sets — mirrors Phase 1 heuristic in slide_service.py so
@@ -88,7 +92,7 @@ def extract_intent(title: str, content: str) -> IntentResult:
 
     This implementation uses keyword heuristics (Phase 1 parity) as a
     placeholder. In Sprint 1 this will be replaced by an LLM-based
-    classifier using ``backend/prompts/intent.txt``.
+    classifier using ``backend/ai/prompts/intent.md`` via ``prompt_loader``.
 
     Parameters
     ----------
@@ -106,7 +110,7 @@ def extract_intent(title: str, content: str) -> IntentResult:
     TODO — Sprint 1
     ---------------
     - Replace keyword heuristic with LLM classifier.
-    - Load system prompt from ``backend/prompts/intent.txt``.
+    - Load system prompt from ``backend/ai/prompts/intent.md`` via ``prompt_loader``.
     - Set ``confidence`` based on LLM response logprobs or self-rating.
     - Populate ``metadata`` with detected industry / tone signals.
     """

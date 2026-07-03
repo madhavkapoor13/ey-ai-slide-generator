@@ -14,18 +14,17 @@ import json
 import logging
 import os
 import re
-from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
 
+from backend.llm.prompt_loader import build_prompt
 from schemas.context import EnterpriseContext
 from schemas.intent import IntentResult
 from schemas.process import ProcessResult
 
 logger = logging.getLogger(__name__)
 
-_PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "process.txt"
 _DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 
 
@@ -266,7 +265,6 @@ def _call_gemini_process_mapper(
     except ImportError as exc:
         raise RuntimeError("google-genai is not installed.") from exc
 
-    prompt = _PROMPT_PATH.read_text(encoding="utf-8")
     user_input = {
         "intent": {
             "company": getattr(intent, "company", None),
@@ -283,9 +281,14 @@ def _call_gemini_process_mapper(
     }
 
     client = genai.Client(api_key=api_key)
+    prompt = build_prompt(
+        "process",
+        user_input=json.dumps(user_input, ensure_ascii=True),
+        additional_context="Input:",
+    )
     response = client.models.generate_content(
         model=os.getenv("GEMINI_CONTEXT_MODEL", _DEFAULT_GEMINI_MODEL),
-        contents=f"{prompt}\n\nInput:\n{json.dumps(user_input, ensure_ascii=True)}",
+        contents=prompt,
         config=types.GenerateContentConfig(
             temperature=0,
             response_mime_type="application/json",

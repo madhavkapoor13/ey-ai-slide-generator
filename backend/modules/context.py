@@ -14,17 +14,15 @@ import json
 import logging
 import os
 import re
-from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
 
+from backend.llm.prompt_loader import build_prompt
 from schemas.context import EnterpriseContext, ResearchFact, ResearchSource
 from schemas.intent import IntentResult
 
 logger = logging.getLogger(__name__)
-
-_PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "context.txt"
 _DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 _SOURCE_TYPES = {
     "official_website",
@@ -101,7 +99,6 @@ def _call_gemini_grounded_search(
     except ImportError as exc:
         raise RuntimeError("google-genai is not installed.") from exc
 
-    prompt = _PROMPT_PATH.read_text(encoding="utf-8")
     user_input = {
         "intent": {
             "company": company,
@@ -123,9 +120,14 @@ def _call_gemini_grounded_search(
 
     client = genai.Client(api_key=api_key)
     model = os.getenv("GEMINI_CONTEXT_MODEL", _DEFAULT_GEMINI_MODEL)
+    prompt = build_prompt(
+        "context",
+        user_input=json.dumps(user_input, ensure_ascii=True),
+        additional_context="IntentResult:",
+    )
     response = client.models.generate_content(
         model=model,
-        contents=f"{prompt}\n\nIntentResult:\n{json.dumps(user_input, ensure_ascii=True)}",
+        contents=prompt,
         config=types.GenerateContentConfig(
             temperature=0,
             tools=[types.Tool(google_search=types.GoogleSearch())],

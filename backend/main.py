@@ -2,9 +2,11 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from backend.llm.prompt_loader import initialize_prompts
 from backend.routes import router
 
 logging.basicConfig(level=logging.INFO)
+initialize_prompts()
 
 app = FastAPI(
     title="EY AI Slide Generator",

@@ -14,11 +14,11 @@ import json
 import logging
 import os
 import re
-from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
 
+from backend.llm.prompt_loader import build_prompt
 from schemas.context import EnterpriseContext
 from schemas.intent import IntentResult
 from schemas.operating_model import OperatingModelSpec
@@ -27,7 +27,6 @@ from schemas.slide_spec import SlideSpec
 
 logger = logging.getLogger(__name__)
 
-_PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "content.txt"
 _DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 _STAGE_COUNT = 6
 _ACTIVITIES_PER_STAGE = 5
@@ -202,7 +201,6 @@ def _call_content_llm(
     except ImportError as exc:
         raise RuntimeError("google-genai is not installed.") from exc
 
-    prompt = _PROMPT_PATH.read_text(encoding="utf-8")
     user_input = {
         "intent": intent.model_dump(mode="json"),
         "enterprise_context": {
@@ -216,9 +214,14 @@ def _call_content_llm(
     }
 
     client = genai.Client(api_key=api_key)
+    prompt = build_prompt(
+        "content",
+        user_input=json.dumps(user_input, ensure_ascii=True),
+        additional_context="Input:",
+    )
     response = client.models.generate_content(
         model=os.getenv("GEMINI_CONTEXT_MODEL", _DEFAULT_GEMINI_MODEL),
-        contents=f"{prompt}\n\nInput:\n{json.dumps(user_input, ensure_ascii=True)}",
+        contents=prompt,
         config=types.GenerateContentConfig(
             temperature=0.2,
             response_mime_type="application/json",
