@@ -24,9 +24,9 @@ Pipeline
          │  EnterpriseContext
          ▼
     [3] identify_process()      ─── Process Mapper
-         │  process_map: dict
+         │  ProcessResult
          ▼
-    [4] generate_content()      ─── Content Generator (only LLM caller)
+    [4] generate_content()      ─── Content Generator (slide-content LLM step)
          │  SlideSpec
          ▼
     [5] validate_content()      ─── Validation Module
@@ -121,16 +121,18 @@ def run_pipeline(title: str, content: str) -> ValidationResult:
 
     # ── Step 3: Process Mapping ───────────────────────────────────────────
     # Map the intent onto a structured business process representation.
-    process_map = identify_process(intent, context)
+    process_result = identify_process(intent, context)
     logger.info(
-        "orchestrator: process identified — map_keys=%s",
-        list(process_map.keys()),
+        "orchestrator: process identified — process=%s family=%s confidence=%.2f",
+        process_result.process_name,
+        process_result.process_family,
+        process_result.confidence,
     )
 
     # ── Step 4: Content Generation ────────────────────────────────────────
-    # Produce the renderer-ready SlideSpec. This is the only step that
-    # invokes an LLM (via content_generator, via Phase 1 planner for now).
-    spec = generate_content(intent, context, process_map)
+    # Produce the renderer-ready SlideSpec. Process mapping may have used
+    # an LLM fallback, but content generation is the only slide-content LLM step.
+    spec = generate_content(intent, context, process_result)
     logger.info(
         "orchestrator: content generated — slide_type=%s version=%s generated_by=%s",
         spec.slide_type,

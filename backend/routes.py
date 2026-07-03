@@ -24,6 +24,7 @@ class SlideRequest(BaseModel):
 
 @router.post("/generate")
 async def generate_slide_api(request: SlideRequest):
+    logger.warning("POST /generate executed — Phase 1 legacy pipeline")
     logger.info("request received: title=%s content_length=%s", request.title, len(request.content))
 
     try:
@@ -46,6 +47,7 @@ async def generate_slide_api(request: SlideRequest):
 
 @router.post("/generate-slide")
 async def generate_slide_legacy_api(request: SlideRequest):
+    logger.warning("POST /generate-slide executed — delegating to Phase 1 legacy pipeline")
     return await generate_slide_api(request)
 
 
@@ -62,6 +64,7 @@ async def generate_slide_v2_api(request: GenerateV2Request):
     The response is the same ``.pptx`` file format as ``/generate``, ensuring
     the Office Add-in frontend requires no changes to consume this endpoint.
     """
+    logger.warning("POST /generate/v2 executed — Sprint 1-4 orchestrator pipeline")
     logger.info(
         "v2 request received: title=%s content_length=%s",
         request.title,

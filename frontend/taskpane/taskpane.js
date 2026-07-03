@@ -1,6 +1,6 @@
 const BACKEND_URLS = [
-  "https://localhost:8000/generate",
-  "https://127.0.0.1:8000/generate",
+  "https://localhost:8000/generate/v2",
+  "https://127.0.0.1:8000/generate/v2",
 ];
 const DEFAULT_TITLE = "Current State";
 const PPTX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
@@ -71,7 +71,7 @@ async function postToBackend(payload) {
 
   for (const backendUrl of BACKEND_URLS) {
     try {
-      console.log(`EY AI Pitch: POST ${backendUrl}`);
+      console.log(`Generating using endpoint: ${backendUrl}`);
 
       return await fetch(backendUrl, {
         method: "POST",

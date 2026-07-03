@@ -9,7 +9,7 @@ wants to generate BEFORE any LLM content is produced.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -36,14 +36,26 @@ class IntentResult(BaseModel):
     metadata:
         Arbitrary key-value bag for future enrichment
         (e.g. detected language, industry signals, tone).
+    company:
+        Optional company identified by the intent module.
+    industry:
+        Optional industry identified by the intent module.
+    business_function:
+        Optional business function identified by the intent module.
     """
 
     slide_type: str = Field(
         ...,
         description="Normalised slide type: operating_model | process_flow | comparison | current_future | unknown",
     )
-    raw_title: str = Field(..., description="Unmodified title from the user request.")
-    raw_content: str = Field(..., description="Unmodified content from the user request.")
+    raw_title: str = Field(default="", description="Unmodified title from the user request.")
+    raw_content: str = Field(default="", description="Unmodified content from the user request.")
+    company: Optional[str] = Field(default=None, description="Company named in the request, if detected.")
+    industry: Optional[str] = Field(default=None, description="Industry named in the request, if detected.")
+    business_function: Optional[str] = Field(
+        default=None,
+        description="Business function named in the request, if detected.",
+    )
     confidence: float = Field(
         default=0.0,
         ge=0.0,

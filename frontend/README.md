@@ -1,12 +1,12 @@
 # EY AI Pitch PowerPoint Add-in
 
-Phase 1 Office.js task pane add-in for generating EY AI Pitch PowerPoint decks from inside Microsoft PowerPoint.
+Office.js task pane add-in for generating EY AI Pitch PowerPoint decks from inside Microsoft PowerPoint.
 
 ## What This Includes
 
 - Office task pane manifest
 - Plain HTML, CSS, and JavaScript UI
-- Backend `fetch()` integration with `https://localhost:8000/generate`
+- Backend `fetch()` integration with `https://localhost:8000/generate/v2`
 - Loading, success, and failure states
 - Insert generated slides into the current PowerPoint presentation
 - Local `.pptx` download fallback if slide insertion is unavailable
