@@ -20,16 +20,19 @@ Pipeline
     [1] extract_intent()        ─── Intent Module
          │  IntentResult
          ▼
-    [2] build_context()         ─── Enterprise Context Builder
+    [2] plan_presentation()     ─── Narrative Planner
+         │  DeckSpec
+         ▼
+    [3] build_context()         ─── Enterprise Context Builder
          │  EnterpriseContext
          ▼
-    [3] identify_process()      ─── Process Mapper
+    [4] identify_process()      ─── Process Mapper
          │  ProcessResult
          ▼
-    [4] generate_content()      ─── Content Generator (slide-content LLM step)
+    [5] generate_content()      ─── Content Generator (slide-content LLM step)
          │  SlideSpec
          ▼
-    [5] validate_content()      ─── Validation Module
+    [6] validate_content()      ─── Validation Module
          │  ValidationResult
          ▼
     Caller (slide_service_v2 → renderer)
@@ -50,8 +53,10 @@ import logging
 from backend.modules.content_generator import generate_content
 from backend.modules.context import build_context
 from backend.modules.intent import extract_intent
+from backend.modules.presentation_planner import plan_presentation
 from backend.modules.process_mapper import identify_process
 from backend.modules.validator import validate_content
+from schemas.presentation import DeckSpec
 from schemas.validation import ValidationResult
 
 logger = logging.getLogger(__name__)
@@ -109,7 +114,17 @@ def run_pipeline(title: str, content: str) -> ValidationResult:
         intent.confidence,
     )
 
-    # ── Step 2: Context ───────────────────────────────────────────────────
+    # ── Step 2: Narrative Planning ─────────────────────────────────────────
+    # Plan the consulting deck. DeckSpec is kept local to the orchestrator
+    # for now; downstream modules retain their existing interfaces.
+    deck_spec: DeckSpec = plan_presentation(content, intent)
+    logger.info(
+        "orchestrator: deck planned — presentation_type=%s slides=%d",
+        deck_spec.presentation_type,
+        len(deck_spec.slides),
+    )
+
+    # ── Step 3: Context ───────────────────────────────────────────────────
     # Enrich the intent with enterprise knowledge and industry signals.
     context = build_context(intent)
     logger.info(
@@ -119,7 +134,7 @@ def run_pipeline(title: str, content: str) -> ValidationResult:
         len(context.facts),
     )
 
-    # ── Step 3: Process Mapping ───────────────────────────────────────────
+    # ── Step 4: Process Mapping ───────────────────────────────────────────
     # Map the intent onto a structured business process representation.
     process_result = identify_process(intent, context)
     logger.info(
@@ -129,7 +144,7 @@ def run_pipeline(title: str, content: str) -> ValidationResult:
         process_result.confidence,
     )
 
-    # ── Step 4: Content Generation ────────────────────────────────────────
+    # ── Step 5: Content Generation ────────────────────────────────────────
     # Produce the renderer-ready SlideSpec. Process mapping may have used
     # an LLM fallback, but content generation is the only slide-content LLM step.
     spec = generate_content(intent, context, process_result)
@@ -140,7 +155,7 @@ def run_pipeline(title: str, content: str) -> ValidationResult:
         spec.generated_by,
     )
 
-    # ── Step 5: Validation ────────────────────────────────────────────────
+    # ── Step 6: Validation ────────────────────────────────────────────────
     # Quality-gate the spec before it reaches the renderer.
     result = validate_content(spec)
     logger.info(

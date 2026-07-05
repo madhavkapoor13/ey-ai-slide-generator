@@ -1,0 +1,270 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Consolidated consulting knowledge base for the EY AI Pitch Enterprise Knowledge Layer. Provides curated, domain-specific concepts to ground content generation and reduce reliance on generic LLM priors. Benchmark numbers, maturity models, and strategic objectives are intentionally excluded from Sprint F.",
+  "domains": {
+    "Finance": {
+      "aliases": [
+        "finance",
+        "record-to-report",
+        "r2r",
+        "accounting",
+        "financial planning",
+        "fp&a",
+        "treasury",
+        "controllership"
+      ],
+      "common_kpis": [
+        "Days to close",
+        "Cost per invoice",
+        "Working capital ratio",
+        "Forecast accuracy",
+        "Accounts receivable aging",
+        "Budget variance",
+        "Cash conversion cycle",
+        "Cost of finance as percentage of revenue"
+      ],
+      "common_pain_points": [
+        "Manual reconciliation across multiple systems",
+        "Fragmented financial data and inconsistent definitions",
+        "Long close cycles due to decentralized processes",
+        "Limited visibility into real-time cash position",
+        "Reactive forecasting rather than driver-based planning",
+        "Compliance burden from spreadsheet-based controls"
+      ],
+      "transformation_themes": [
+        "Unified finance data platform and common chart of accounts",
+        "Automated close and reconciliation through RPA and workflow",
+        "Driver-based planning and rolling forecast capabilities",
+        "Self-service management reporting and dashboards",
+        "Centralized shared services or global business services",
+        "Enhanced internal controls and audit-ready documentation"
+      ],
+      "common_risks": [
+        "Material misstatement due to manual journal entries",
+        "Regulatory non-compliance from weak access controls",
+        "Delayed decision-making from stale financial data",
+        "Talent gaps in data analytics and digital finance skills",
+        "Vendor lock-in from finance system consolidation"
+      ]
+    },
+    "Procurement": {
+      "aliases": [
+        "procurement",
+        "procure-to-pay",
+        "p2p",
+        "sourcing",
+        "supplier management",
+        "vendor management",
+        "purchasing"
+      ],
+      "common_kpis": [
+        "Purchase order cycle time",
+        "Supplier spend under management",
+        "Cost savings realized",
+        "Contract compliance rate",
+        "Supplier defect rate",
+        "Procurement ROI",
+        "Payment terms optimization",
+        "On-time delivery rate"
+      ],
+      "common_pain_points": [
+        "Maverick spend outside contracted suppliers",
+        "Fragmented supplier master data",
+        "Manual purchase requisition and approval workflows",
+        "Long procurement cycle times for critical goods and services",
+        "Limited visibility into supplier risk and performance",
+        "Invoice mismatches and payment delays"
+      ],
+      "transformation_themes": [
+        "Category-led sourcing and strategic supplier segmentation",
+        "E-procurement and self-service requisitioning",
+        "Supplier collaboration portals and digital catalogs",
+        "Automated invoice matching and touchless processing",
+        "Predictive spend analytics and demand forecasting",
+        "Integrated supplier risk and performance management"
+      ],
+      "common_risks": [
+        "Supply disruption from over-concentration on key suppliers",
+        "Cost leakage from unmanaged spend and contract non-compliance",
+        "Fraud risk from weak segregation of duties",
+        "Reputational risk from supplier conduct issues",
+        "Data quality issues from decentralized supplier records"
+      ]
+    },
+    "Human Resources": {
+      "aliases": [
+        "human resources",
+        "hr",
+        "hire-to-retire",
+        "h2r",
+        "talent management",
+        "people operations",
+        "workforce"
+      ],
+      "common_kpis": [
+        "Time to fill open positions",
+        "Employee turnover rate",
+        "Cost per hire",
+        "Employee engagement score",
+        "Training hours per employee",
+        "Diversity and inclusion metrics",
+        "Payroll accuracy rate",
+        "Internal mobility rate"
+      ],
+      "common_pain_points": [
+        "Siloed HR systems with inconsistent employee data",
+        "Reactive recruiting and lengthy time to fill",
+        "Manual onboarding and offboarding processes",
+        "Limited workforce planning visibility",
+        "Inconsistent performance management practices",
+        "Compliance risk from changing labor regulations"
+      ],
+      "transformation_themes": [
+        "Unified HR information system and single employee record",
+        "Digital recruiting and candidate experience platform",
+        "Continuous performance management and feedback culture",
+        "Workforce analytics and strategic workforce planning",
+        "Automated payroll and benefits administration",
+        "Learning experience platform and skills-based talent mobility"
+      ],
+      "common_risks": [
+        "Talent attrition in critical roles",
+        "Compliance penalties from payroll or benefits errors",
+        "Low adoption of new HR technology",
+        "Data privacy risks from employee data handling",
+        "Inability to scale HR operations with business growth"
+      ]
+    },
+    "Supply Chain": {
+      "aliases": [
+        "supply chain",
+        "plan-source-make-deliver",
+        "logistics",
+        "demand planning",
+        "inventory management",
+        "distribution",
+        "procurement and supply chain"
+      ],
+      "common_kpis": [
+        "Perfect order rate",
+        "Inventory turnover",
+        "Forecast accuracy",
+        "Order fulfillment cycle time",
+        "Supply chain cost as percentage of sales",
+        "Supplier on-time delivery",
+        "Stockout rate",
+        "Cash-to-cash cycle time"
+      ],
+      "common_pain_points": [
+        "Poor demand forecast accuracy leading to excess or shortage",
+        "Limited end-to-end supply chain visibility",
+        "Fragmented planning across functions and regions",
+        "High inventory carrying costs and obsolescence risk",
+        "Slow response to supply disruptions",
+        "Inefficient transportation and warehouse operations"
+      ],
+      "transformation_themes": [
+        "Integrated business planning and S&OP maturity",
+        "Demand sensing and AI-driven forecasting",
+        "End-to-end supply chain visibility and control tower",
+        "Supplier collaboration and risk resilience",
+        "Warehouse and logistics automation",
+        "Sustainable and circular supply chain practices"
+      ],
+      "common_risks": [
+        "Supply disruption from geopolitical or natural events",
+        "Inventory write-offs from demand volatility",
+        "Customer dissatisfaction from delivery failures",
+        "Margin erosion from freight and material cost volatility",
+        "Compliance risk from supply chain sustainability expectations"
+      ]
+    },
+    "Manufacturing": {
+      "aliases": [
+        "manufacturing",
+        "production",
+        "operations",
+        "plant operations",
+        "shop floor",
+        "make"
+      ],
+      "common_kpis": [
+        "Overall equipment effectiveness",
+        "First-pass yield",
+        "Production schedule adherence",
+        "Cost per unit",
+        "Planned maintenance compliance",
+        "Scrap and rework rate",
+        "Inventory accuracy",
+        "On-time in-full delivery"
+      ],
+      "common_pain_points": [
+        "Unplanned downtime and equipment reliability issues",
+        "Manual production tracking and paper-based work instructions",
+        "Poor visibility into work-in-progress inventory",
+        "Inconsistent quality control across shifts and plants",
+        "Siloed maintenance and production planning",
+        "Limited ability to trace defects to root cause"
+      ],
+      "transformation_themes": [
+        "Smart manufacturing and industrial IoT connectivity",
+        "Predictive maintenance and asset performance management",
+        "Digital work instructions and connected worker platforms",
+        "Quality management system integration and closed-loop corrective action",
+        "Manufacturing execution system standardization",
+        "Sustainable operations and energy management"
+      ],
+      "common_risks": [
+        "Production losses from equipment failure",
+        "Quality escapes and customer recalls",
+        "Safety incidents from inadequate controls",
+        "Inability to scale capacity with demand",
+        "Cybersecurity risks from connected operational technology"
+      ]
+    },
+    "AI": {
+      "aliases": [
+        "ai",
+        "artificial intelligence",
+        "machine learning",
+        "generative ai",
+        "genai",
+        "data science",
+        "advanced analytics"
+      ],
+      "common_kpis": [
+        "Model accuracy and precision",
+        "AI use case time to production",
+        "Adoption rate of AI-enabled tools",
+        "Data quality score",
+        "Cost per model inference",
+        "Business value realized from AI initiatives",
+        "Time to data access and preparation",
+        "AI governance compliance rate"
+      ],
+      "common_pain_points": [
+        "Siloed data and inconsistent data quality",
+        "Difficulty moving AI pilots into production",
+        "Lack of clear AI governance and ethics framework",
+        "Insufficient data science and ML engineering talent",
+        "Unclear business ownership of AI use cases",
+        "Legacy systems that do not integrate with AI pipelines"
+      ],
+      "transformation_themes": [
+        "Enterprise data platform and data mesh architecture",
+        "MLOps and model lifecycle management",
+        "Responsible AI governance and risk management",
+        "AI literacy and change management programs",
+        "Reusable AI assets and use-case acceleration",
+        "Cloud-scale analytics and experimentation infrastructure"
+      ],
+      "common_risks": [
+        "Model bias and fairness concerns",
+        "Data privacy and regulatory non-compliance",
+        "Over-investment in pilots without production value",
+        "Security vulnerabilities in AI pipelines",
+        "Loss of trust from unexplained or unreliable AI outputs"
+      ]
+    }
+  }
+}

@@ -49,11 +49,12 @@ class PresentationPlannerTests(unittest.TestCase):
         ):
             deck = plan_presentation(user_prompt, intent)
 
-        self.assertEqual(deck.presentation_type, "AI Strategy Presentation")
+        self.assertEqual(deck.presentation_type, "AI Strategy")
         self.assertIn("AI", deck.objective)
         self.assertIn("Finance", deck.audience)
         self.assertIn("AI", deck.narrative)
         self.assertEqual(deck.estimated_slide_count, len(deck.slides))
+        self.assertEqual(deck.slides[0].slide_role, "Executive Summary")
         self._assert_slide_dependencies_reference_roles(deck)
 
     def test_board_update_on_hr_transformation(self):
@@ -79,7 +80,11 @@ class PresentationPlannerTests(unittest.TestCase):
         self.assertEqual(deck.estimated_slide_count, len(deck.slides))
         self._assert_slide_dependencies_reference_roles(deck)
 
-    def test_supply_chain_modernization_proposal(self):
+    def test_supply_chain_modernization_uses_transformation_taxonomy(self):
+        """
+        Modernization proposals are not a top-level taxonomy type; they should
+        be classified and scaffolded as Transformation Proposals.
+        """
         user_prompt = "Build a supply chain modernization proposal."
         intent = IntentResult(
             slide_type="operating_model",
@@ -92,11 +97,11 @@ class PresentationPlannerTests(unittest.TestCase):
 
         with patch(
             "backend.modules.presentation_planner._call_presentation_planner_llm",
-            return_value=json.dumps(_supply_chain_modernization_deck()),
+            return_value=json.dumps(_supply_chain_transformation_deck()),
         ):
             deck = plan_presentation(user_prompt, intent)
 
-        self.assertEqual(deck.presentation_type, "Modernization Proposal")
+        self.assertEqual(deck.presentation_type, "Transformation Proposal")
         self.assertIn("supply chain", deck.objective.lower())
         self.assertEqual(deck.estimated_slide_count, len(deck.slides))
         self._assert_slide_dependencies_reference_roles(deck)
@@ -124,7 +129,7 @@ class PresentationPlannerTests(unittest.TestCase):
         self.assertEqual(deck.estimated_slide_count, len(deck.slides))
         self._assert_slide_dependencies_reference_roles(deck)
 
-    def test_llm_failure_returns_fallback_deck(self):
+    def test_llm_failure_returns_taxonomy_fallback_deck(self):
         user_prompt = "Build a procurement transformation proposal for Toyota."
         intent = IntentResult(
             slide_type="operating_model",
@@ -143,7 +148,37 @@ class PresentationPlannerTests(unittest.TestCase):
         self.assertIn("Toyota", deck.objective)
         self.assertTrue(deck.slides)
         self.assertEqual(deck.estimated_slide_count, len(deck.slides))
+        # Fallback should follow the taxonomy default sequence.
+        self.assertEqual(deck.slides[0].slide_role, "Executive Summary")
+        self.assertEqual(deck.slides[1].slide_role, "Current State")
         self._assert_slide_dependencies_reference_roles(deck)
+
+    def test_taxonomy_fallback_personalizes_objective_and_audience(self):
+        user_prompt = "Create an AI strategy for Coca-Cola Finance."
+        intent = IntentResult(
+            slide_type="process_flow",
+            raw_title="AI Strategy",
+            raw_content=user_prompt,
+            company="Coca-Cola",
+            industry="Consumer Goods",
+            business_function="Finance",
+        )
+
+        with patch(
+            "backend.modules.presentation_planner._call_presentation_planner_llm",
+            side_effect=RuntimeError("LLM unavailable"),
+        ):
+            deck = plan_presentation(user_prompt, intent)
+
+        self.assertEqual(deck.presentation_type, "AI Strategy")
+        # The taxonomy objective should be personalized with company/function.
+        self.assertIn("Coca-Cola", deck.audience)
+        self.assertIn("Finance", deck.audience)
+        # Slides should use the AI Strategy taxonomy sequence.
+        roles = [slide.slide_role for slide in deck.slides]
+        self.assertIn("Executive Summary", roles)
+        self.assertIn("AI Vision", roles)
+        self.assertIn("Roadmap", roles)
 
     def _assert_slide_dependencies_reference_roles(self, deck):
         roles = {slide.slide_role for slide in deck.slides}
@@ -218,7 +253,7 @@ def _toyota_procurement_deck():
 
 def _coca_cola_ai_strategy_deck():
     return {
-        "presentation_type": "AI Strategy Presentation",
+        "presentation_type": "AI Strategy",
         "objective": "Align Coca-Cola Finance on an AI-enabled finance roadmap.",
         "audience": "Coca-Cola Finance leadership",
         "narrative": "Opportunity → AI Vision → Use Cases → Roadmap → Governance",
@@ -312,18 +347,18 @@ def _hr_board_update_deck():
     }
 
 
-def _supply_chain_modernization_deck():
+def _supply_chain_transformation_deck():
     return {
-        "presentation_type": "Modernization Proposal",
-        "objective": "Define a prioritized supply chain modernization path.",
+        "presentation_type": "Transformation Proposal",
+        "objective": "Define a prioritized supply chain transformation path.",
         "audience": "Supply chain leadership",
-        "narrative": "Current State → Gaps → Future State → Roadmap",
+        "narrative": "Current State → Opportunities → Future State → Roadmap",
         "estimated_slide_count": 5,
         "slides": [
             {
                 "slide_number": 1,
                 "slide_role": "Executive Summary",
-                "purpose": "Frame the modernization proposal.",
+                "purpose": "Frame the supply chain transformation proposal.",
                 "required_inputs": [],
                 "dependencies": [],
                 "visualization_type": "Executive Summary",
@@ -338,8 +373,8 @@ def _supply_chain_modernization_deck():
             },
             {
                 "slide_number": 3,
-                "slide_role": "Gaps",
-                "purpose": "Identify capability and technology gaps.",
+                "slide_role": "Opportunities",
+                "purpose": "Identify improvement opportunities.",
                 "required_inputs": [],
                 "dependencies": ["Current State"],
                 "visualization_type": "Matrix",
@@ -349,7 +384,7 @@ def _supply_chain_modernization_deck():
                 "slide_role": "Future State",
                 "purpose": "Articulate the target supply chain vision.",
                 "required_inputs": [],
-                "dependencies": ["Gaps"],
+                "dependencies": ["Opportunities"],
                 "visualization_type": "Capability Map",
             },
             {
@@ -369,8 +404,8 @@ def _digital_transformation_roadmap_deck():
         "presentation_type": "Roadmap",
         "objective": "Communicate the digital transformation roadmap and sequencing.",
         "audience": "Executive leadership",
-        "narrative": "Vision → Pillars → Roadmap → Outcomes",
-        "estimated_slide_count": 4,
+        "narrative": "Strategic Context → Initiatives → Sequencing → Roadmap → Outcomes",
+        "estimated_slide_count": 5,
         "slides": [
             {
                 "slide_number": 1,
@@ -382,18 +417,18 @@ def _digital_transformation_roadmap_deck():
             },
             {
                 "slide_number": 2,
-                "slide_role": "Vision",
-                "purpose": "Define the digital transformation vision.",
+                "slide_role": "Strategic Context",
+                "purpose": "Set the strategic drivers for digital transformation.",
                 "required_inputs": [],
                 "dependencies": ["Executive Summary"],
                 "visualization_type": "Executive Summary",
             },
             {
                 "slide_number": 3,
-                "slide_role": "Pillars",
-                "purpose": "Outline the transformation pillars.",
+                "slide_role": "Initiatives",
+                "purpose": "Outline the transformation initiatives.",
                 "required_inputs": [],
-                "dependencies": ["Vision"],
+                "dependencies": ["Strategic Context"],
                 "visualization_type": "Capability Map",
             },
             {
@@ -401,8 +436,16 @@ def _digital_transformation_roadmap_deck():
                 "slide_role": "Roadmap",
                 "purpose": "Present the sequenced transformation roadmap.",
                 "required_inputs": [],
-                "dependencies": ["Pillars"],
+                "dependencies": ["Initiatives"],
                 "visualization_type": "Roadmap",
+            },
+            {
+                "slide_number": 5,
+                "slide_role": "Outcomes",
+                "purpose": "Define expected business outcomes.",
+                "required_inputs": [],
+                "dependencies": ["Roadmap"],
+                "visualization_type": "Matrix",
             },
         ],
     }

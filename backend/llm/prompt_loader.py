@@ -21,8 +21,12 @@ _MODULE_FILES: dict[str, str] = {
     "context": "context.md",
     "process": "process.md",
     "content": "content.md",
+    "slide_content": "slide_content.md",
     "validation": "validation.md",
     "presentation_planner": "presentation_planner.md",
+    "presentation_classifier": "presentation_classifier.md",
+    "information_analyzer": "information_analyzer.md",
+    "clarification": "clarification.md",
 }
 
 _SECTION_SEPARATOR = "--------------------------------------------------"

@@ -53,6 +53,30 @@ class SlidePlan(BaseModel):
     )
 
 
+class PresentationClassification(BaseModel):
+    """
+    Output of the Presentation Classifier.
+
+    Attributes
+    ----------
+    presentation_type:
+        The taxonomy type selected for the user's request.
+    confidence:
+        Strength of the classification, from 0.0 (low) to 1.0 (high).
+    reasoning_summary:
+        Brief explanation of why this type was selected.
+    """
+
+    presentation_type: str = Field(..., description="Selected presentation taxonomy type.")
+    confidence: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="Classification confidence score between 0.0 and 1.0.",
+    )
+    reasoning_summary: str = Field(..., description="Explanation of the classification decision.")
+
+
 class DeckSpec(BaseModel):
     """
     Complete consulting deck plan produced by the Presentation Planner.

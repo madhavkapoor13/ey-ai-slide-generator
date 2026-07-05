@@ -2,9 +2,10 @@ import json
 import unittest
 from unittest.mock import patch
 
-from backend.modules.content_generator import generate_content
+from backend.modules.content_generator import generate_content, generate_slide_content
 from schemas.context import EnterpriseContext, ResearchFact, ResearchSource
 from schemas.intent import IntentResult
+from schemas.presentation import SlidePlan
 from schemas.process import ProcessResult
 from schemas.slide_spec import SlideSpec
 
@@ -99,7 +100,7 @@ class ContentGeneratorTests(unittest.TestCase):
             ("EY", "Professional Services", "Human Resources", "Hire-to-Retire"),
         ]
 
-        def fake_call(_intent, context, process_result):
+        def fake_call(_intent, context, process_result, _domain_knowledge, _slide_plan=None):
             return _llm_payload(context.company, process_result.process_family, process_result.process_name)
 
         with patch("backend.modules.content_generator._call_content_llm", side_effect=fake_call):
@@ -155,6 +156,88 @@ class ContentGeneratorTests(unittest.TestCase):
         self.assertNotIn("$5M", raw_text)
         self.assertNotIn("10 days", raw_text)
         self.assertNotIn("15%", raw_text)
+
+    def test_knowledge_grounding_is_retrieved_for_content_generation(self):
+        """
+        The Content Generator should call the Knowledge Manager with industry
+        and business function, and pass the resulting DomainKnowledge into the
+        LLM workflow.
+        """
+        from schemas.knowledge import DomainKnowledge
+
+        finance_knowledge = DomainKnowledge(
+            domain="Finance",
+            aliases=["finance"],
+            common_kpis=["Days to close"],
+            common_pain_points=["Manual reconciliation"],
+            transformation_themes=["Automated close"],
+            common_risks=["Misstatement"],
+        )
+
+        with patch("backend.modules.content_generator.get_knowledge") as mock_knowledge:
+            mock_knowledge.return_value = finance_knowledge
+            with patch(
+                "backend.modules.content_generator._call_content_llm",
+                return_value=_llm_payload("Nike", "Finance", "Record-to-Report"),
+            ):
+                spec = generate_content(
+                    IntentResult(
+                        company="Nike",
+                        industry="Retail",
+                        business_function="Finance",
+                        slide_type="Current State",
+                    ),
+                    _context("Nike", "Retail", "Finance"),
+                    _process("Record-to-Report", "Finance"),
+                )
+
+        mock_knowledge.assert_called_once_with("Retail", "Finance")
+        self.assertEqual(spec.slide_type, "operating_model")
+        self.assertEqual(spec.raw_spec["metadata"]["company"], "Nike")
+
+    def test_generate_slide_content_uses_slide_plan(self):
+        """
+        generate_slide_content() should produce a SlideSpec influenced by the
+        SlidePlan while preserving the renderer contract.
+        """
+        slide_plan = SlidePlan(
+            slide_number=2,
+            slide_role="Current State",
+            purpose="Describe Toyota's current procurement operating model.",
+            required_inputs=["process map"],
+            dependencies=["Executive Summary"],
+            visualization_type="Process Flow",
+        )
+
+        with patch(
+            "backend.modules.content_generator._call_content_llm",
+            return_value=_llm_payload("Toyota", "Procurement", "Procure-to-Pay"),
+        ) as mock_call:
+            spec = generate_slide_content(
+                IntentResult(
+                    company="Toyota",
+                    industry="Automotive",
+                    business_function="Procurement",
+                    slide_type="Current State",
+                ),
+                _context("Toyota", "Automotive", "Procurement"),
+                _process("Procure-to-Pay", "Procurement"),
+                slide_plan,
+            )
+
+        self.assertEqual(spec.slide_type, "operating_model")
+        self.assertEqual(spec.raw_spec["title"], "Current State")
+        self.assertIn("Toyota", spec.raw_spec["subtitle"])
+        self.assertIn("Procurement", spec.raw_spec["subtitle"])
+        self.assertIn("slide_role", spec.raw_spec["metadata"])
+        self.assertEqual(spec.raw_spec["metadata"]["slide_role"], "Current State")
+        self.assertEqual(spec.raw_spec["metadata"]["slide_number"], "2")
+
+        # Verify the slide plan was passed into the LLM prompt.
+        mock_call.assert_called_once()
+        _, _, _, domain_knowledge, passed_slide_plan = mock_call.call_args.args
+        self.assertIsNotNone(passed_slide_plan)
+        self.assertEqual(passed_slide_plan.slide_role, "Current State")
 
     def test_quality_rules_normalize_generic_llm_output(self):
         payload = json.loads(_llm_payload("Toyota", "Procurement", "Procure-to-Pay"))

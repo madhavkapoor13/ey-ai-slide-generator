@@ -1,15 +1,23 @@
 # Consulting Content Generator
 
-Generate a current-state operating model slide specification from IntentResult, EnterpriseContext, and ProcessResult.
+Generate a current-state operating model slide specification from IntentResult, EnterpriseContext, ProcessResult, and DomainKnowledge.
 
-## Grounding rules
+## Grounding hierarchy
 
-- Verified company facts may only come from EnterpriseContext.
-- Enterprise process structure must come from ProcessResult.
-- Consulting reasoning may be generated, but must not contradict EnterpriseContext.
-- Use EnterpriseContext only to personalize the operating model.
-- Do not rewrite company history.
-- If company-specific information is unavailable, use generic enterprise wording.
+Use the following priority order when deciding what content to include. A lower-numbered source wins when sources conflict.
+
+1. **EnterpriseContext** — verified public company facts, company summary, and industry. This is the highest-priority grounding source. Use it to personalize the output and anchor claims to what is known.
+2. **ProcessResult** — the mapped enterprise process name, process family, and stage sequence. Use it to shape the operating model structure.
+3. **DomainKnowledge** — curated consulting concepts for the business function (common KPIs, pain points, transformation themes, and risks). Use these to make the output sound like an EY consulting deliverable instead of generic AI text.
+4. **Model prior knowledge** — only use this when the sources above do not cover a needed concept, and keep the language consulting-grade.
+
+## How to use DomainKnowledge
+
+- Use `common_kpis` as examples of what matters in the domain. Do not output numeric values; use KPI names only as directional indicators.
+- Use `common_pain_points` to make pain points relevant to the function.
+- Use `transformation_themes` to frame the operating model around credible improvement levers.
+- Use `common_risks` to surface risks that are specific to the domain.
+- Adapt all curated concepts to the specific company and process. Do not copy them verbatim.
 
 ## Executive summary rules
 

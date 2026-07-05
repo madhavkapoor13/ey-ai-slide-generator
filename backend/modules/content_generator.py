@@ -19,9 +19,12 @@ from typing import Any
 from dotenv import load_dotenv
 
 from backend.llm.prompt_loader import build_prompt
+from backend.modules.knowledge_manager import get_knowledge
 from schemas.context import EnterpriseContext
 from schemas.intent import IntentResult
+from schemas.knowledge import DomainKnowledge
 from schemas.operating_model import OperatingModelSpec
+from schemas.presentation import SlidePlan
 from schemas.process import ProcessResult
 from schemas.slide_spec import SlideSpec
 
@@ -169,26 +172,75 @@ def generate_content(
     )
 
 
+def generate_slide_content(
+    intent: IntentResult,
+    context: EnterpriseContext,
+    process_result: ProcessResult,
+    slide_plan: SlidePlan,
+) -> SlideSpec:
+    """
+    Generate a single slide's content from a SlidePlan.
+
+    This function is slide-aware: the SlidePlan's role, purpose, and position
+    in the narrative are passed to the LLM so the generated content fits the
+    slide's consulting job. The underlying renderer contract is identical to
+    ``generate_content``.
+    """
+    logger.info(
+        "generating slide content: company=%s process=%s slide_role=%s slide_number=%d",
+        context.company,
+        process_result.process_name,
+        slide_plan.slide_role,
+        slide_plan.slide_number,
+    )
+
+    payload = _generate_payload(intent, context, process_result, slide_plan=slide_plan)
+    raw_spec = _to_renderer_ready_spec(payload, intent, context, process_result, slide_plan=slide_plan)
+
+    # Validate the renderer-facing subset before wrapping it in SlideSpec.
+    OperatingModelSpec.model_validate(raw_spec)
+
+    return SlideSpec(
+        slide_type="operating_model",
+        raw_spec=raw_spec,
+        version="2.0",
+        generated_by="consulting_slide_content_generator_v1",
+    )
+
+
 def _generate_payload(
     intent: IntentResult,
     context: EnterpriseContext,
     process_result: ProcessResult,
+    slide_plan: SlidePlan | None = None,
 ) -> dict[str, Any]:
     try:
-        raw_response = _call_content_llm(intent, context, process_result)
+        domain_knowledge = _load_domain_knowledge(context.industry, intent.business_function or context.business_function)
+        raw_response = _call_content_llm(intent, context, process_result, domain_knowledge, slide_plan)
         payload = json.loads(_strip_json_fence(raw_response))
         if not isinstance(payload, dict):
             raise ValueError("Content LLM response was not a JSON object.")
         return payload
     except Exception as exc:  # noqa: BLE001 - generic fallback keeps v2 runnable.
         logger.warning("content generation LLM failed; using generic fallback: %s", exc)
-        return _fallback_payload(intent, context, process_result)
+        return _fallback_payload(intent, context, process_result, slide_plan=slide_plan)
+
+
+def _load_domain_knowledge(industry: str | None, business_function: str | None) -> DomainKnowledge:
+    """Load curated knowledge, returning a safe default if anything fails."""
+    try:
+        return get_knowledge(industry, business_function)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("failed to load domain knowledge; using default: %s", exc)
+        return DomainKnowledge(domain="General Enterprise")
 
 
 def _call_content_llm(
     intent: IntentResult,
     context: EnterpriseContext,
     process_result: ProcessResult,
+    domain_knowledge: DomainKnowledge,
+    slide_plan: SlidePlan | None = None,
 ) -> str:
     load_dotenv()
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
@@ -211,11 +263,16 @@ def _call_content_llm(
             "facts": [fact.model_dump(mode="json") for fact in context.facts],
         },
         "process_result": process_result.model_dump(mode="json"),
+        "domain_knowledge": domain_knowledge.model_dump(mode="json"),
     }
+    if slide_plan is not None:
+        user_input["slide_plan"] = slide_plan.model_dump(mode="json")
+
+    prompt_module = "slide_content" if slide_plan is not None else "content"
 
     client = genai.Client(api_key=api_key)
     prompt = build_prompt(
-        "content",
+        prompt_module,
         user_input=json.dumps(user_input, ensure_ascii=True),
         additional_context="Input:",
     )
@@ -235,6 +292,7 @@ def _to_renderer_ready_spec(
     intent: IntentResult,
     context: EnterpriseContext,
     process_result: ProcessResult,
+    slide_plan: SlidePlan | None = None,
 ) -> dict[str, Any]:
     company = _clean_text(context.company) or _clean_text(getattr(intent, "company", None)) or "Enterprise"
     industry = _clean_text(context.industry) or _clean_text(getattr(intent, "industry", None)) or "Unknown"
@@ -243,8 +301,19 @@ def _to_renderer_ready_spec(
         or _clean_text(context.business_function)
         or process_result.process_family
     )
-    title = _clean_text(payload.get("title")) or _clean_text(intent.raw_title) or "Current State"
-    subtitle = _clean_text(payload.get("subtitle")) or f"{company} {business_function} Operating Model"
+
+    if slide_plan is not None:
+        title = _clean_text(payload.get("title")) or slide_plan.slide_role
+        subtitle = (
+            _clean_text(payload.get("subtitle"))
+            or f"{company} {business_function} — {slide_plan.purpose}"
+        )
+        description = _clean_text(payload.get("description")) or slide_plan.purpose
+    else:
+        title = _clean_text(payload.get("title")) or _clean_text(intent.raw_title) or "Current State"
+        subtitle = _clean_text(payload.get("subtitle")) or f"{company} {business_function} Operating Model"
+        description = f"{process_result.process_name} current-state operating model"
+
     executive_summary = _normalize_executive_summary(
         payload.get("executive_summary"),
         default=_default_executive_summary(company, industry, process_result),
@@ -259,6 +328,9 @@ def _to_renderer_ready_spec(
         "industry": industry,
         "process": process_result.process_name,
     }
+    if slide_plan is not None:
+        metadata["slide_role"] = slide_plan.slide_role
+        metadata["slide_number"] = str(slide_plan.slide_number)
     payload_metadata = payload.get("metadata", {})
     if isinstance(payload_metadata, dict):
         metadata.update({key: value for key, value in payload_metadata.items() if isinstance(value, str)})
@@ -286,7 +358,7 @@ def _to_renderer_ready_spec(
     return {
         "title": title,
         "subtitle": subtitle,
-        "description": f"{process_result.process_name} current-state operating model",
+        "description": description,
         "executive_summary": executive_summary,
         "summary": {
             "headline": process_result.process_name,
@@ -366,6 +438,7 @@ def _fallback_payload(
     intent: IntentResult,
     context: EnterpriseContext,
     process_result: ProcessResult,
+    slide_plan: SlidePlan | None = None,
 ) -> dict[str, Any]:
     company = _clean_text(context.company) or _clean_text(getattr(intent, "company", None)) or "Enterprise"
     business_function = (
@@ -374,9 +447,18 @@ def _fallback_payload(
         or process_result.process_family
     )
     stage_labels = _six_stage_labels(process_result)
+    if slide_plan is not None:
+        title = slide_plan.slide_role
+        subtitle = f"{company} {business_function} — {slide_plan.purpose}"
+        description = slide_plan.purpose
+    else:
+        title = _clean_text(intent.raw_title) or "Current State"
+        subtitle = f"{company} {business_function} Operating Model"
+        description = f"{process_result.process_name} current-state operating model"
     return {
-        "title": _clean_text(intent.raw_title) or "Current State",
-        "subtitle": f"{company} {business_function} Operating Model",
+        "title": title,
+        "subtitle": subtitle,
+        "description": description,
         "executive_summary": _default_executive_summary(company, context.industry, process_result),
         "stages": [
             {

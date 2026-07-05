@@ -1,0 +1,893 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Curated consulting presentation taxonomy for the EY AI Pitch Intelligent Narrative Planner. Each presentation type defines the default consulting narrative, slide sequence, audience, and extension points for variants, business functions, and optional slides. Classification keywords and matching logic are intentionally kept outside this file, in presentation_classifier.py.",
+  "presentation_types": {
+    "Transformation Proposal": {
+      "description": "A recommendation deck that defines a change program, contrasts current and future states, and secures stakeholder alignment and funding.",
+      "objective": "Secure alignment and approval for a prioritized {business_function} transformation program at {company}.",
+      "expected_audience": "{company}'s {business_function} executive sponsors, program leadership, and functional heads responsible for funding and delivery decisions.",
+      "consulting_narrative": "Current State → Opportunities → Future State → Roadmap → Next Steps",
+      "business_function_applicability": [
+        "Procurement",
+        "Finance",
+        "Human Resources",
+        "Supply Chain",
+        "Operations",
+        "Information Technology",
+        "Customer Service",
+        "Sales",
+        "Manufacturing"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Frame the transformation recommendation and the decision required.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Current State",
+          "purpose": "Describe the current operating model and baseline performance.",
+          "visualization_type": "Process Flow",
+          "required_inputs": [
+            "process map",
+            "baseline metrics"
+          ]
+        },
+        {
+          "slide_role": "Opportunities",
+          "purpose": "Identify improvement opportunities and value drivers.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Future State",
+          "purpose": "Articulate the target operating model and expected outcomes.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Roadmap",
+          "purpose": "Outline the high-level implementation path and sequencing.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Next Steps",
+          "purpose": "Define immediate actions, decision points, and accountabilities.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Current State": "Process Flow",
+        "Opportunities": "Matrix",
+        "Future State": "Capability Map",
+        "Roadmap": "Roadmap",
+        "Next Steps": "Executive Summary"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Risks",
+          "purpose": "Surface key program risks and mitigation strategies.",
+          "visualization_type": "Matrix",
+          "trigger": "The audience includes executives or board members who must approve funding."
+        },
+        {
+          "slide_role": "Investment",
+          "purpose": "Summarize the funding and resource profile required.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt explicitly asks for budget, investment, or resource requirements."
+        },
+        {
+          "slide_role": "Benefits",
+          "purpose": "Quantify or categorize expected business benefits.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt asks for benefits, value case, or business case."
+        }
+      ],
+      "variants": {
+        "Digital Transformation": {
+          "description": "A transformation proposal focused on digital capabilities, automation, and technology-enabled change.",
+          "objective": "Secure alignment on a prioritized digital transformation program.",
+          "consulting_narrative": "Digital Baseline → Opportunity Areas → Target State → Enablers → Roadmap",
+          "default_slide_sequence": [
+            {
+              "slide_role": "Executive Summary",
+              "purpose": "Frame the digital transformation recommendation.",
+              "visualization_type": "Executive Summary",
+              "required_inputs": []
+            },
+            {
+              "slide_role": "Digital Baseline",
+              "purpose": "Describe the current digital maturity and capability baseline.",
+              "visualization_type": "Process Flow",
+              "required_inputs": [
+                "process map"
+              ]
+            },
+            {
+              "slide_role": "Opportunity Areas",
+              "purpose": "Identify digital opportunity areas and value drivers.",
+              "visualization_type": "Matrix",
+              "required_inputs": []
+            },
+            {
+              "slide_role": "Target State",
+              "purpose": "Articulate the future digital operating model.",
+              "visualization_type": "Capability Map",
+              "required_inputs": []
+            },
+            {
+              "slide_role": "Enablers",
+              "purpose": "Define the technology, data, and people enablers required.",
+              "visualization_type": "Capability Map",
+              "required_inputs": []
+            },
+            {
+              "slide_role": "Roadmap",
+              "purpose": "Sequence digital initiatives and milestones.",
+              "visualization_type": "Roadmap",
+              "required_inputs": []
+            }
+          ]
+        }
+      }
+    },
+    "AI Strategy": {
+      "description": "A strategy deck that defines how an organization should adopt, scale, and govern AI to create business value.",
+      "objective": "Align {company}'s {business_function} leadership on an AI-enabled roadmap and governance model.",
+      "expected_audience": "{company}'s {business_function} leadership, data and technology leaders, and AI program sponsors.",
+      "consulting_narrative": "Opportunity → AI Vision → Use Cases → Roadmap → Governance",
+      "business_function_applicability": [
+        "Finance",
+        "Human Resources",
+        "Procurement",
+        "Supply Chain",
+        "Operations",
+        "Customer Service",
+        "Sales",
+        "Marketing",
+        "Information Technology",
+        "Enterprise"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize the AI strategy recommendation and expected outcomes.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Opportunity",
+          "purpose": "Frame the AI opportunity for the business or function.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "AI Vision",
+          "purpose": "Describe the future AI-enabled operating model.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Use Cases",
+          "purpose": "Prioritize AI use cases by value and feasibility.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Roadmap",
+          "purpose": "Sequence AI initiatives and capability milestones.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Governance",
+          "purpose": "Define data, risk, ethics, and operating governance.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Opportunity": "Matrix",
+        "AI Vision": "Capability Map",
+        "Use Cases": "Matrix",
+        "Roadmap": "Roadmap",
+        "Governance": "Executive Summary"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Data Strategy",
+          "purpose": "Outline the data foundations and requirements for AI adoption.",
+          "visualization_type": "Process Flow",
+          "trigger": "The prompt mentions data, data strategy, or data readiness."
+        },
+        {
+          "slide_role": "Ethics & Risk",
+          "purpose": "Address responsible AI, ethics, and risk guardrails.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt mentions ethics, risk, responsible AI, or compliance."
+        },
+        {
+          "slide_role": "Technology Stack",
+          "purpose": "Summarize the AI technology and platform considerations.",
+          "visualization_type": "Capability Map",
+          "trigger": "The prompt asks about platforms, technology, or architecture."
+        }
+      ],
+      "variants": {
+        "Enterprise AI Strategy": {
+          "description": "A cross-functional AI strategy covering enterprise-wide adoption.",
+          "objective": "Align the enterprise on a unified AI strategy and investment plan.",
+          "consulting_narrative": "Enterprise Opportunity → AI Vision → Function Roadmaps → Governance → Value Realization"
+        },
+        "Function AI Strategy": {
+          "description": "An AI strategy scoped to a single business function.",
+          "objective": "Define a function-specific AI roadmap and quick wins.",
+          "consulting_narrative": "Function Baseline → AI Opportunities → Use Cases → Roadmap → Governance"
+        }
+      }
+    },
+    "Operating Model Assessment": {
+      "description": "A diagnostic deck that evaluates an organization's current operating model and defines a target state.",
+      "objective": "Assess {company}'s {business_function} operating model and define a prioritized target-state design.",
+      "expected_audience": "{company}'s {business_function} functional leadership, operating model owners, and transformation sponsors.",
+      "consulting_narrative": "Current Operating Model → Assessment Framework → Findings → Target Operating Model → Implementation Implications",
+      "business_function_applicability": [
+        "Procurement",
+        "Finance",
+        "Human Resources",
+        "Supply Chain",
+        "Operations",
+        "Information Technology",
+        "Customer Service",
+        "Sales"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize the assessment scope, key findings, and recommended target state.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Current Operating Model",
+          "purpose": "Describe the current organization, process, and capability model.",
+          "visualization_type": "Process Flow",
+          "required_inputs": [
+            "organization chart",
+            "process documentation"
+          ]
+        },
+        {
+          "slide_role": "Assessment Framework",
+          "purpose": "Present the dimensions used to evaluate the operating model.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Findings",
+          "purpose": "Highlight strengths, gaps, and root causes.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Target Operating Model",
+          "purpose": "Define the target design for people, process, and technology.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Implementation Implications",
+          "purpose": "Outline the changes, investments, and risks to reach the target state.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Current Operating Model": "Process Flow",
+        "Assessment Framework": "Matrix",
+        "Findings": "Matrix",
+        "Target Operating Model": "Capability Map",
+        "Implementation Implications": "Roadmap"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Design Principles",
+          "purpose": "State the principles guiding the target operating model design.",
+          "visualization_type": "Executive Summary",
+          "trigger": "The prompt asks for design principles or guiding principles."
+        },
+        {
+          "slide_role": "Org Implications",
+          "purpose": "Describe organizational structure and role implications.",
+          "visualization_type": "Capability Map",
+          "trigger": "The prompt mentions org design, roles, or organizational structure."
+        }
+      ],
+      "variants": {
+        "Target Operating Model": {
+          "description": "A forward-looking design of the target operating model, often following an assessment.",
+          "objective": "Define and align stakeholders on the target operating model.",
+          "consulting_narrative": "Design Principles → Target State → Capabilities → Enablers → Roadmap"
+        }
+      }
+    },
+    "Current State Assessment": {
+      "description": "A diagnostic deck that documents and evaluates the current state of a process, function, or capability.",
+      "objective": "Establish a fact-based understanding of {company}'s {business_function} current state and identify improvement priorities.",
+      "expected_audience": "{company}'s {business_function} process owners, functional leadership, and project teams.",
+      "consulting_narrative": "Scope → Current Process → Pain Points → Assessment → Findings → Priorities",
+      "business_function_applicability": [
+        "Procurement",
+        "Finance",
+        "Human Resources",
+        "Supply Chain",
+        "Operations",
+        "Information Technology",
+        "Customer Service",
+        "Sales",
+        "Manufacturing"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize the assessment scope and headline findings.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Scope",
+          "purpose": "Define what is being assessed and the boundaries of the analysis.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Current Process",
+          "purpose": "Document the current process or capability flow.",
+          "visualization_type": "Process Flow",
+          "required_inputs": [
+            "process documentation"
+          ]
+        },
+        {
+          "slide_role": "Pain Points",
+          "purpose": "Identify the key pain points and performance gaps.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Assessment",
+          "purpose": "Evaluate the current state against a framework or criteria.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Findings",
+          "purpose": "Synthesize findings and root causes.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Priorities",
+          "purpose": "Rank improvement priorities for follow-on work.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Scope": "Executive Summary",
+        "Current Process": "Process Flow",
+        "Pain Points": "Matrix",
+        "Assessment": "Matrix",
+        "Findings": "Matrix",
+        "Priorities": "Matrix"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Stakeholder Map",
+          "purpose": "Identify key stakeholders and their interests.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt mentions stakeholders, RACI, or governance."
+        }
+      ],
+      "variants": {}
+    },
+    "Future State Vision": {
+      "description": "A vision deck that paints the picture of a desired future state and the path to get there.",
+      "objective": "Align {company}'s stakeholders on a compelling {business_function} future-state vision and strategic direction.",
+      "expected_audience": "{company}'s senior leadership, {business_function} sponsors, and transformation teams.",
+      "consulting_narrative": "Strategic Context → Future State Vision → Capabilities → Enablers → Roadmap",
+      "business_function_applicability": [
+        "Procurement",
+        "Finance",
+        "Human Resources",
+        "Supply Chain",
+        "Operations",
+        "Information Technology",
+        "Customer Service",
+        "Sales",
+        "Enterprise"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize the future-state vision and strategic intent.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Strategic Context",
+          "purpose": "Set the business context and drivers for the future state.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Future State Vision",
+          "purpose": "Describe the aspirational future-state target.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Capabilities",
+          "purpose": "Define the capabilities required in the future state.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Enablers",
+          "purpose": "Identify the people, process, data, and technology enablers.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Roadmap",
+          "purpose": "Outline the journey to the future state.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Strategic Context": "Executive Summary",
+        "Future State Vision": "Capability Map",
+        "Capabilities": "Capability Map",
+        "Enablers": "Matrix",
+        "Roadmap": "Roadmap"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Current State Baseline",
+          "purpose": "Briefly contrast the current state with the future vision.",
+          "visualization_type": "Comparison",
+          "trigger": "The prompt asks to compare current and future state."
+        }
+      ],
+      "variants": {
+        "Target Operating Model Vision": {
+          "description": "A future-state vision focused on the target operating model.",
+          "objective": "Align stakeholders on the target operating model vision.",
+          "consulting_narrative": "Context → Design Principles → Target Model → Capabilities → Roadmap"
+        }
+      }
+    },
+    "Board Update": {
+      "description": "A concise status and decision deck for a board or steering committee audience.",
+      "objective": "Inform {company}'s board of {business_function} progress, surface risks, and secure required decisions.",
+      "expected_audience": "{company}'s Board of Directors and executive sponsors.",
+      "consulting_narrative": "Executive Summary → Progress → Risks → Decisions → Next Steps",
+      "business_function_applicability": [
+        "Enterprise",
+        "Finance",
+        "Human Resources",
+        "Operations",
+        "Information Technology",
+        "Procurement",
+        "Supply Chain"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "State the update objective and the one-line headline.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Progress",
+          "purpose": "Highlight milestones achieved and status against plan.",
+          "visualization_type": "Timeline",
+          "required_inputs": [
+            "program status"
+          ]
+        },
+        {
+          "slide_role": "Risks",
+          "purpose": "Surface key risks, issues, and mitigations.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Decisions",
+          "purpose": "List decisions required from the board.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Next Steps",
+          "purpose": "Define immediate actions and accountabilities.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Progress": "Timeline",
+        "Risks": "Matrix",
+        "Decisions": "Executive Summary",
+        "Next Steps": "Executive Summary"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Financials",
+          "purpose": "Summarize budget, spend, and forecast.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt mentions budget, financials, or investment."
+        },
+        {
+          "slide_role": "Benefits Realization",
+          "purpose": "Report on benefits achieved and expected.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt mentions benefits, value, or outcomes."
+        }
+      ],
+      "variants": {
+        "Steering Committee Update": {
+          "description": "A working-level steering committee update with more operational detail.",
+          "objective": "Update the steering committee on progress, issues, and decisions.",
+          "expected_audience": "Steering committee members and program leadership.",
+          "consulting_narrative": "Status → Achievements → Blockers → Decisions → Next Steps"
+        }
+      }
+    },
+    "Capability Overview": {
+      "description": "A descriptive deck that maps an organization's capabilities and identifies gaps or priorities.",
+      "objective": "Provide {company}'s {business_function} leadership with a structured view of current and target capabilities.",
+      "expected_audience": "{company}'s {business_function} functional leadership, capability owners, and transformation teams.",
+      "consulting_narrative": "Capability Framework → Current Capabilities → Gaps → Target Capabilities → Roadmap",
+      "business_function_applicability": [
+        "Procurement",
+        "Finance",
+        "Human Resources",
+        "Supply Chain",
+        "Operations",
+        "Information Technology",
+        "Customer Service",
+        "Sales",
+        "Enterprise"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize the capability overview and key takeaways.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Capability Framework",
+          "purpose": "Present the capability model or taxonomy used.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Current Capabilities",
+          "purpose": "Describe the current capability maturity and coverage.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Gaps",
+          "purpose": "Identify capability gaps and priority areas.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Target Capabilities",
+          "purpose": "Define the target capability state.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Roadmap",
+          "purpose": "Sequence capability-building initiatives.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Capability Framework": "Capability Map",
+        "Current Capabilities": "Capability Map",
+        "Gaps": "Matrix",
+        "Target Capabilities": "Capability Map",
+        "Roadmap": "Roadmap"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Maturity View",
+          "purpose": "Show capability maturity across dimensions.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt mentions maturity or assessment."
+        }
+      ],
+      "variants": {}
+    },
+    "Maturity Assessment": {
+      "description": "A diagnostic deck that evaluates capability or process maturity against a defined model.",
+      "objective": "Assess {company}'s {business_function} maturity, identify gaps, and define a path to target maturity.",
+      "expected_audience": "{company}'s {business_function} functional leadership, process owners, and improvement teams.",
+      "consulting_narrative": "Maturity Model → Current Maturity → Gap Analysis → Target Maturity → Improvement Roadmap",
+      "business_function_applicability": [
+        "Procurement",
+        "Finance",
+        "Human Resources",
+        "Supply Chain",
+        "Operations",
+        "Information Technology",
+        "Customer Service",
+        "Sales",
+        "Manufacturing"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize maturity assessment scope and key findings.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Maturity Model",
+          "purpose": "Introduce the maturity framework and levels.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Current Maturity",
+          "purpose": "Assess current maturity across dimensions.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Gap Analysis",
+          "purpose": "Identify gaps between current and target maturity.",
+          "visualization_type": "Comparison",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Target Maturity",
+          "purpose": "Define the target maturity level and focus areas.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Improvement Roadmap",
+          "purpose": "Sequence maturity improvement initiatives.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Maturity Model": "Matrix",
+        "Current Maturity": "Matrix",
+        "Gap Analysis": "Comparison",
+        "Target Maturity": "Matrix",
+        "Improvement Roadmap": "Roadmap"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Benchmark Comparison",
+          "purpose": "Compare maturity against industry or peer benchmarks.",
+          "visualization_type": "Comparison",
+          "trigger": "The prompt mentions benchmark, industry comparison, or peer comparison."
+        }
+      ],
+      "variants": {
+        "Digital Maturity": {
+          "description": "A maturity assessment focused on digital capabilities.",
+          "objective": "Assess digital maturity and define a digital acceleration path.",
+          "consulting_narrative": "Digital Maturity Model → Current State → Gaps → Target → Roadmap"
+        }
+      }
+    },
+    "Due Diligence": {
+      "description": "An evaluation deck used to assess a target company, asset, or opportunity ahead of a transaction or decision.",
+      "objective": "Summarize due diligence findings and recommendations for {company}'s {business_function} decision-makers.",
+      "expected_audience": "{company}'s investment committees, deal teams, senior executives, and advisors for {business_function} matters.",
+      "consulting_narrative": "Scope & Approach → Market Overview → Target Profile → Operational Assessment → Risk Assessment → Key Findings → Recommendations",
+      "business_function_applicability": [
+        "Enterprise",
+        "Finance",
+        "Operations",
+        "Information Technology",
+        "Human Resources",
+        "Commercial",
+        "Strategy"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize the diligence objective, scope, and headline conclusion.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Scope & Approach",
+          "purpose": "Define what was evaluated and how.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Market Overview",
+          "purpose": "Provide context on the market and competitive landscape.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Target Profile",
+          "purpose": "Describe the target company, asset, or opportunity.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Operational Assessment",
+          "purpose": "Evaluate operations, capabilities, and performance.",
+          "visualization_type": "Process Flow",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Risk Assessment",
+          "purpose": "Surface key risks and mitigating factors.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Key Findings",
+          "purpose": "Synthesize the most important diligence findings.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Recommendations",
+          "purpose": "State recommended actions or deal implications.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Scope & Approach": "Executive Summary",
+        "Market Overview": "Matrix",
+        "Target Profile": "Executive Summary",
+        "Operational Assessment": "Process Flow",
+        "Risk Assessment": "Matrix",
+        "Key Findings": "Matrix",
+        "Recommendations": "Executive Summary"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Financial Summary",
+          "purpose": "Summarize historical and projected financial performance.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt asks for financial, commercial, or valuation diligence."
+        },
+        {
+          "slide_role": "Synergy Assessment",
+          "purpose": "Identify potential synergies and integration considerations.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt mentions M&A, acquisition, merger, or synergies."
+        }
+      ],
+      "variants": {
+        "Commercial Due Diligence": {
+          "description": "Due diligence focused on market, customers, and commercial performance.",
+          "objective": "Assess the commercial attractiveness and risks of the target.",
+          "consulting_narrative": "Market → Customers → Commercial Performance → Competitive Position → Risks → Conclusions"
+        },
+        "Technology Due Diligence": {
+          "description": "Due diligence focused on technology, systems, and digital capabilities.",
+          "objective": "Evaluate technology assets, risks, and scalability.",
+          "consulting_narrative": "Technology Landscape → Architecture → Capabilities → Risks → Investment Needs → Recommendations"
+        }
+      }
+    },
+    "Roadmap": {
+      "description": "A planning deck that defines initiatives, sequencing, and milestones to achieve a strategic objective.",
+      "objective": "Communicate {company}'s {business_function} initiative roadmap, sequencing, and expected outcomes.",
+      "expected_audience": "{company}'s {business_function} program leadership, functional sponsors, and execution teams.",
+      "consulting_narrative": "Strategic Context → Initiatives → Sequencing → Roadmap → Outcomes",
+      "business_function_applicability": [
+        "Enterprise",
+        "Procurement",
+        "Finance",
+        "Human Resources",
+        "Supply Chain",
+        "Operations",
+        "Information Technology",
+        "Customer Service",
+        "Sales"
+      ],
+      "default_slide_sequence": [
+        {
+          "slide_role": "Executive Summary",
+          "purpose": "Summarize the roadmap objective and headline outcomes.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Strategic Context",
+          "purpose": "Set the strategic drivers for the roadmap.",
+          "visualization_type": "Executive Summary",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Initiatives",
+          "purpose": "Define the initiatives or workstreams.",
+          "visualization_type": "Capability Map",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Sequencing",
+          "purpose": "Explain the logic for ordering and prioritization.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Roadmap",
+          "purpose": "Present the sequenced roadmap with milestones.",
+          "visualization_type": "Roadmap",
+          "required_inputs": []
+        },
+        {
+          "slide_role": "Outcomes",
+          "purpose": "Define expected business outcomes and success metrics.",
+          "visualization_type": "Matrix",
+          "required_inputs": []
+        }
+      ],
+      "visualization_preferences": {
+        "Executive Summary": "Executive Summary",
+        "Strategic Context": "Executive Summary",
+        "Initiatives": "Capability Map",
+        "Sequencing": "Roadmap",
+        "Roadmap": "Roadmap",
+        "Outcomes": "Matrix"
+      },
+      "optional_slides": [
+        {
+          "slide_role": "Dependencies",
+          "purpose": "Highlight cross-initiative dependencies and critical path.",
+          "visualization_type": "Process Flow",
+          "trigger": "The prompt mentions dependencies, critical path, or interdependencies."
+        },
+        {
+          "slide_role": "Investment Profile",
+          "purpose": "Summarize investment and resource requirements.",
+          "visualization_type": "Matrix",
+          "trigger": "The prompt mentions budget, investment, or resources."
+        }
+      ],
+      "variants": {
+        "Implementation Roadmap": {
+          "description": "A detailed execution roadmap with phases and deliverables.",
+          "objective": "Guide execution teams through phased delivery.",
+          "consulting_narrative": "Objectives → Phases → Deliverables → Milestones → Governance"
+        }
+      }
+    }
+  }
+}

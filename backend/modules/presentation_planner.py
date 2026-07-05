@@ -1,7 +1,7 @@
 """
 backend/modules/presentation_planner.py
 =======================================
-Sprint B.1 — Presentation Planner module.
+Sprint E.1 — Intelligent Narrative Planner.
 
 This module is responsible ONLY for planning the consulting narrative.
 It does NOT generate slide content, KPIs, business activities, pain points,
@@ -15,6 +15,16 @@ Output:
     - A DeckSpec describing the deck plan: presentation type, objective,
       audience, narrative, estimated slide count, and an ordered sequence
       of SlidePlan objects.
+
+Behavior:
+    1. Classify the request using the Presentation Classifier.
+    2. Load the matching taxonomy entry from presentation_taxonomy.json.
+    3. Use the taxonomy as the narrative scaffold.
+    4. Adapt/customize the scaffold to the user's specific prompt via LLM.
+    5. Return the validated DeckSpec.
+
+If the LLM is unavailable, the planner falls back to a taxonomy-grounded
+plan personalized with intent fields.
 """
 
 from __future__ import annotations
@@ -23,17 +33,35 @@ import json
 import logging
 import os
 import re
+from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
 
 from backend.llm.prompt_loader import build_prompt
+from backend.modules.presentation_classifier import classify_presentation
 from schemas.intent import IntentResult
-from schemas.presentation import DeckSpec, SlidePlan
+from schemas.presentation import DeckSpec, PresentationClassification, SlidePlan
 
 logger = logging.getLogger(__name__)
 
 _DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+_TAXONOMY_PATH = Path(__file__).resolve().parents[1] / "knowledge" / "presentation_taxonomy.json"
+
+
+class _TaxonomyCache:
+    """Simple cache for the parsed presentation taxonomy."""
+
+    def __init__(self) -> None:
+        self._data: dict[str, Any] | None = None
+
+    def load(self) -> dict[str, Any]:
+        if self._data is None:
+            self._data = json.loads(_TAXONOMY_PATH.read_text(encoding="utf-8"))
+        return self._data
+
+
+_taxonomy_cache = _TaxonomyCache()
 
 
 def plan_presentation(user_prompt: str, intent: IntentResult) -> DeckSpec:
@@ -54,7 +82,8 @@ def plan_presentation(user_prompt: str, intent: IntentResult) -> DeckSpec:
     -------
     DeckSpec
         A pure planning artifact describing what deck should be created.
-        If the LLM fails, a deterministic fallback plan is returned.
+        If the LLM fails, a deterministic taxonomy-grounded fallback plan
+        is returned.
     """
     logger.info(
         "planning presentation: user_prompt=%r company=%s function=%s",
@@ -63,18 +92,50 @@ def plan_presentation(user_prompt: str, intent: IntentResult) -> DeckSpec:
         intent.business_function or "Unknown",
     )
 
+    classification = classify_presentation(user_prompt, intent)
+    logger.info(
+        "presentation classified as %s (confidence=%.2f)",
+        classification.presentation_type,
+        classification.confidence,
+    )
+
+    taxonomy = _taxonomy_cache.load()
+    taxonomy_entry = _get_taxonomy_entry(taxonomy, classification)
+
     try:
-        raw_response = _call_presentation_planner_llm(user_prompt, intent)
+        raw_response = _call_presentation_planner_llm(
+            user_prompt, intent, classification, taxonomy_entry
+        )
         payload = json.loads(_strip_json_fence(raw_response))
         if not isinstance(payload, dict):
             raise ValueError("Presentation planner LLM response was not a JSON object.")
         return _to_deck_spec(payload)
     except Exception as exc:  # noqa: BLE001 - fallback keeps planner runnable.
-        logger.warning("presentation planner LLM failed; using fallback: %s", exc)
-        return _fallback_deck(user_prompt, intent)
+        logger.warning("presentation planner LLM failed; using taxonomy fallback: %s", exc)
+        return _taxonomy_fallback_deck(user_prompt, intent, classification, taxonomy_entry)
 
 
-def _call_presentation_planner_llm(user_prompt: str, intent: IntentResult) -> str:
+def _get_taxonomy_entry(
+    taxonomy: dict[str, Any], classification: PresentationClassification
+) -> dict[str, Any]:
+    """Return the taxonomy entry for the classified presentation type."""
+    types = taxonomy.get("presentation_types", {})
+    entry = types.get(classification.presentation_type)
+    if not isinstance(entry, dict):
+        logger.warning(
+            "unknown presentation type %r; falling back to Transformation Proposal",
+            classification.presentation_type,
+        )
+        entry = types.get("Transformation Proposal", {})
+    return entry if isinstance(entry, dict) else {}
+
+
+def _call_presentation_planner_llm(
+    user_prompt: str,
+    intent: IntentResult,
+    classification: PresentationClassification,
+    taxonomy_entry: dict[str, Any],
+) -> str:
     load_dotenv()
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
@@ -86,9 +147,12 @@ def _call_presentation_planner_llm(user_prompt: str, intent: IntentResult) -> st
     except ImportError as exc:
         raise RuntimeError("google-genai is not installed.") from exc
 
+    scaffold = _build_taxonomy_scaffold(taxonomy_entry)
     user_input = {
         "user_prompt": user_prompt,
         "intent": intent.model_dump(mode="json"),
+        "classification": classification.model_dump(mode="json"),
+        "taxonomy_scaffold": scaffold,
     }
 
     client = genai.Client(api_key=api_key)
@@ -106,6 +170,19 @@ def _call_presentation_planner_llm(user_prompt: str, intent: IntentResult) -> st
         ),
     )
     return getattr(response, "text", "") or ""
+
+
+def _build_taxonomy_scaffold(taxonomy_entry: dict[str, Any]) -> dict[str, Any]:
+    """Extract the parts of the taxonomy that guide the planner LLM."""
+    return {
+        "description": taxonomy_entry.get("description", ""),
+        "objective": taxonomy_entry.get("objective", ""),
+        "expected_audience": taxonomy_entry.get("expected_audience", ""),
+        "consulting_narrative": taxonomy_entry.get("consulting_narrative", ""),
+        "default_slide_sequence": taxonomy_entry.get("default_slide_sequence", []),
+        "visualization_preferences": taxonomy_entry.get("visualization_preferences", {}),
+        "optional_slides": taxonomy_entry.get("optional_slides", []),
+    }
 
 
 def _to_deck_spec(payload: dict[str, Any]) -> DeckSpec:
@@ -149,49 +226,118 @@ def _to_deck_spec(payload: dict[str, Any]) -> DeckSpec:
     )
 
 
-def _fallback_deck(user_prompt: str, intent: IntentResult) -> DeckSpec:
+def _taxonomy_fallback_deck(
+    user_prompt: str,
+    intent: IntentResult,
+    classification: PresentationClassification,
+    taxonomy_entry: dict[str, Any],
+) -> DeckSpec:
     """
-    Deterministic fallback deck when the LLM is unavailable.
+    Deterministic fallback deck rooted in the taxonomy scaffold.
 
-    Produces a minimal, defensible consulting narrative without content.
+    Personalizes objective/audience with intent fields and follows the
+    taxonomy's default slide sequence.
     """
-    company = _clean_text(intent.company) or "the client"
-    business_function = _clean_text(intent.business_function) or "the business function"
+    company = _intent_value_or_default(intent.company, "the organization")
+    business_function = _intent_value_or_default(intent.business_function, "")
 
-    slide_roles = [
-        ("Executive Summary", "Frame the recommendation and the decision required."),
-        ("Current State", f"Describe the current state of {business_function} at {company}."),
-        ("Opportunities", "Identify the improvement opportunities for consideration."),
-        ("Future State", "Articulate the target operating model."),
-        ("Roadmap", "Outline the high-level implementation path."),
-        ("Next Steps", "Define immediate actions and decision points."),
-    ]
+    base_objective = _clean_text(taxonomy_entry.get("objective")) or "Align stakeholders."
+    base_audience = _clean_text(taxonomy_entry.get("expected_audience")) or "Senior client leadership"
+    narrative = _clean_text(taxonomy_entry.get("consulting_narrative")) or "Situation → Complication → Resolution"
+
+    objective = _personalize_text(base_objective, company, business_function)
+    audience = _personalize_text(base_audience, company, business_function)
+
+    sequence = taxonomy_entry.get("default_slide_sequence", [])
+    if not isinstance(sequence, list) or not sequence:
+        # Ultimate fallback if taxonomy entry is empty.
+        return _minimal_fallback_deck(classification, company, business_function)
+
+    visualization_preferences = taxonomy_entry.get("visualization_preferences", {}) or {}
+    if not isinstance(visualization_preferences, dict):
+        visualization_preferences = {}
 
     slides: list[SlidePlan] = []
-    dependencies: list[str] = []
-    for index, (role, purpose) in enumerate(slide_roles, start=1):
-        slide_dependencies = list(dependencies)
-        visualization = "Executive Summary" if role == "Executive Summary" else "Process Flow"
+    previous_roles: list[str] = []
+    for index, item in enumerate(sequence, start=1):
+        if not isinstance(item, dict):
+            continue
+        role = _clean_text(item.get("slide_role")) or f"Slide {index}"
+        purpose_template = _clean_text(item.get("purpose")) or f"Communicate the {role} message."
+        purpose = _personalize_text(purpose_template, company, business_function)
+        visualization = _clean_text(item.get("visualization_type")) or visualization_preferences.get(
+            role, "Executive Summary"
+        )
+        required_inputs = _clean_string_list(item.get("required_inputs", []))
+
         slides.append(
             SlidePlan(
                 slide_number=index,
                 slide_role=role,
                 purpose=purpose,
-                required_inputs=[],
-                dependencies=slide_dependencies,
+                required_inputs=required_inputs,
+                dependencies=list(previous_roles),
                 visualization_type=visualization,
             )
         )
-        dependencies.append(role)
+        previous_roles.append(role)
 
     return DeckSpec(
-        presentation_type="Transformation Proposal",
-        objective=f"Align {company} leadership on a prioritized {business_function} transformation path.",
-        audience="Senior client leadership",
-        narrative="Current State → Opportunities → Future State → Roadmap → Next Steps",
+        presentation_type=classification.presentation_type,
+        objective=objective,
+        audience=audience,
+        narrative=narrative,
         estimated_slide_count=len(slides),
         slides=slides,
     )
+
+
+def _minimal_fallback_deck(
+    classification: PresentationClassification, company: str, business_function: str
+) -> DeckSpec:
+    """Minimal ultimate fallback when taxonomy data is missing."""
+    effective_company = company or "the organization"
+    effective_function = business_function or "business"
+    return DeckSpec(
+        presentation_type=classification.presentation_type,
+        objective=f"Align {effective_company} leadership on a prioritized {effective_function} initiative.",
+        audience="Senior client leadership",
+        narrative="Executive Summary → Current State → Future State → Roadmap → Next Steps",
+        estimated_slide_count=1,
+        slides=[
+            SlidePlan(
+                slide_number=1,
+                slide_role="Executive Summary",
+                purpose=f"Frame the recommendation for {effective_company}'s {effective_function} initiative.",
+                required_inputs=[],
+                dependencies=[],
+                visualization_type="Executive Summary",
+            )
+        ],
+    )
+
+
+def _intent_value_or_default(value: str | None, default: str) -> str:
+    """Return the intent value if it is meaningful, otherwise the default."""
+    cleaned = _clean_text(value)
+    if cleaned and cleaned.lower() not in ("unknown", "n/a", ""):
+        return cleaned
+    return default
+
+
+def _personalize_text(text: str, company: str, business_function: str) -> str:
+    """
+    Inject company and business function placeholders into a template string.
+
+    Empty or unknown values are replaced with sensible defaults and any double
+    spaces introduced by empty substitutions are collapsed.
+    """
+    effective_company = company or "the organization"
+    effective_function = business_function or ""
+    personalized = text.replace("{company}", effective_company).replace(
+        "{business_function}", effective_function
+    )
+    return " ".join(personalized.split())
 
 
 def _strip_json_fence(text: str) -> str:
