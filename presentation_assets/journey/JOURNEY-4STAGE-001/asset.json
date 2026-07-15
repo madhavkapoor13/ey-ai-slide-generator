@@ -1,0 +1,136 @@
+{
+  "asset_id": "JOURNEY-4STAGE-001",
+  "schema_version": "1.0.0",
+  "family": "journey",
+  "family_aliases": [
+    "customer_journey",
+    "experience",
+    "touchpoints",
+    "stages"
+  ],
+  "purpose": "Four-stage customer or transformation journey with a stage number, title, and body per stage. Suitable for journey maps, experience maps, stage-gate overviews, and transformation timelines.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "program_team",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "structured",
+    "sequential",
+    "visual",
+    "board-ready",
+    "clean"
+  ],
+  "recommended_for": [
+    "journey",
+    "customer journey",
+    "experience map",
+    "transformation journey",
+    "stages",
+    "touchpoints"
+  ],
+  "avoid_for": [
+    "data-heavy dashboards",
+    "comparisons",
+    "detailed process flows",
+    "long narrative summaries"
+  ],
+  "density": 4,
+  "density_range": [
+    4,
+    4
+  ],
+  "fits_content_kinds": [
+    "journey",
+    "customer_journey",
+    "experience",
+    "stages"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "stage_number",
+      "role": "stage_number",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Stage{N}Number"
+      }
+    },
+    {
+      "id": "stage_title",
+      "role": "stage_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Stage{N}Title"
+      }
+    },
+    {
+      "id": "stage_body",
+      "role": "stage_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 160,
+        "max_lines": 3
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Stage{N}Body"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Stage{N}Group",
+    "placeholders_per_group": [
+      "stage_number",
+      "stage_title",
+      "stage_body"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:00.105103+00:00",
+    "preview_hash": "7f0bab9ce9de2578",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: chart",
+      "unsupported or fragile relationship feature detected: oleObject",
+      "placeholder 'title' missing text-fit constraints"
+    ],
+    "errors": []
+  }
+}

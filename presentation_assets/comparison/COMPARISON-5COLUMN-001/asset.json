@@ -1,0 +1,134 @@
+{
+  "asset_id": "COMPARISON-5COLUMN-001",
+  "schema_version": "1.0.0",
+  "family": "comparison",
+  "family_aliases": [
+    "options",
+    "scenarios",
+    "alternatives"
+  ],
+  "purpose": "Five-column option comparison with a letter marker, title, and body text per column. Suitable for comparing alternatives, scenarios, or strategic options.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "program_team",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "structured",
+    "comparative",
+    "board-ready",
+    "clean"
+  ],
+  "recommended_for": [
+    "comparison",
+    "options analysis",
+    "scenario comparison",
+    "alternatives",
+    "pros and cons",
+    "strategic options"
+  ],
+  "avoid_for": [
+    "timeline visualizations",
+    "detailed process flows",
+    "data-heavy dashboards",
+    "single narrative summaries"
+  ],
+  "density": 5,
+  "density_range": [
+    5,
+    5
+  ],
+  "fits_content_kinds": [
+    "comparison",
+    "options",
+    "scenarios",
+    "alternatives"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "option_letter",
+      "role": "option_marker",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 5,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Option{N}Letter"
+      }
+    },
+    {
+      "id": "option_title",
+      "role": "option_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Option{N}Title"
+      }
+    },
+    {
+      "id": "option_body",
+      "role": "option_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 200,
+        "max_lines": 4
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Option{N}Body"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Option{N}Group",
+    "placeholders_per_group": [
+      "option_letter",
+      "option_title",
+      "option_body"
+    ],
+    "index_token": "{N}",
+    "count": 5
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:49:52.597144+00:00",
+    "preview_hash": "42e06d4d64c2892c",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: chart",
+      "unsupported or fragile relationship feature detected: oleObject",
+      "placeholder 'title' missing text-fit constraints"
+    ],
+    "errors": []
+  }
+}

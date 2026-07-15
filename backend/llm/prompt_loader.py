@@ -22,6 +22,7 @@ _MODULE_FILES: dict[str, str] = {
     "process": "process.md",
     "content": "content.md",
     "slide_content": "slide_content.md",
+    "manifest_content": "manifest_content.md",
     "validation": "validation.md",
     "presentation_planner": "presentation_planner.md",
     "presentation_classifier": "presentation_classifier.md",

@@ -1,0 +1,83 @@
+{
+  "asset_id": "LIST-6ITEM-001",
+  "schema_version": "1.0.0",
+  "family": "list",
+  "family_aliases": [],
+  "purpose": "Six-item vertical list with label and body per item.",
+  "audience_tags": [],
+  "style_tags": [],
+  "recommended_for": [],
+  "avoid_for": [],
+  "density": 6,
+  "density_range": [
+    3,
+    6
+  ],
+  "fits_content_kinds": [
+    "list",
+    "items",
+    "capabilities"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "item_label",
+      "role": "item",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item{N}Label"
+      }
+    },
+    {
+      "id": "item_body",
+      "role": "body",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item{N}Body"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Item{N}Group",
+    "placeholders_per_group": [
+      "item_label",
+      "item_body"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:02.186746+00:00",
+    "preview_hash": "2e697e601038b855",
+    "warnings": [
+      "placeholder 'title' missing text-fit constraints",
+      "placeholder 'item_label' missing text-fit constraints",
+      "placeholder 'item_body' missing text-fit constraints"
+    ],
+    "errors": []
+  }
+}

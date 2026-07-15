@@ -51,6 +51,16 @@ class SlidePlan(BaseModel):
         ...,
         description="Semantic visualization type: Process Flow | Timeline | Comparison | Roadmap | Capability Map | Matrix | Executive Summary",
     )
+    confidence: float = Field(
+        default=0.75,
+        ge=0.0,
+        le=1.0,
+        description="Planner confidence that this role belongs in the deck.",
+    )
+    confidence_reason: str = Field(
+        default="Planned from taxonomy or prompt context.",
+        description="Short explanation of the planner confidence score.",
+    )
 
 
 class PresentationClassification(BaseModel):

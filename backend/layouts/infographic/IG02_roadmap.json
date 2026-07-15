@@ -1,0 +1,123 @@
+{
+  "layout_id": "IG02",
+  "visual_pattern": "IG-02",
+  "category": "infographic",
+  "canvas_type": "widescreen_16_9",
+  "header": {
+    "height": 0.15,
+    "title_area": {
+      "x": 0.05,
+      "y": 0.04,
+      "width": 0.9,
+      "height": 0.06
+    },
+    "subtitle_area": {
+      "x": 0.05,
+      "y": 0.1,
+      "width": 0.9,
+      "height": 0.04
+    }
+  },
+  "body": {
+    "x": 0.05,
+    "y": 0.22,
+    "width": 0.9,
+    "height": 0.55
+  },
+  "footer": {
+    "height": 0.1,
+    "note_area": {
+      "x": 0.05,
+      "y": 0.9,
+      "width": 0.9,
+      "height": 0.05
+    }
+  },
+  "components": [
+    {
+      "component_id": "axis",
+      "type": "axis",
+      "placeholder": "axis",
+      "x": 0.05,
+      "y": 0.45,
+      "width": 0.9,
+      "height": 0.02,
+      "constraints": [
+        "horizontal",
+        "phase_ticks"
+      ]
+    },
+    {
+      "component_id": "phase_1",
+      "type": "bar",
+      "placeholder": "phase_1",
+      "x": 0.06,
+      "y": 0.3,
+      "width": 0.2,
+      "height": 0.28,
+      "constraints": [
+        "phase_label_top",
+        "activities_inside",
+        "milestone_dot"
+      ]
+    },
+    {
+      "component_id": "phase_2",
+      "type": "bar",
+      "placeholder": "phase_2",
+      "x": 0.28,
+      "y": 0.3,
+      "width": 0.2,
+      "height": 0.28,
+      "constraints": [
+        "phase_label_top",
+        "activities_inside",
+        "milestone_dot"
+      ]
+    },
+    {
+      "component_id": "phase_3",
+      "type": "bar",
+      "placeholder": "phase_3",
+      "x": 0.5,
+      "y": 0.3,
+      "width": 0.2,
+      "height": 0.28,
+      "constraints": [
+        "phase_label_top",
+        "activities_inside",
+        "milestone_dot"
+      ]
+    },
+    {
+      "component_id": "phase_4",
+      "type": "bar",
+      "placeholder": "phase_4",
+      "x": 0.72,
+      "y": 0.3,
+      "width": 0.2,
+      "height": 0.28,
+      "constraints": [
+        "phase_label_top",
+        "activities_inside",
+        "milestone_dot"
+      ]
+    }
+  ],
+  "spacing": "equal",
+  "alignment": "left",
+  "color_scheme": "default",
+  "supports_images": false,
+  "supports_percentages": false,
+  "metadata": {
+    "min_items": 3,
+    "max_items": 12,
+    "variant": "phase_roadmap"
+  },
+  "grid": {
+    "strategy": "row",
+    "gap": 0.02,
+    "margin": 0.02,
+    "max_cell_height": 0.28
+  }
+}

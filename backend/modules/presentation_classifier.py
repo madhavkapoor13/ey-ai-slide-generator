@@ -25,12 +25,9 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import re
 from pathlib import Path
 from typing import Any
-
-from dotenv import load_dotenv
 
 from backend.llm.prompt_loader import build_prompt
 from schemas.intent import IntentResult
@@ -40,7 +37,6 @@ logger = logging.getLogger(__name__)
 
 _TAXONOMY_PATH = Path(__file__).resolve().parents[1] / "knowledge" / "presentation_taxonomy.json"
 _CONFIDENCE_THRESHOLD = 0.25
-_LLM_FALLBACK_MODEL = "gemini-2.5-flash"
 
 # Classification signals are intentionally maintained in code, separate from the
 # taxonomy knowledge base. Each type lists keywords and intent signals that
@@ -345,17 +341,10 @@ def _llm_classify(user_prompt: str, intent: IntentResult) -> PresentationClassif
     LLM fallback classifier for ambiguous or low-confidence requests.
 
     Uses the curated taxonomy as the allowed set of presentation types.
+    Routed through the multi-provider LLM router so OpenAI is preferred when
+    configured, with Gemini as a fallback.
     """
-    load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY or GOOGLE_API_KEY is not configured.")
-
-    try:
-        from google import genai
-        from google.genai import types
-    except ImportError as exc:
-        raise RuntimeError("google-genai is not installed.") from exc
+    from backend.llm import router
 
     taxonomy = _taxonomy_cache.load()
     allowed_types = list(taxonomy.get("presentation_types", {}).keys())
@@ -369,22 +358,12 @@ def _llm_classify(user_prompt: str, intent: IntentResult) -> PresentationClassif
         ensure_ascii=True,
     )
 
-    client = genai.Client(api_key=api_key)
     prompt = build_prompt(
         "presentation_classifier",
         user_input=user_input,
         additional_context="Input:",
     )
-    response = client.models.generate_content(
-        model=os.getenv("GEMINI_CONTEXT_MODEL", _LLM_FALLBACK_MODEL),
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0.1,
-            response_mime_type="application/json",
-        ),
-    )
-    raw = getattr(response, "text", "") or ""
-    payload = json.loads(_strip_json_fence(raw))
+    payload = router.generate_json("presentation_classifier", prompt, temperature=0.1)
     if not isinstance(payload, dict):
         raise ValueError("LLM classifier response was not a JSON object.")
 

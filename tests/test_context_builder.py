@@ -60,14 +60,20 @@ def _gemini_payload(company: str) -> dict:
     }
 
 
+def _parsed_payload(company: str) -> dict:
+    """Return the parsed JSON payload that the router path expects."""
+    raw = _gemini_payload(company)
+    return json.loads(raw["text"])
+
+
 class ContextBuilderTests(unittest.TestCase):
     def test_requested_company_contexts_are_structured_and_grounded(self):
         companies = ["Nike", "Microsoft", "Toyota", "EY", "Apple"]
 
         def fake_call(_intent, company, _industry, _business_function):
-            return _gemini_payload(company)
+            return _parsed_payload(company)
 
-        with patch("backend.modules.context._call_gemini_grounded_search", side_effect=fake_call):
+        with patch("backend.modules.context._call_context_llm", side_effect=fake_call):
             for company in companies:
                 with self.subTest(company=company):
                     context = build_context(

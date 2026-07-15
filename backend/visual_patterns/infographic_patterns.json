@@ -1,0 +1,792 @@
+[
+  {
+    "pattern_id": "IG-01",
+    "name": "Timeline",
+    "category": "infographic",
+    "purpose": "Show chronological events along a horizontal or vertical axis.",
+    "typical_use_cases": [
+      "Project history",
+      "Milestones",
+      "Release schedule",
+      "Transformation chronology"
+    ],
+    "min_items": 3,
+    "max_items": 8,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "18-month transformation timeline",
+      "Key program milestones",
+      "Historical performance trajectory"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "orientation": "horizontal | vertical",
+      "events": [
+        {
+          "date": "string",
+          "title": "string",
+          "description": "string"
+        }
+      ]
+    },
+    "constraints": [
+      "Clear chronological sequence",
+      "Each event requires a date or phase label",
+      "3-8 events",
+      "Avoid dense text per event"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "timeline": {
+          "connector_width": 0.017361,
+          "node_gap": 0.14
+        }
+      },
+      "alignment": {
+        "timeline": {
+          "default": "center",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-02",
+    "name": "Roadmap",
+    "category": "infographic",
+    "purpose": "Show a phase-based execution plan with activities, durations, and deliverables.",
+    "typical_use_cases": [
+      "Program roadmap",
+      "Implementation plan",
+      "Workshop schedule",
+      "Release plan"
+    ],
+    "min_items": 3,
+    "max_items": 12,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "12-week transformation roadmap",
+      "Digital vision implementation plan",
+      "Phased capability rollout"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "time_axis": {
+        "unit": "weeks | months | quarters",
+        "start": "string",
+        "end": "string"
+      },
+      "phases": [
+        {
+          "name": "string",
+          "start": "string",
+          "end": "string",
+          "activities": [
+            "string"
+          ],
+          "milestones": [
+            "string (optional)"
+          ],
+          "deliverables": [
+            "string (optional)"
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "Time axis required",
+      "Activities grouped by phase",
+      "Milestones and deliverables optional",
+      "3-12 phases or workstreams"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "timeline": {
+          "connector_width": 0.02,
+          "node_gap": 0.1
+        }
+      },
+      "alignment": {
+        "roadmap": {
+          "default": "left",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-03",
+    "name": "Process Flow",
+    "category": "infographic",
+    "purpose": "Depict a linear sequence of steps or stages.",
+    "typical_use_cases": [
+      "As-is process",
+      "Future-state process",
+      "Approval flow",
+      "Order-to-cash"
+    ],
+    "min_items": 3,
+    "max_items": 8,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Procure-to-pay process",
+      "Record-to-report flow",
+      "Hire-to-retire process"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "steps": [
+        {
+          "id": "string",
+          "label": "string",
+          "description": "string (optional)",
+          "next": [
+            "string (optional step ids)"
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "Sequential left-to-right or top-to-bottom",
+      "3-8 steps",
+      "Each step connects to at least one other step",
+      "No branching beyond simple loops or splits"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "timeline": {
+          "connector_width": 0.017361,
+          "node_gap": 0.12
+        }
+      },
+      "alignment": {
+        "timeline": {
+          "default": "center",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-04",
+    "name": "Matrix",
+    "category": "infographic",
+    "purpose": "Compare items across two dimensions in a grid.",
+    "typical_use_cases": [
+      "Business opportunity vs impact",
+      "Theme vs initiative",
+      "Risk matrix",
+      "Priority matrix"
+    ],
+    "min_items": 4,
+    "max_items": 12,
+    "supports_percentages": true,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Digital theme vs initiative matrix",
+      "Impact vs effort priority matrix",
+      "Risk likelihood vs impact matrix"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "row_axis_label": "string",
+      "column_axis_label": "string",
+      "rows": [
+        {
+          "label": "string",
+          "cells": [
+            {
+              "value": "string",
+              "percentage": "string (optional)"
+            }
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "2-5 rows and 2-5 columns",
+      "Cell content must be concise",
+      "Icons and percentages optional",
+      "Axes labels required"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "matrix": {
+          "padding_x": 0.1,
+          "padding_y": 0.07,
+          "cell_gap": 0.05
+        }
+      },
+      "alignment": {
+        "matrix": {
+          "default": "center",
+          "preferred": "stretch"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-05",
+    "name": "Journey",
+    "category": "infographic",
+    "purpose": "Show customer or process journey across stages with touchpoints and pain points.",
+    "typical_use_cases": [
+      "Customer journey",
+      "Employee journey",
+      "Digital journey",
+      "Patient journey"
+    ],
+    "min_items": 4,
+    "max_items": 8,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Customer onboarding journey",
+      "Employee experience journey",
+      "Procure-to-pay user journey"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "stages": [
+        {
+          "name": "string",
+          "touchpoints": [
+            "string"
+          ],
+          "pain_points": [
+            "string (optional)"
+          ],
+          "opportunities": [
+            "string (optional)"
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "Stages must be sequential",
+      "4-8 stages",
+      "Each stage has at least one touchpoint",
+      "Pain points and opportunities optional"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "timeline": {
+          "connector_width": 0.017361,
+          "node_gap": 0.12
+        }
+      },
+      "alignment": {
+        "timeline": {
+          "default": "center",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-06",
+    "name": "Capability Map",
+    "category": "infographic",
+    "purpose": "Group capabilities by domain or function in a hierarchical grid.",
+    "typical_use_cases": [
+      "Operating model capabilities",
+      "Digital capability heatmap",
+      "Functional capability model",
+      "Skills taxonomy"
+    ],
+    "min_items": 6,
+    "max_items": 20,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Finance capability map",
+      "Digital supply chain capabilities",
+      "Data and analytics capability model"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "domains": [
+        {
+          "name": "string",
+          "capabilities": [
+            {
+              "name": "string",
+              "maturity": "string (optional)"
+            }
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "Capabilities grouped by domain",
+      "2-6 domains",
+      "Optional maturity scoring per capability",
+      "6-20 total capabilities"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "matrix": {
+          "padding_x": 0.08,
+          "padding_y": 0.06,
+          "cell_gap": 0.04
+        }
+      },
+      "alignment": {
+        "matrix": {
+          "default": "center",
+          "preferred": "stretch"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-07",
+    "name": "Pyramid",
+    "category": "infographic",
+    "purpose": "Show hierarchical layers from foundation to apex.",
+    "typical_use_cases": [
+      "Maturity model",
+      "Hierarchy of needs",
+      "Strategy stack",
+      "Building-block model"
+    ],
+    "min_items": 3,
+    "max_items": 5,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Data maturity pyramid",
+      "Digital transformation hierarchy",
+      "Analytics capability stack"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "levels": [
+        {
+          "label": "string",
+          "description": "string",
+          "items": [
+            "string (optional)"
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "3-5 layers",
+      "Widest layer at the bottom",
+      "Each layer narrower than the one below",
+      "Foundation-to-apex narrative"
+    ]
+  },
+  {
+    "pattern_id": "IG-08",
+    "name": "Circular Flow",
+    "category": "infographic",
+    "purpose": "Show cyclical relationships or continuous processes.",
+    "typical_use_cases": [
+      "PDCA cycle",
+      "Closed-loop process",
+      "Feedback loop",
+      "Continuous improvement cycle"
+    ],
+    "min_items": 3,
+    "max_items": 8,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Plan-Do-Check-Act cycle",
+      "Customer feedback loop",
+      "Demand-supply loop"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "stages": [
+        {
+          "label": "string",
+          "description": "string"
+        }
+      ]
+    },
+    "constraints": [
+      "Cyclic sequence; arrows connect last stage back to first",
+      "3-8 stages",
+      "Each stage should logically lead to the next"
+    ]
+  },
+  {
+    "pattern_id": "IG-09",
+    "name": "Value Chain",
+    "category": "infographic",
+    "purpose": "Show end-to-end value-adding activities.",
+    "typical_use_cases": [
+      "Supply chain",
+      "Value stream",
+      "Process chain",
+      "End-to-end operating model"
+    ],
+    "min_items": 4,
+    "max_items": 10,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Plan-source-make-deliver value chain",
+      "Customer value chain",
+      "Record-to-report value chain"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "activities": [
+        {
+          "label": "string",
+          "description": "string",
+          "value_add": "string (optional)"
+        }
+      ]
+    },
+    "constraints": [
+      "Linear left-to-right",
+      "Activities connected in sequence",
+      "4-10 activities",
+      "Each activity should represent a value-adding step"
+    ]
+  },
+  {
+    "pattern_id": "IG-10",
+    "name": "Hub and Spoke",
+    "category": "infographic",
+    "purpose": "Show a central concept with related surrounding elements.",
+    "typical_use_cases": [
+      "Ecosystem map",
+      "Central platform with modules",
+      "Core capability with enablers",
+      "Tax technology ecosystem"
+    ],
+    "min_items": 4,
+    "max_items": 8,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Digital core with six enablers",
+      "ERP hub and satellite modules",
+      "Data platform ecosystem"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "center": {
+        "label": "string",
+        "description": "string"
+      },
+      "spokes": [
+        {
+          "label": "string",
+          "description": "string"
+        }
+      ]
+    },
+    "constraints": [
+      "Exactly one central node",
+      "4-8 spokes",
+      "Radial layout",
+      "Spokes should relate directly to the center"
+    ]
+  },
+  {
+    "pattern_id": "IG-11",
+    "name": "Annotated Visual",
+    "category": "infographic",
+    "purpose": "Overlay explanatory callouts on a central image or diagram.",
+    "typical_use_cases": [
+      "Annotated screenshot",
+      "Architecture diagram",
+      "Process illustration",
+      "Hero image with key points"
+    ],
+    "min_items": 2,
+    "max_items": 6,
+    "supports_percentages": true,
+    "supports_images": true,
+    "common_consulting_examples": [
+      "Annotated operating model",
+      "Annotated system diagram",
+      "Hero visual with three callouts"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "image": "string",
+      "annotations": [
+        {
+          "label": "string",
+          "description": "string",
+          "position": "top | bottom | left | right (optional)"
+        }
+      ],
+      "cta": {
+        "text": "string (optional)"
+      }
+    },
+    "constraints": [
+      "Central visual required",
+      "2-6 callouts",
+      "Callouts should point to or describe parts of the visual",
+      "Optional CTA banner"
+    ]
+  },
+  {
+    "pattern_id": "IG-12",
+    "name": "Risk Matrix",
+    "category": "infographic",
+    "purpose": "Assess and compare risks by likelihood and impact with explicit mitigation confidence.",
+    "typical_use_cases": [
+      "Implementation risk assessment",
+      "Project risk register",
+      "Risk heat map",
+      "Risk and mitigation overview"
+    ],
+    "min_items": 3,
+    "max_items": 6,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Top implementation risks for the transformation",
+      "Risk likelihood vs impact matrix",
+      "Risk register with confidence levels"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "risks": [
+        {
+          "title": "string",
+          "description": "string",
+          "assessment": "string",
+          "confidence": "string"
+        }
+      ]
+    },
+    "constraints": [
+      "3-6 risks",
+      "Each risk has a title, description, assessment and confidence",
+      "Assessment and confidence should be short labels"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "matrix": {
+          "padding_x": 0.1,
+          "padding_y": 0.07,
+          "cell_gap": 0.05
+        }
+      },
+      "alignment": {
+        "matrix": {
+          "default": "center",
+          "preferred": "stretch"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-13",
+    "name": "Opportunity Matrix",
+    "category": "infographic",
+    "purpose": "Structure growth opportunities by category with supporting evidence and strategic implications.",
+    "typical_use_cases": [
+      "Market opportunity matrix",
+      "Growth lever assessment",
+      "Business plan validation",
+      "Value creation opportunities"
+    ],
+    "min_items": 3,
+    "max_items": 5,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Market opportunity and growth levers",
+      "Opportunity matrix by strategic category",
+      "Value creation potential assessment"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "categories": [
+        {
+          "label": "string",
+          "indicator": "string",
+          "items": [
+            {
+              "label": "string",
+              "description": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "2-3 categories",
+      "Each category has 3-8 supporting items",
+      "Items should be concise and evidence-based"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "matrix": {
+          "padding_x": 0.08,
+          "padding_y": 0.06,
+          "cell_gap": 0.04
+        }
+      },
+      "alignment": {
+        "matrix": {
+          "default": "left",
+          "preferred": "stretch"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-14",
+    "name": "Benefits List",
+    "category": "infographic",
+    "purpose": "Present a concise list of business benefits or success factors with short explanations.",
+    "typical_use_cases": [
+      "Business benefits overview",
+      "Success factors",
+      "Value drivers",
+      "Key benefits of the transformation"
+    ],
+    "min_items": 4,
+    "max_items": 8,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Six key success factors",
+      "Business benefits of the new operating model",
+      "Transformation value drivers"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "factors": [
+        {
+          "label": "string",
+          "description": "string"
+        }
+      ]
+    },
+    "constraints": [
+      "4-8 factors",
+      "Each factor has a short label and 1-2 sentence description",
+      "Keep descriptions concise to fit the layout"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "list": {
+          "padding": 0.1,
+          "gap": 0.08
+        }
+      },
+      "alignment": {
+        "list": {
+          "default": "left",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "IG-15",
+    "name": "Action Register",
+    "category": "infographic",
+    "purpose": "Track next steps, owners and timing in a structured register format.",
+    "typical_use_cases": [
+      "Next steps register",
+      "Action tracker",
+      "Implementation checklist",
+      "Initiative ownership"
+    ],
+    "min_items": 3,
+    "max_items": 8,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Next steps and owners",
+      "Implementation action register",
+      "Programme initiative tracker"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "actions": [
+        {
+          "priority": "string",
+          "instrument": "string",
+          "next_step": "string",
+          "when": "string",
+          "owner": "string"
+        }
+      ]
+    },
+    "constraints": [
+      "3-8 actions",
+      "Each action has priority, instrument, next step, timing and owner",
+      "Keep text short to fit table cells"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "table": {
+          "padding_x": 0.06,
+          "padding_y": 0.04,
+          "cell_gap": 0.02
+        }
+      },
+      "alignment": {
+        "table": {
+          "default": "left",
+          "preferred": "stretch"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  }
+]

@@ -12,11 +12,8 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import re
 from typing import Any
-
-from dotenv import load_dotenv
 
 from backend.llm.prompt_loader import build_prompt
 from schemas.context import EnterpriseContext
@@ -24,8 +21,6 @@ from schemas.intent import IntentResult
 from schemas.process import ProcessResult
 
 logger = logging.getLogger(__name__)
-
-_DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 
 
 _PROCESS_MAP: dict[str, ProcessResult] = {
@@ -235,8 +230,7 @@ def _identify_process_with_llm(
     business_function: str,
 ) -> ProcessResult:
     try:
-        raw_response = _call_gemini_process_mapper(intent, context, business_function)
-        payload = json.loads(_strip_json_fence(raw_response))
+        payload = _call_process_mapper_llm(intent, context, business_function)
         return _to_process_result(payload)
     except Exception as exc:  # noqa: BLE001 - fallback should not break the pipeline.
         logger.warning("process mapper LLM fallback failed: %s", exc)
@@ -249,21 +243,13 @@ def _identify_process_with_llm(
         )
 
 
-def _call_gemini_process_mapper(
+def _call_process_mapper_llm(
     intent: IntentResult,
     context: EnterpriseContext,
     business_function: str,
-) -> str:
-    load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY or GOOGLE_API_KEY is not configured.")
-
-    try:
-        from google import genai
-        from google.genai import types
-    except ImportError as exc:
-        raise RuntimeError("google-genai is not installed.") from exc
+) -> dict[str, Any]:
+    """Call the multi-provider router for the process-mapping LLM fallback."""
+    from backend.llm import router
 
     user_input = {
         "intent": {
@@ -274,27 +260,27 @@ def _call_gemini_process_mapper(
             "raw_title": intent.raw_title,
             "raw_content": intent.raw_content,
         },
-        "enterprise_context": context.model_dump(mode="json"),
+        "enterprise_context": {
+            "company": context.company,
+            "industry": context.industry,
+            "business_function": context.business_function,
+            "company_summary": context.company_summary,
+            "facts": [
+                {"fact_type": fact.type, "text": fact.statement[:300]}
+                for fact in context.facts[:5]
+            ],
+        },
         "allowed_processes": [
             result.process_name for result in _PROCESS_MAP.values()
         ],
     }
 
-    client = genai.Client(api_key=api_key)
     prompt = build_prompt(
         "process",
         user_input=json.dumps(user_input, ensure_ascii=True),
         additional_context="Input:",
     )
-    response = client.models.generate_content(
-        model=os.getenv("GEMINI_CONTEXT_MODEL", _DEFAULT_GEMINI_MODEL),
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0,
-            response_mime_type="application/json",
-        ),
-    )
-    return getattr(response, "text", "") or ""
+    return router.generate_json("process_mapper", prompt, temperature=0.0)
 
 
 def _to_process_result(payload: dict[str, Any]) -> ProcessResult:

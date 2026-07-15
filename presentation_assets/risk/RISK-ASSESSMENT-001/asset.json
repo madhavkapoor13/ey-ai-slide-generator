@@ -1,0 +1,197 @@
+{
+  "asset_id": "RISK-ASSESSMENT-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "message_type": "risk",
+  "information_shape": "matrix",
+  "text_fit_policy": "regenerate_then_reject",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:10.399020+00:00",
+    "preview_hash": "5588608a5c9b0d55",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: oleObject"
+    ],
+    "errors": []
+  },
+  "family": "risk",
+  "family_aliases": [],
+  "purpose": "Risk assessment matrix with risk title, description, assessment and confidence per row.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "program_team",
+    "risk_committee"
+  ],
+  "style_tags": [
+    "structured",
+    "matrix",
+    "board-ready",
+    "analytical"
+  ],
+  "recommended_for": [
+    "risk assessment",
+    "risk matrix",
+    "implementation risks",
+    "mitigation"
+  ],
+  "avoid_for": [
+    "simple lists",
+    "timeline",
+    "process flows",
+    "kpi dashboards"
+  ],
+  "density": 4,
+  "density_range": [
+    3,
+    4
+  ],
+  "fits_content_kinds": [
+    "risk",
+    "assessment",
+    "matrix"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "header_findings",
+      "role": "header_findings",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 35,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "HeaderFindings"
+      }
+    },
+    {
+      "id": "header_assessment",
+      "role": "header_assessment",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 35,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "HeaderAssessment"
+      }
+    },
+    {
+      "id": "header_confidence",
+      "role": "header_confidence",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 35,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "HeaderConfidence"
+      }
+    },
+    {
+      "id": "risk_title",
+      "role": "risk_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 50,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Risk{N}Title"
+      }
+    },
+    {
+      "id": "risk_description",
+      "role": "risk_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 220,
+        "max_lines": 3
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Risk{N}Description"
+      }
+    },
+    {
+      "id": "risk_assessment",
+      "role": "risk_assessment",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Risk{N}Assessment"
+      }
+    },
+    {
+      "id": "risk_confidence",
+      "role": "risk_confidence",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Risk{N}Confidence"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Risk{N}Group",
+    "placeholders_per_group": [
+      "risk_title",
+      "risk_description",
+      "risk_assessment",
+      "risk_confidence"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  }
+}

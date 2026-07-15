@@ -1,0 +1,116 @@
+{
+  "asset_id": "PROCESS-6STEP-001",
+  "schema_version": "1.0.0",
+  "family": "process",
+  "family_aliases": [
+    "workflow",
+    "steps",
+    "flow"
+  ],
+  "purpose": "Six-step diagonal process flow with numbered markers and labels. Suitable for workflows, procedures, stage-gate processes, and current-state overviews.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "program_team",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "structured",
+    "sequential",
+    "board-ready",
+    "clean"
+  ],
+  "recommended_for": [
+    "process",
+    "workflow",
+    "steps",
+    "stage gate",
+    "current state",
+    "procedure"
+  ],
+  "avoid_for": [
+    "data-heavy dashboards",
+    "comparisons",
+    "timeline visualizations",
+    "long narrative summaries"
+  ],
+  "density": 6,
+  "density_range": [
+    6,
+    6
+  ],
+  "fits_content_kinds": [
+    "process",
+    "workflow",
+    "steps"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "step_bubble",
+      "role": "step_number",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Step{N}Bubble"
+      }
+    },
+    {
+      "id": "step_label",
+      "role": "step_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Step{N}Label"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Step{N}Group",
+    "placeholders_per_group": [
+      "step_bubble",
+      "step_label"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:10.069232+00:00",
+    "preview_hash": "65635463cb032f86",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: chart",
+      "unsupported or fragile relationship feature detected: oleObject",
+      "placeholder 'title' missing text-fit constraints"
+    ],
+    "errors": []
+  }
+}

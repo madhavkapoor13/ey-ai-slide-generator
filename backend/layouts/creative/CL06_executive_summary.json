@@ -1,0 +1,99 @@
+{
+  "layout_id": "CL06",
+  "visual_pattern": "CL-06",
+  "category": "creative_listing",
+  "canvas_type": "widescreen_16_9",
+  "header": {
+    "height": 0.15,
+    "title_area": {
+      "x": 0.05,
+      "y": 0.04,
+      "width": 0.9,
+      "height": 0.06
+    },
+    "subtitle_area": {
+      "x": 0.05,
+      "y": 0.1,
+      "width": 0.9,
+      "height": 0.04
+    }
+  },
+  "body": {
+    "x": 0.05,
+    "y": 0.18,
+    "width": 0.9,
+    "height": 0.62
+  },
+  "footer": {
+    "height": 0.1,
+    "note_area": {
+      "x": 0.05,
+      "y": 0.9,
+      "width": 0.9,
+      "height": 0.05
+    }
+  },
+  "components": [
+    {
+      "component_id": "card_1",
+      "type": "executive_card",
+      "placeholder": "card_1",
+      "x": 0.07,
+      "y": 0.22,
+      "width": 0.28,
+      "height": 0.54,
+      "constraints": [
+        "title_bold",
+        "icon_top",
+        "max_4_lines",
+        "stat_optional"
+      ]
+    },
+    {
+      "component_id": "card_2",
+      "type": "executive_card",
+      "placeholder": "card_2",
+      "x": 0.36,
+      "y": 0.22,
+      "width": 0.28,
+      "height": 0.54,
+      "constraints": [
+        "title_bold",
+        "icon_top",
+        "max_4_lines",
+        "stat_optional"
+      ]
+    },
+    {
+      "component_id": "card_3",
+      "type": "executive_card",
+      "placeholder": "card_3",
+      "x": 0.65,
+      "y": 0.22,
+      "width": 0.28,
+      "height": 0.54,
+      "constraints": [
+        "title_bold",
+        "icon_top",
+        "max_4_lines",
+        "stat_optional"
+      ]
+    }
+  ],
+  "spacing": "equal",
+  "alignment": "center",
+  "color_scheme": "default",
+  "supports_images": true,
+  "supports_percentages": true,
+  "metadata": {
+    "min_items": 3,
+    "max_items": 5,
+    "variant": "three_takeaways"
+  },
+  "grid": {
+    "strategy": "cards",
+    "gap": 0.03,
+    "margin": 0.02,
+    "max_cell_height": 0.35
+  }
+}

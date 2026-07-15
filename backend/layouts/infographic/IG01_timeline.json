@@ -1,0 +1,127 @@
+{
+  "layout_id": "IG01",
+  "visual_pattern": "IG-01",
+  "category": "infographic",
+  "canvas_type": "widescreen_16_9",
+  "header": {
+    "height": 0.15,
+    "title_area": {
+      "x": 0.05,
+      "y": 0.04,
+      "width": 0.9,
+      "height": 0.06
+    },
+    "subtitle_area": {
+      "x": 0.05,
+      "y": 0.1,
+      "width": 0.9,
+      "height": 0.04
+    }
+  },
+  "body": {
+    "x": 0.05,
+    "y": 0.22,
+    "width": 0.9,
+    "height": 0.55
+  },
+  "footer": {
+    "height": 0.1,
+    "note_area": {
+      "x": 0.05,
+      "y": 0.9,
+      "width": 0.9,
+      "height": 0.05
+    }
+  },
+  "components": [
+    {
+      "component_id": "axis",
+      "type": "axis",
+      "placeholder": "axis",
+      "x": 0.08,
+      "y": 0.45,
+      "width": 0.84,
+      "height": 0.02,
+      "constraints": [
+        "horizontal",
+        "arrow_ends"
+      ]
+    },
+    {
+      "component_id": "event_1",
+      "type": "node",
+      "placeholder": "event_1",
+      "x": 0.08,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.25,
+      "constraints": [
+        "date_top",
+        "title_bold",
+        "icon_top",
+        "max_3_lines"
+      ]
+    },
+    {
+      "component_id": "event_2",
+      "type": "node",
+      "placeholder": "event_2",
+      "x": 0.3,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.25,
+      "constraints": [
+        "date_top",
+        "title_bold",
+        "icon_top",
+        "max_3_lines"
+      ]
+    },
+    {
+      "component_id": "event_3",
+      "type": "node",
+      "placeholder": "event_3",
+      "x": 0.52,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.25,
+      "constraints": [
+        "date_top",
+        "title_bold",
+        "icon_top",
+        "max_3_lines"
+      ]
+    },
+    {
+      "component_id": "event_4",
+      "type": "node",
+      "placeholder": "event_4",
+      "x": 0.74,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.25,
+      "constraints": [
+        "date_top",
+        "title_bold",
+        "icon_top",
+        "max_3_lines"
+      ]
+    }
+  ],
+  "spacing": "equal",
+  "alignment": "center",
+  "color_scheme": "default",
+  "supports_images": false,
+  "supports_percentages": false,
+  "metadata": {
+    "min_items": 3,
+    "max_items": 8,
+    "variant": "horizontal_timeline"
+  },
+  "grid": {
+    "strategy": "row",
+    "gap": 0.02,
+    "margin": 0.02,
+    "max_cell_height": 0.28
+  }
+}

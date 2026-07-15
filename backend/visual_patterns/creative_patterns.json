@@ -1,0 +1,455 @@
+[
+  {
+    "pattern_id": "CL-01",
+    "name": "Four Insight Cards",
+    "category": "creative_listing",
+    "purpose": "Present four related insights, themes, or recommendations with equal visual weight.",
+    "typical_use_cases": [
+      "Trend summaries",
+      "Benefit categories",
+      "Risk themes",
+      "Strategic pillars",
+      "Value drivers"
+    ],
+    "min_items": 4,
+    "max_items": 4,
+    "supports_percentages": true,
+    "supports_images": true,
+    "common_consulting_examples": [
+      "Four megatrends shaping tax",
+      "Four transformation levers",
+      "Four digital capabilities"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "cards": [
+        {
+          "title": "string",
+          "description": "string",
+          "stat": "string (optional)",
+          "image": "string (optional)"
+        }
+      ]
+    },
+    "constraints": [
+      "Exactly four cards",
+      "Equal emphasis across cards",
+      "Card title: 2-5 words",
+      "Description: 1-2 sentences",
+      "If a stat is provided it should be numeric or a percentage"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "card": {
+          "padding": 0.12,
+          "gap": 0.1
+        }
+      },
+      "alignment": {
+        "card_grid": {
+          "default": "center",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "CL-02",
+    "name": "Three Strategy Cards",
+    "category": "creative_listing",
+    "purpose": "Present three strategic options, pillars, or focus areas as distinct vertical cards.",
+    "typical_use_cases": [
+      "Strategic alternatives",
+      "Three-pillar operating model",
+      "Transformation themes",
+      "Strategic priorities"
+    ],
+    "min_items": 3,
+    "max_items": 3,
+    "supports_percentages": true,
+    "supports_images": true,
+    "common_consulting_examples": [
+      "Three tax transformation strategies",
+      "Three digital themes",
+      "People, Process, Technology pillars"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "cards": [
+        {
+          "label": "string (optional header badge)",
+          "title": "string",
+          "description": "string",
+          "image": "string (optional)"
+        }
+      ]
+    },
+    "constraints": [
+      "Exactly three cards",
+      "Vertical or horizontal orientation",
+      "Optional header badge per card",
+      "Each card should express one coherent strategic option"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "card": {
+          "padding": 0.14,
+          "gap": 0.12
+        }
+      },
+      "alignment": {
+        "card_grid": {
+          "default": "center",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "CL-03",
+    "name": "KPI Cards",
+    "category": "creative_listing",
+    "purpose": "Highlight a small set of metrics or KPIs as prominent numeric cards.",
+    "typical_use_cases": [
+      "Executive summary metrics",
+      "Program KPIs",
+      "Performance dashboard",
+      "Transformation benefits"
+    ],
+    "min_items": 3,
+    "max_items": 6,
+    "supports_percentages": true,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "37% cost reduction",
+      "98% on-time delivery",
+      "$12M savings target"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "kpis": [
+        {
+          "label": "string",
+          "value": "string",
+          "unit": "string (optional)",
+          "change": "string (optional)"
+        }
+      ]
+    },
+    "constraints": [
+      "3-6 metrics",
+      "Value must be numeric or a percentage",
+      "Labels should be short (1-4 words)",
+      "Avoid unsupported numeric claims"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "card": {
+          "padding": 0.1,
+          "gap": 0.1
+        }
+      },
+      "alignment": {
+        "kpi_card": {
+          "default": "center"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "CL-04",
+    "name": "Comparison Cards",
+    "category": "creative_listing",
+    "purpose": "Compare two sets of items side-by-side.",
+    "typical_use_cases": [
+      "As-is vs to-be",
+      "Current vs future",
+      "Two scenarios",
+      "Benchmark vs target"
+    ],
+    "min_items": 2,
+    "max_items": 8,
+    "supports_percentages": true,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Before/after process metrics",
+      "Two strategy alternatives",
+      "Baseline vs target KPIs"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "columns": [
+        {
+          "label": "string",
+          "items": [
+            {
+              "title": "string",
+              "value": "string (optional)",
+              "description": "string (optional)"
+            }
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "Exactly two columns",
+      "Items should be paired or balanced across columns",
+      "Short labels; value/percentage optional",
+      "2-8 total items"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "comparison": {
+          "column_gap": 0.12,
+          "item_gap": 0.06
+        }
+      },
+      "alignment": {
+        "comparison": {
+          "default": "left",
+          "preferred": "balanced"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "CL-05",
+    "name": "Two Column Listing",
+    "category": "creative_listing",
+    "purpose": "Simple two-column text listing for compact comparison or grouped points.",
+    "typical_use_cases": [
+      "Pros and cons",
+      "Features and benefits",
+      "Risks vs mitigations",
+      "Drivers and enablers"
+    ],
+    "min_items": 2,
+    "max_items": 10,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Challenges and opportunities",
+      "Internal and external drivers",
+      "Quick wins and strategic bets"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "columns": [
+        {
+          "title": "string",
+          "items": [
+            {
+              "text": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "constraints": [
+      "Text-focused; no heavy graphics",
+      "1-5 items per column",
+      "Each item should be a concise phrase or sentence"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "comparison": {
+          "column_gap": 0.1,
+          "item_gap": 0.04
+        }
+      },
+      "alignment": {
+        "comparison": {
+          "default": "left",
+          "preferred": "balanced"
+        }
+      },
+      "visual_rules": {
+        "density": "compact"
+      }
+    }
+  },
+  {
+    "pattern_id": "CL-06",
+    "name": "Executive Summary Cards",
+    "category": "creative_listing",
+    "purpose": "Distill a deck or section into 3-5 high-level takeaway cards.",
+    "typical_use_cases": [
+      "Executive summary",
+      "Key findings",
+      "Top recommendations",
+      "Decision prompts"
+    ],
+    "min_items": 3,
+    "max_items": 5,
+    "supports_percentages": true,
+    "supports_images": true,
+    "common_consulting_examples": [
+      "Top 3 recommendations",
+      "Five key takeaways",
+      "Executive decision summary"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "cards": [
+        {
+          "title": "string",
+          "description": "string",
+          "stat": "string (optional)"
+        }
+      ]
+    },
+    "constraints": [
+      "3-5 cards",
+      "Each card should express one key message only",
+      "Avoid detailed bullets; keep to 1-2 sentences",
+      "Designed for executive consumption"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "card": {
+          "padding": 0.14,
+          "gap": 0.12
+        }
+      },
+      "alignment": {
+        "card_grid": {
+          "default": "center",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "comfortable"
+      }
+    }
+  },
+  {
+    "pattern_id": "CL-07",
+    "name": "Icon Grid",
+    "category": "creative_listing",
+    "purpose": "Display 6-9 items in a uniform grid using icons for quick scanning.",
+    "typical_use_cases": [
+      "Capability lists",
+      "Service offerings",
+      "Tool portfolios",
+      "Transformation themes"
+    ],
+    "min_items": 4,
+    "max_items": 9,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Nine digital capabilities",
+      "Six service lines",
+      "Eight transformation themes"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "items": [
+        {
+          "title": "string",
+          "description": "string (optional)"
+        }
+      ]
+    },
+    "constraints": [
+      "Grid layout (2-3 columns)",
+      "All items require an icon",
+      "Equal card sizing",
+      "4-9 items"
+    ]
+  },
+  {
+    "pattern_id": "CL-08",
+    "name": "Image Grid",
+    "category": "creative_listing",
+    "purpose": "Show 4-6 visual cards with images/photos and short captions.",
+    "typical_use_cases": [
+      "Use-case gallery",
+      "Initiative highlights",
+      "Stakeholder visuals",
+      "Case-study snapshots"
+    ],
+    "min_items": 4,
+    "max_items": 6,
+    "supports_percentages": false,
+    "supports_images": true,
+    "common_consulting_examples": [
+      "Six digital initiatives",
+      "Four customer use cases",
+      "Five transformation workstreams"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "cards": [
+        {
+          "image": "string",
+          "caption": "string",
+          "description": "string (optional)"
+        }
+      ]
+    },
+    "constraints": [
+      "Images are required for every card",
+      "Captions should be 2-5 words",
+      "2-3 column grid",
+      "4-6 cards"
+    ]
+  },
+  {
+    "pattern_id": "SECTION-DIVIDER",
+    "name": "Section Divider",
+    "category": "creative_listing",
+    "purpose": "Break between major narrative sections with a centered section title.",
+    "typical_use_cases": [
+      "Major section transitions",
+      "Part breaks in multi-act decks"
+    ],
+    "min_items": 1,
+    "max_items": 1,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Part 2: Future State",
+      "Section: Implementation Approach"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "section_title": "string"
+    },
+    "constraints": [
+      "Single centered label",
+      "No body bullets or data"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "label": {
+          "alignment": "center"
+        }
+      },
+      "visual_rules": {
+        "density": "minimal"
+      }
+    }
+  }
+]

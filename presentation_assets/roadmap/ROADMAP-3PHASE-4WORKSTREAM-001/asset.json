@@ -1,0 +1,459 @@
+{
+  "asset_id": "ROADMAP-3PHASE-4WORKSTREAM-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "message_type": "roadmap",
+  "information_shape": "sequence",
+  "text_fit_policy": "regenerate_then_reject",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:10.467481+00:00",
+    "preview_hash": "6b6dbac4e9e9f6ec",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: oleObject"
+    ],
+    "errors": []
+  },
+  "family": "roadmap",
+  "family_aliases": [],
+  "purpose": "Three-phase roadmap with four workstreams, durations and phase results.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "program_team"
+  ],
+  "style_tags": [
+    "structured",
+    "roadmap",
+    "phased",
+    "board-ready"
+  ],
+  "recommended_for": [
+    "roadmap",
+    "implementation roadmap",
+    "phase plan",
+    "workstream plan"
+  ],
+  "avoid_for": [
+    "simple lists",
+    "data-heavy dashboards",
+    "risk matrix",
+    "process flows"
+  ],
+  "density": 5,
+  "density_range": [
+    3,
+    5
+  ],
+  "fits_content_kinds": [
+    "roadmap",
+    "phases",
+    "workstreams",
+    "milestones"
+  ],
+  "supports_images": true,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "phase_1_title",
+      "role": "phase_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase1Title"
+      }
+    },
+    {
+      "id": "phase_2_title",
+      "role": "phase_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase2Title"
+      }
+    },
+    {
+      "id": "phase_3_title",
+      "role": "phase_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase3Title"
+      }
+    },
+    {
+      "id": "phase_1_roman",
+      "role": "phase_roman",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase1Roman"
+      }
+    },
+    {
+      "id": "phase_2_roman",
+      "role": "phase_roman",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase2Roman"
+      }
+    },
+    {
+      "id": "phase_3_roman",
+      "role": "phase_roman",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase3Roman"
+      }
+    },
+    {
+      "id": "phase_1_duration",
+      "role": "phase_duration",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase1Duration"
+      }
+    },
+    {
+      "id": "phase_2_duration",
+      "role": "phase_duration",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase2Duration"
+      }
+    },
+    {
+      "id": "phase_1_result",
+      "role": "phase_result",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase1Result"
+      }
+    },
+    {
+      "id": "phase_2_result",
+      "role": "phase_result",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase2Result"
+      }
+    },
+    {
+      "id": "phase_3_result",
+      "role": "phase_result",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Phase3Result"
+      }
+    },
+    {
+      "id": "phase_block_1",
+      "role": "phase_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 300,
+        "max_lines": 6
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "PhaseBlock1"
+      }
+    },
+    {
+      "id": "phase_block_2",
+      "role": "phase_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 300,
+        "max_lines": 6
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "PhaseBlock2"
+      }
+    },
+    {
+      "id": "phase_block_3",
+      "role": "phase_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 300,
+        "max_lines": 6
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "PhaseBlock3"
+      }
+    },
+    {
+      "id": "phase_block_4",
+      "role": "phase_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 300,
+        "max_lines": 6
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "PhaseBlock4"
+      }
+    },
+    {
+      "id": "phase_block_5",
+      "role": "phase_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 300,
+        "max_lines": 6
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "PhaseBlock5"
+      }
+    },
+    {
+      "id": "workstream_1_label",
+      "role": "workstream_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream1Label"
+      }
+    },
+    {
+      "id": "workstream_1_number",
+      "role": "workstream_number",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream1Number"
+      }
+    },
+    {
+      "id": "workstream_2_label",
+      "role": "workstream_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream2Label"
+      }
+    },
+    {
+      "id": "workstream_2_number",
+      "role": "workstream_number",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream2Number"
+      }
+    },
+    {
+      "id": "workstream_3_label",
+      "role": "workstream_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream3Label"
+      }
+    },
+    {
+      "id": "workstream_3_number",
+      "role": "workstream_number",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream3Number"
+      }
+    },
+    {
+      "id": "workstream_4_label",
+      "role": "workstream_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream4Label"
+      }
+    },
+    {
+      "id": "workstream_4_number",
+      "role": "workstream_number",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Workstream4Number"
+      }
+    }
+  ],
+  "repeating": null
+}

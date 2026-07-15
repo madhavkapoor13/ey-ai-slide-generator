@@ -1,0 +1,134 @@
+{
+  "asset_id": "KPI-MATURITY-001",
+  "schema_version": "1.0.0",
+  "family": "kpi",
+  "family_aliases": [
+    "scorecard",
+    "dashboard",
+    "metrics"
+  ],
+  "purpose": "Four-stage maturity or progress KPI visual with percentage values and supporting labels arranged along a diagonal bar.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "program_team",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "structured",
+    "data-driven",
+    "board-ready",
+    "clean"
+  ],
+  "recommended_for": [
+    "kpi",
+    "maturity assessment",
+    "progress tracking",
+    "scorecard",
+    "metrics dashboard",
+    "performance indicators"
+  ],
+  "avoid_for": [
+    "detailed process flows",
+    "timeline visualizations",
+    "comparisons",
+    "long narrative summaries"
+  ],
+  "density": 4,
+  "density_range": [
+    3,
+    4
+  ],
+  "fits_content_kinds": [
+    "kpi",
+    "metrics",
+    "maturity",
+    "progress",
+    "scorecard"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "summary",
+      "role": "summary",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 200,
+        "max_lines": 3
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Summary"
+      }
+    },
+    {
+      "id": "metric_value",
+      "role": "metric_value",
+      "kind": "metric",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Metric{N}Value"
+      }
+    },
+    {
+      "id": "metric_label",
+      "role": "metric_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Metric{N}Label"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Metric{N}Group",
+    "placeholders_per_group": [
+      "metric_value",
+      "metric_label"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:02.132855+00:00",
+    "preview_hash": "10a436e97a20692f",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: chart",
+      "unsupported or fragile relationship feature detected: oleObject",
+      "placeholder 'title' missing text-fit constraints"
+    ],
+    "errors": []
+  }
+}

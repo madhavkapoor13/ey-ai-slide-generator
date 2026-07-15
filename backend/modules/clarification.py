@@ -15,11 +15,8 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import re
 from typing import Any
-
-from dotenv import load_dotenv
 
 from backend.llm.prompt_loader import build_prompt
 from schemas.clarification import ClarificationQuestion, ClarificationResult
@@ -27,8 +24,6 @@ from schemas.information import InformationResult
 from schemas.presentation import DeckSpec
 
 logger = logging.getLogger(__name__)
-
-_DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 
 _CONTENT_QUESTIONS: dict[str, dict[str, Any]] = {
     "company": {
@@ -214,17 +209,8 @@ def _call_clarification_llm(
     user_prompt: str,
     deck_spec: DeckSpec,
     information_result: InformationResult,
-) -> str:
-    load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY or GOOGLE_API_KEY is not configured.")
-
-    try:
-        from google import genai
-        from google.genai import types
-    except ImportError as exc:
-        raise RuntimeError("google-genai is not installed.") from exc
+) -> dict[str, Any]:
+    from backend.llm import router
 
     user_input = {
         "missing_fields": information_result.missing_fields,
@@ -232,26 +218,9 @@ def _call_clarification_llm(
         "deck_spec": deck_spec.model_dump(mode="json"),
     }
 
-    client = genai.Client(api_key=api_key)
     prompt = build_prompt(
         "clarification",
         user_input=json.dumps(user_input, ensure_ascii=True),
         additional_context="Input:",
     )
-    response = client.models.generate_content(
-        model=os.getenv("GEMINI_CONTEXT_MODEL", _DEFAULT_GEMINI_MODEL),
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0.2,
-            response_mime_type="application/json",
-        ),
-    )
-    return getattr(response, "text", "") or ""
-
-
-def _strip_json_fence(text: str) -> str:
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
-        cleaned = re.sub(r"\s*```$", "", cleaned)
-    return cleaned.strip()
+    return router.generate_json("clarification", prompt, temperature=0.2)

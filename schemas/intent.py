@@ -56,11 +56,19 @@ class IntentResult(BaseModel):
         default=None,
         description="Business function named in the request, if detected.",
     )
+    audience: Optional[str] = Field(
+        default=None,
+        description="Audience named in the request, if detected.",
+    )
+    objective: Optional[str] = Field(
+        default=None,
+        description="Objective or topic named in the request, if detected.",
+    )
     confidence: float = Field(
         default=0.0,
         ge=0.0,
         le=1.0,
-        description="Confidence score for the slide_type classification (0.0–1.0).",
+        description="Confidence score for the overall intent extraction (0.0–1.0).",
     )
     metadata: dict[str, Any] = Field(
         default_factory=dict,

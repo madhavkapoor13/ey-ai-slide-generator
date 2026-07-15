@@ -1,12 +1,279 @@
-import json
 import unittest
 from unittest.mock import patch
 
-from backend.modules.presentation_planner import plan_presentation
+from backend.modules.presentation_planner import (
+    _extract_enumerated_topics,
+    _reconcile_enumerated_slides,
+    plan_presentation,
+)
 from schemas.intent import IntentResult
+from schemas.presentation import DeckSpec, SlidePlan
 
 
 class PresentationPlannerTests(unittest.TestCase):
+    def test_enumerated_topics_extracted_from_include_clause(self):
+        prompt = (
+            "Create a consulting presentation for Microsoft's AI Procurement "
+            "Transformation initiative. The audience is the Board of Directors. "
+            "Include an Executive Summary, current procurement challenges, "
+            "future-state operating model, key business benefits, AI use cases, "
+            "implementation roadmap, transformation timeline, implementation "
+            "risks, KPIs for success, and next steps."
+        )
+        topics = _extract_enumerated_topics(prompt)
+        self.assertIn("Executive Summary", topics)
+        self.assertIn("current procurement challenges", topics)
+        self.assertIn("AI use cases", topics)
+        self.assertIn("KPIs for success", topics)
+        self.assertEqual(len(topics), 10)
+
+    def test_reconcile_appends_missing_enumerated_topics(self):
+        # LLM omitted AI Use Cases, Transformation Timeline, and KPIs for
+        # Success — the exact defect seen in Presentation4.pptx.
+        incomplete = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o",
+            audience="a",
+            narrative="n",
+            estimated_slide_count=8,
+            slides=[
+                SlidePlan(slide_number=i + 1, slide_role=role, purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary")
+                for i, role in enumerate([
+                    "Executive Summary", "Current State", "Opportunities",
+                    "Future State", "Business Benefits", "Roadmap",
+                    "Implementation Risks", "Next Steps",
+                ])
+            ],
+        )
+        prompt = (
+            "Include an Executive Summary, current procurement challenges, "
+            "future-state operating model, key business benefits, AI use cases, "
+            "implementation roadmap, transformation timeline, implementation "
+            "risks, KPIs for success, and next steps."
+        )
+        reconciled = _reconcile_enumerated_slides(prompt, incomplete)
+        roles = [s.slide_role for s in reconciled.slides]
+        self.assertIn("AI Use Cases", roles)
+        self.assertIn("Transformation Timeline", roles)
+        self.assertIn("KPIs for Success", roles)
+        self.assertEqual(reconciled.estimated_slide_count, len(reconciled.slides))
+        self.assertEqual(reconciled.estimated_slide_count, 11)
+
+    def test_reconcile_noop_when_all_topics_present(self):
+        complete = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o", audience="a", narrative="n",
+            estimated_slide_count=8, slides=[
+                SlidePlan(slide_number=i + 1, slide_role=role, purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary")
+                for i, role in enumerate([
+                    "Executive Summary", "Current State", "Future State",
+                    "Business Benefits", "AI Use Cases", "Roadmap",
+                    "Implementation Risks", "Next Steps",
+                ])
+            ],
+        )
+        prompt = "Include an Executive Summary, current state, and next steps."
+        reconciled = _reconcile_enumerated_slides(prompt, complete)
+        self.assertEqual(len(reconciled.slides), len(complete.slides))
+
+    def test_reconcile_noop_when_no_enumeration(self):
+        deck = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o", audience="a", narrative="n",
+            estimated_slide_count=1, slides=[
+                SlidePlan(slide_number=1, slide_role="Executive Summary", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary")
+            ],
+        )
+        reconciled = _reconcile_enumerated_slides("Build a deck summary.", deck)
+        self.assertEqual(len(reconciled.slides), 1)
+
+    def test_reconcile_orders_slides_to_enumerated_sequence(self):
+        # LLM returns slides out of order; reconciliation must reorder them.
+        out_of_order = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o", audience="a", narrative="n",
+            estimated_slide_count=4,
+            slides=[
+                SlidePlan(slide_number=2, slide_role="Current State", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Process Flow"),
+                SlidePlan(slide_number=4, slide_role="Next Steps", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+                SlidePlan(slide_number=3, slide_role="Future State", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Capability Map"),
+                SlidePlan(slide_number=1, slide_role="Executive Summary", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+            ],
+        )
+        prompt = (
+            "Include an Executive Summary, current state, future state, and next steps."
+        )
+        reconciled = _reconcile_enumerated_slides(prompt, out_of_order)
+        roles = [s.slide_role for s in reconciled.slides]
+        self.assertEqual(roles, ["Executive Summary", "Current State", "Future State", "Next Steps"])
+
+    def test_microsoft_procurement_prompt_gets_distinct_board_deck_roles(self):
+        incomplete = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o",
+            audience="Board of Directors",
+            narrative="n",
+            estimated_slide_count=4,
+            slides=[
+                SlidePlan(slide_number=1, slide_role="Executive Summary", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+                SlidePlan(slide_number=2, slide_role="Transformation Overview", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+                SlidePlan(slide_number=3, slide_role="Roadmap", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Roadmap"),
+                SlidePlan(slide_number=4, slide_role="KPIs", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="KPI Dashboard"),
+            ],
+        )
+        prompt = (
+            "Create a consulting presentation for Microsoft's AI Procurement Transformation initiative. "
+            "The audience is the Board of Directors. Include an Executive Summary, current procurement "
+            "process, future-state operating model, key business benefits, AI use cases, implementation "
+            "roadmap, KPIs for success, implementation risks, and next steps."
+        )
+
+        reconciled = _reconcile_enumerated_slides(prompt, incomplete)
+
+        roles = [s.slide_role for s in reconciled.slides]
+        self.assertEqual(
+            roles,
+            [
+                "Executive Summary",
+                "Current Procurement Process",
+                "Future-State Operating Model",
+                "Business Benefits",
+                "AI Use Cases",
+                "Implementation Roadmap",
+                "KPIs for Success",
+                "Implementation Risks",
+                "Next Steps",
+            ],
+        )
+        self.assertEqual(len(roles), len(set(roles)))
+        visualizations = {s.slide_role: s.visualization_type for s in reconciled.slides}
+        self.assertEqual(visualizations["Current Procurement Process"], "Process Flow")
+        self.assertEqual(visualizations["Future-State Operating Model"], "Operating Model")
+        self.assertEqual(visualizations["AI Use Cases"], "Use Case Portfolio")
+        self.assertEqual(visualizations["Implementation Risks"], "Risk Matrix")
+
+    def test_transformation_proposal_uses_story_template_without_client_hardcoding(self):
+        user_prompt = "Create a transformation proposal for Unilever HR."
+        intent = IntentResult(
+            slide_type="operating_model",
+            raw_title="HR Transformation",
+            raw_content=user_prompt,
+            company="Unilever",
+            industry="Consumer Goods",
+            business_function="Human Resources",
+        )
+        llm_payload = {
+            "presentation_type": "Transformation Proposal",
+            "objective": "Align leadership on HR transformation.",
+            "audience": "Executive leadership",
+            "narrative": "Short draft narrative",
+            "estimated_slide_count": 3,
+            "slides": [
+                {
+                    "slide_number": 1,
+                    "slide_role": "Executive Summary",
+                    "purpose": "Frame the recommendation.",
+                    "required_inputs": [],
+                    "dependencies": [],
+                    "visualization_type": "Executive Summary",
+                },
+                {
+                    "slide_number": 2,
+                    "slide_role": "Current State",
+                    "purpose": "Describe the current HR model.",
+                    "required_inputs": [],
+                    "dependencies": ["Executive Summary"],
+                    "visualization_type": "Process Flow",
+                },
+                {
+                    "slide_number": 3,
+                    "slide_role": "Roadmap",
+                    "purpose": "Sequence the implementation.",
+                    "required_inputs": [],
+                    "dependencies": ["Current State"],
+                    "visualization_type": "Roadmap",
+                },
+            ],
+        }
+
+        with patch(
+            "backend.modules.presentation_planner._call_presentation_planner_llm",
+            return_value=llm_payload,
+        ):
+            deck = plan_presentation(user_prompt, intent)
+
+        roles = [slide.slide_role for slide in deck.slides]
+        self.assertEqual(
+            roles,
+            [
+                "Executive Summary",
+                "Current State",
+                "Case for Change",
+                "Future State",
+                "Capabilities / Use Cases",
+                "Business Benefits",
+                "Roadmap",
+                "KPIs for Success",
+                "Risks & Mitigations",
+                "Next Steps / Decisions",
+            ],
+        )
+        self.assertTrue(all(slide.confidence > 0 for slide in deck.slides))
+        self.assertIn("Executive Summary -> Current State", deck.narrative)
+
+    def test_reconcile_dedups_duplicate_canonical_roles(self):
+        # LLM emits both an Executive Summary and a "Transformation Overview"
+        # (same canonical bucket). The duplicate should be dropped.
+        duplicate = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o", audience="a", narrative="n",
+            estimated_slide_count=3,
+            slides=[
+                SlidePlan(slide_number=1, slide_role="Executive Summary", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+                SlidePlan(slide_number=2, slide_role="Transformation Overview", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+                SlidePlan(slide_number=3, slide_role="Current State", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Process Flow"),
+            ],
+        )
+        prompt = "Include an Executive Summary, current state, and next steps."
+        reconciled = _reconcile_enumerated_slides(prompt, duplicate)
+        roles = [s.slide_role for s in reconciled.slides]
+        self.assertEqual(roles, ["Executive Summary", "Current State", "Next Steps"])
+
+    def test_reconcile_places_distinct_extras_after_nearest_neighbor(self):
+        # A genuinely distinct extra slide (e.g. "Change Management") with no
+        # enumerated match is kept and appended after enumerated slides.
+        with_extra = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o", audience="a", narrative="n",
+            estimated_slide_count=3,
+            slides=[
+                SlidePlan(slide_number=1, slide_role="Executive Summary", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+                SlidePlan(slide_number=2, slide_role="Change Management", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Executive Summary"),
+                SlidePlan(slide_number=3, slide_role="Current State", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Process Flow"),
+            ],
+        )
+        prompt = "Include an Executive Summary, current state, and next steps."
+        reconciled = _reconcile_enumerated_slides(prompt, with_extra)
+        roles = [s.slide_role for s in reconciled.slides]
+        self.assertEqual(roles, ["Executive Summary", "Current State", "Next Steps", "Change Management"])
+
     def test_procurement_transformation_proposal_for_toyota(self):
         user_prompt = "Build a procurement transformation proposal for Toyota."
         intent = IntentResult(
@@ -20,7 +287,7 @@ class PresentationPlannerTests(unittest.TestCase):
 
         with patch(
             "backend.modules.presentation_planner._call_presentation_planner_llm",
-            return_value=json.dumps(_toyota_procurement_deck()),
+            return_value=_toyota_procurement_deck(),
         ):
             deck = plan_presentation(user_prompt, intent)
 
@@ -45,7 +312,7 @@ class PresentationPlannerTests(unittest.TestCase):
 
         with patch(
             "backend.modules.presentation_planner._call_presentation_planner_llm",
-            return_value=json.dumps(_coca_cola_ai_strategy_deck()),
+            return_value=_coca_cola_ai_strategy_deck(),
         ):
             deck = plan_presentation(user_prompt, intent)
 
@@ -70,7 +337,7 @@ class PresentationPlannerTests(unittest.TestCase):
 
         with patch(
             "backend.modules.presentation_planner._call_presentation_planner_llm",
-            return_value=json.dumps(_hr_board_update_deck()),
+            return_value=_hr_board_update_deck(),
         ):
             deck = plan_presentation(user_prompt, intent)
 
@@ -97,7 +364,7 @@ class PresentationPlannerTests(unittest.TestCase):
 
         with patch(
             "backend.modules.presentation_planner._call_presentation_planner_llm",
-            return_value=json.dumps(_supply_chain_transformation_deck()),
+            return_value=_supply_chain_transformation_deck(),
         ):
             deck = plan_presentation(user_prompt, intent)
 
@@ -119,7 +386,7 @@ class PresentationPlannerTests(unittest.TestCase):
 
         with patch(
             "backend.modules.presentation_planner._call_presentation_planner_llm",
-            return_value=json.dumps(_digital_transformation_roadmap_deck()),
+            return_value=_digital_transformation_roadmap_deck(),
         ):
             deck = plan_presentation(user_prompt, intent)
 

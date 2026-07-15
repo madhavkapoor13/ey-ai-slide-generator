@@ -1,0 +1,80 @@
+{
+  "name": "ey_blue",
+  "version": "1.0",
+  "color_palette": {
+    "colors": {
+      "ey_yellow": "#FFE600",
+      "ink": "#1F2328",
+      "dark": "#1F2328",
+      "charcoal": "#2D3034",
+      "grey": "#656D76",
+      "mid_grey": "#979EA6",
+      "light_grey": "#F7F8FA",
+      "panel_grey": "#F2F4F7",
+      "border": "#D8DEE4",
+      "connector": "#8A9199",
+      "red": "#BA2D2D",
+      "light_red": "#FDF1F1",
+      "green": "#239655",
+      "light_green": "#EBF8F0",
+      "background": "#FFFFFF",
+      "white": "#FFFFFF",
+      "accent": "#FFE600",
+      "primary": "#FFE600"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "body": "Aptos",
+      "title": "Arial"
+    },
+    "sizes": {
+      "title": 24.0,
+      "subtitle": 12.0,
+      "description": 9.5,
+      "body": 10.5,
+      "small": 10.0,
+      "callout_title": 7.5,
+      "callout_body": 8.5,
+      "footer": 7.5,
+      "kpi_value": 24.0,
+      "card_title": 14.0,
+      "card_description": 10.5,
+      "card_metric": 16.0,
+      "card_tag": 8.0,
+      "card_highlight": 8.0
+    }
+  },
+  "spacing": {
+    "values": {
+      "left_margin": 0.6,
+      "right_margin": 0.6,
+      "top_margin": 0.36,
+      "content_top": 2.1,
+      "footer_margin": 0.35,
+      "box_min_width": 0.95,
+      "box_max_width": 2.05,
+      "box_base_height": 0.9,
+      "box_max_height": 1.1,
+      "box_min_gap": 0.14,
+      "box_padding_x": 0.1,
+      "box_padding_y": 0.07,
+      "box_border_width": 0.011111,
+      "connector_width": 0.017361,
+      "pain_callout_padding": 0.08,
+      "pain_callout_margin_y": 0.05,
+      "pain_callout_border_width": 0.013889,
+      "pain_anchor_width": 0.00625,
+      "header_divider_height": 0.008,
+      "footer_rule_height": 0.005,
+      "medium": 0.2,
+      "small": 0.1,
+      "card_padding": 0.12,
+      "card_border_width": 0.011111
+    }
+  },
+  "metadata": {
+    "brand": "EY",
+    "variant": "blue"
+  }
+}

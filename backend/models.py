@@ -16,9 +16,11 @@ separate from Phase 1 to allow independent versioning.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
+
+from schemas.presentation_asset import UserPreferences
 
 
 # ── Phase 2 Request ───────────────────────────────────────────────────────────
@@ -38,10 +40,20 @@ class GenerateV2Request(BaseModel):
         Slide title provided by the user.
     content:
         Slide content / description provided by the user.
+    preferences:
+        Optional explicit style/audience preferences that bias Presentation
+        Asset retrieval. When omitted, the pipeline infers a conservative
+        default from the prompt (audience from IntentResult.audience;
+        style from prompt cues like "board-level", "minimal"). Explicit
+        preferences always win; inferred preferences are a fallback only.
     """
 
     title: str = Field(..., description="Slide title provided by the user.")
     content: str = Field(..., description="Slide content or description provided by the user.")
+    preferences: Optional[UserPreferences] = Field(
+        default=None,
+        description="Optional explicit user preferences; overrides inferred defaults.",
+    )
 
 
 # ── Phase 2 Response ──────────────────────────────────────────────────────────

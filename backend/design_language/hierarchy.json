@@ -1,0 +1,57 @@
+{
+  "executive_title": {
+    "font": "title",
+    "size": 24.0,
+    "bold": true
+  },
+  "section_title": {
+    "font": "title",
+    "size": 14.0,
+    "bold": true
+  },
+  "card_title": {
+    "font": "title",
+    "size": 14.0,
+    "bold": true
+  },
+  "body": {
+    "font": "body",
+    "size": 10.5,
+    "bold": false
+  },
+  "caption": {
+    "font": "body",
+    "size": 8.0,
+    "bold": false
+  },
+  "small": {
+    "font": "body",
+    "size": 10.0,
+    "bold": false
+  },
+  "kpi_value": {
+    "font": "body",
+    "size": 24.0,
+    "bold": true
+  },
+  "card_description": {
+    "font": "body",
+    "size": 10.5,
+    "bold": false
+  },
+  "card_metric": {
+    "font": "title",
+    "size": 16.0,
+    "bold": true
+  },
+  "card_tag": {
+    "font": "body",
+    "size": 8.0,
+    "bold": false
+  },
+  "card_highlight": {
+    "font": "body",
+    "size": 8.0,
+    "bold": true
+  }
+}

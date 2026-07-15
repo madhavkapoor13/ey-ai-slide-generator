@@ -62,19 +62,39 @@ def build_context(intent: IntentResult) -> EnterpriseContext:
 
     logger.info("building context: company=%s slide_type=%s", company, intent.slide_type)
 
+    parsed: dict[str, Any] | None = None
+    provider_used = "openai"
+    grounding = "none"
+
+    # Prefer the multi-provider router (OpenAI first) for the context request.
+    # If the router fails, fall back to Gemini's Google Search grounding.
     try:
-        raw_response = _call_gemini_grounded_search(intent, company, requested_industry, business_function)
-        parsed = _parse_json_response(raw_response)
-        context = _to_enterprise_context(parsed, company, requested_industry, business_function)
-    except Exception as exc:  # noqa: BLE001 - context builder degrades to warnings by design.
-        logger.exception("context builder failed for company=%s", company)
-        return EnterpriseContext(
-            company=company,
-            industry=requested_industry or "Unknown",
-            business_function=business_function or "Unknown",
-            warnings=[f"Enterprise context could not be built: {exc}"],
-            enrichment_metadata={"provider": "gemini", "grounding": "google_search"},
+        parsed = _call_context_llm(intent, company, requested_industry, business_function)
+    except Exception as router_exc:  # noqa: BLE001
+        logger.warning(
+            "context builder router path failed for company=%s: %s; falling back to Gemini grounded search",
+            company,
+            router_exc,
         )
+        try:
+            raw_response = _call_gemini_grounded_search(
+                intent, company, requested_industry, business_function
+            )
+            parsed = _parse_json_response(raw_response)
+            provider_used = "gemini"
+            grounding = "google_search"
+        except Exception as gemini_exc:  # noqa: BLE001 - context builder degrades to warnings by design.
+            logger.exception("context builder failed for company=%s", company)
+            return EnterpriseContext(
+                company=company,
+                industry=requested_industry or "Unknown",
+                business_function=business_function or "Unknown",
+                warnings=[f"Enterprise context could not be built: {gemini_exc}"],
+                enrichment_metadata={"provider": provider_used, "grounding": grounding},
+            )
+
+    context = _to_enterprise_context(parsed, company, requested_industry, business_function)
+    context.enrichment_metadata = {"provider": provider_used, "grounding": grounding}
 
     if not context.company_summary or len(context.facts) == 0:
         context.warnings.append(f"Grounded public context for {company} was incomplete.")
@@ -139,6 +159,42 @@ def _call_gemini_grounded_search(
         "citations": _extract_grounding_citations(response),
         "model": model,
     }
+
+
+def _call_context_llm(
+    intent: IntentResult,
+    company: str,
+    requested_industry: str | None,
+    business_function: str | None,
+) -> dict[str, Any]:
+    """Call the multi-provider router for enterprise context building."""
+    from backend.llm import router
+
+    user_input = {
+        "intent": {
+            "company": company,
+            "industry": requested_industry,
+            "business_function": business_function,
+            "slide_type": intent.slide_type,
+            "raw_title": intent.raw_title,
+            "raw_content": intent.raw_content,
+        },
+        "search_preferences": [
+            "official website",
+            "annual reports",
+            "investor relations",
+            "earnings reports",
+            "SEC filings",
+            "reputable public business sources",
+        ],
+    }
+
+    prompt = build_prompt(
+        "context",
+        user_input=json.dumps(user_input, ensure_ascii=True),
+        additional_context="IntentResult:",
+    )
+    return router.generate_json("context_builder", prompt, temperature=0.0)
 
 
 def _parse_json_response(raw_response: dict[str, Any]) -> dict[str, Any]:

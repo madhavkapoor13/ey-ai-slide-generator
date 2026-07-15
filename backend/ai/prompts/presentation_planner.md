@@ -33,7 +33,19 @@ Use the taxonomy scaffold as the narrative foundation. Do not invent a new deck 
    - Add optional slides from the taxonomy when the prompt explicitly calls for them.
    - Remove slides only if the user's request clearly makes them unnecessary.
    - Reorder slides only if the consulting narrative demands it.
-6. Recommend the **minimum number of slides** required to communicate the narrative. Every slide must earn its place.
+6. **Honor explicitly enumerated slide topics.** If the user's prompt explicitly
+   lists slide topics (e.g., a sentence containing "Include an Executive
+   Summary, current procurement challenges, future-state operating model, …,
+   and next steps" or any comma/`and`-separated enumeration of slide-like
+   topics), you MUST include every enumerated topic as its own slide. You may
+   add taxonomy-driven slides around them, but you may not fold, merge, or
+   drop an explicitly enumerated topic. Map each topic to a `slide_role` even
+   if it would conventionally be part of a larger slide. Surface each as its
+   own slide.
+7. Recommend the **minimum number of slides** required to communicate the
+   narrative. Every slide must earn its place. Rule 7 applies only when the
+   user did not explicitly enumerate slide topics; an explicit list is the
+   contract — do not minimize it away.
 7. For each slide, provide:
    - `slide_number`: 1-indexed position.
    - `slide_role`: the consulting role (use taxonomy roles where possible).
@@ -69,6 +81,8 @@ Return a single JSON object matching this schema exactly:
 ## Constraints
 
 - Preserve the consulting narrative from the taxonomy scaffold.
+- If the user prompt explicitly enumerates slide topics, every enumerated
+  topic MUST appear as a separate slide; do not silently merge or drop any.
 - Do not generate slide titles beyond the `slide_role`.
 - Do not generate bullet points, body text, or speaker notes.
 - Do not generate KPIs, metrics, percentages, dollar values, or business activities.

@@ -1,0 +1,85 @@
+{
+  "CL-01": {
+    "spacing": {
+      "card": {
+        "padding": 0.12,
+        "gap": 0.1
+      }
+    },
+    "alignment": {
+      "card_grid": {
+        "default": "center",
+        "preferred": "distributed"
+      }
+    }
+  },
+  "CL-02": {
+    "spacing": {
+      "card": {
+        "padding": 0.14,
+        "gap": 0.12
+      }
+    },
+    "alignment": {
+      "card_grid": {
+        "default": "center",
+        "preferred": "distributed"
+      }
+    }
+  },
+  "CL-03": {
+    "spacing": {
+      "card": {
+        "padding": 0.1,
+        "gap": 0.1
+      }
+    },
+    "alignment": {
+      "kpi_card": {
+        "default": "center"
+      }
+    }
+  },
+  "CL-04": {
+    "spacing": {
+      "comparison": {
+        "column_gap": 0.12,
+        "item_gap": 0.06
+      }
+    },
+    "alignment": {
+      "comparison": {
+        "default": "left",
+        "preferred": "balanced"
+      }
+    }
+  },
+  "CL-05": {
+    "spacing": {
+      "comparison": {
+        "column_gap": 0.1,
+        "item_gap": 0.04
+      }
+    },
+    "alignment": {
+      "comparison": {
+        "default": "left",
+        "preferred": "balanced"
+      }
+    }
+  },
+  "CL-06": {
+    "spacing": {
+      "card": {
+        "padding": 0.14,
+        "gap": 0.12
+      }
+    },
+    "alignment": {
+      "card_grid": {
+        "default": "center",
+        "preferred": "distributed"
+      }
+    }
+  }
+}

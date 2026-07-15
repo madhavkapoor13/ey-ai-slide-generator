@@ -1,0 +1,158 @@
+{
+  "layout_id": "IG03",
+  "visual_pattern": "IG-03",
+  "category": "infographic",
+  "canvas_type": "widescreen_16_9",
+  "header": {
+    "height": 0.15,
+    "title_area": {
+      "x": 0.05,
+      "y": 0.04,
+      "width": 0.9,
+      "height": 0.06
+    },
+    "subtitle_area": {
+      "x": 0.05,
+      "y": 0.1,
+      "width": 0.9,
+      "height": 0.04
+    }
+  },
+  "body": {
+    "x": 0.05,
+    "y": 0.22,
+    "width": 0.9,
+    "height": 0.55
+  },
+  "footer": {
+    "height": 0.1,
+    "note_area": {
+      "x": 0.05,
+      "y": 0.9,
+      "width": 0.9,
+      "height": 0.05
+    }
+  },
+  "components": [
+    {
+      "component_id": "step_1",
+      "type": "node",
+      "placeholder": "step_1",
+      "x": 0.04,
+      "y": 0.35,
+      "width": 0.11,
+      "height": 0.25,
+      "constraints": [
+        "numbered",
+        "label_center",
+        "icon_top",
+        "arrow_right"
+      ]
+    },
+    {
+      "component_id": "step_2",
+      "type": "node",
+      "placeholder": "step_2",
+      "x": 0.18,
+      "y": 0.35,
+      "width": 0.11,
+      "height": 0.25,
+      "constraints": [
+        "numbered",
+        "label_center",
+        "icon_top",
+        "arrow_right"
+      ]
+    },
+    {
+      "component_id": "step_3",
+      "type": "node",
+      "placeholder": "step_3",
+      "x": 0.32,
+      "y": 0.35,
+      "width": 0.11,
+      "height": 0.25,
+      "constraints": [
+        "numbered",
+        "label_center",
+        "icon_top",
+        "arrow_right"
+      ]
+    },
+    {
+      "component_id": "step_4",
+      "type": "node",
+      "placeholder": "step_4",
+      "x": 0.46,
+      "y": 0.35,
+      "width": 0.11,
+      "height": 0.25,
+      "constraints": [
+        "numbered",
+        "label_center",
+        "icon_top",
+        "arrow_right"
+      ]
+    },
+    {
+      "component_id": "step_5",
+      "type": "node",
+      "placeholder": "step_5",
+      "x": 0.6,
+      "y": 0.35,
+      "width": 0.11,
+      "height": 0.25,
+      "constraints": [
+        "numbered",
+        "label_center",
+        "icon_top",
+        "arrow_right"
+      ]
+    },
+    {
+      "component_id": "step_6",
+      "type": "node",
+      "placeholder": "step_6",
+      "x": 0.74,
+      "y": 0.35,
+      "width": 0.11,
+      "height": 0.25,
+      "constraints": [
+        "numbered",
+        "label_center",
+        "icon_top",
+        "arrow_right"
+      ]
+    },
+    {
+      "component_id": "step_7",
+      "type": "node",
+      "placeholder": "step_7",
+      "x": 0.88,
+      "y": 0.35,
+      "width": 0.11,
+      "height": 0.25,
+      "constraints": [
+        "numbered",
+        "label_center",
+        "icon_top"
+      ]
+    }
+  ],
+  "spacing": "equal",
+  "alignment": "center",
+  "color_scheme": "default",
+  "supports_images": false,
+  "supports_percentages": false,
+  "metadata": {
+    "min_items": 3,
+    "max_items": 8,
+    "variant": "linear_flow"
+  },
+  "grid": {
+    "strategy": "row",
+    "gap": 0.02,
+    "margin": 0.02,
+    "max_cell_height": 0.28
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "layout_id": "IG05",
+  "visual_pattern": "IG-05",
+  "category": "infographic",
+  "canvas_type": "widescreen_16_9",
+  "header": {
+    "height": 0.15,
+    "title_area": {
+      "x": 0.05,
+      "y": 0.04,
+      "width": 0.9,
+      "height": 0.06
+    },
+    "subtitle_area": {
+      "x": 0.05,
+      "y": 0.1,
+      "width": 0.9,
+      "height": 0.04
+    }
+  },
+  "body": {
+    "x": 0.05,
+    "y": 0.25,
+    "width": 0.9,
+    "height": 0.55
+  },
+  "footer": {
+    "height": 0.1,
+    "note_area": {
+      "x": 0.05,
+      "y": 0.9,
+      "width": 0.9,
+      "height": 0.05
+    }
+  },
+  "components": [
+    {
+      "component_id": "stage_1",
+      "type": "node",
+      "placeholder": "stage_1",
+      "x": 0.08,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.4,
+      "constraints": [
+        "stage_label_top",
+        "touchpoints_inside",
+        "pain_point_bottom",
+        "icon_top"
+      ]
+    },
+    {
+      "component_id": "stage_2",
+      "type": "node",
+      "placeholder": "stage_2",
+      "x": 0.3,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.4,
+      "constraints": [
+        "stage_label_top",
+        "touchpoints_inside",
+        "pain_point_bottom",
+        "icon_top"
+      ]
+    },
+    {
+      "component_id": "stage_3",
+      "type": "node",
+      "placeholder": "stage_3",
+      "x": 0.52,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.4,
+      "constraints": [
+        "stage_label_top",
+        "touchpoints_inside",
+        "pain_point_bottom",
+        "icon_top"
+      ]
+    },
+    {
+      "component_id": "stage_4",
+      "type": "node",
+      "placeholder": "stage_4",
+      "x": 0.74,
+      "y": 0.3,
+      "width": 0.16,
+      "height": 0.4,
+      "constraints": [
+        "stage_label_top",
+        "touchpoints_inside",
+        "pain_point_bottom",
+        "icon_top"
+      ]
+    },
+    {
+      "component_id": "journey_line",
+      "type": "axis",
+      "placeholder": "journey_line",
+      "x": 0.08,
+      "y": 0.5,
+      "width": 0.84,
+      "height": 0.02,
+      "constraints": [
+        "horizontal",
+        "arrow_right"
+      ]
+    }
+  ],
+  "spacing": "equal",
+  "alignment": "center",
+  "color_scheme": "default",
+  "supports_images": false,
+  "supports_percentages": false,
+  "metadata": {
+    "min_items": 4,
+    "max_items": 8,
+    "variant": "horizontal_journey"
+  },
+  "grid": {
+    "strategy": "row",
+    "gap": 0.02,
+    "margin": 0.02,
+    "max_cell_height": 0.28
+  }
+}

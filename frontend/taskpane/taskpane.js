@@ -50,9 +50,15 @@ async function generateSlide(promptText) {
 
     if (canInsertSlides()) {
       console.log("EY AI Pitch: slide insertion started");
-      await insertPptxIntoCurrentPresentation(blob);
-      console.log("EY AI Pitch: slide insertion complete");
-      setStatus("Generation Complete", "success");
+      try {
+        await insertPptxIntoCurrentPresentation(blob);
+        console.log("EY AI Pitch: slide insertion complete");
+        setStatus("Generation Complete", "success");
+      } catch (insertError) {
+        console.warn("EY AI Pitch: slide insertion failed; falling back to download", insertError);
+        downloadPptx(blob);
+        setStatus(`Slide insertion failed (${formatError(insertError)}); PPTX downloaded`, "error");
+      }
     } else {
       console.warn("EY AI Pitch: PowerPointApi 1.2 unavailable; falling back to download");
       downloadPptx(blob);
@@ -133,9 +139,10 @@ async function insertPptxIntoCurrentPresentation(blob) {
   const base64File = await blobToBase64(blob);
 
   await PowerPoint.run(async (context) => {
-    context.presentation.insertSlidesFromBase64(base64File, {
-      formatting: "KeepSourceFormatting",
-    });
+    // Some Office.js runtimes (especially on Mac) reject the options object or
+    // the InsertSlideFormatting value with InvalidArgument. Calling the method
+    // without options uses the runtime default and is the most compatible path.
+    context.presentation.insertSlidesFromBase64(base64File);
 
     await context.sync();
   });

@@ -10,7 +10,7 @@ not receive raw LLM output or module-internal data structures.
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, Field
 
@@ -54,4 +54,28 @@ class SlideSpec(BaseModel):
     generated_by: str = Field(
         default="orchestrator",
         description="Component that produced this SlideSpec.",
+    )
+    visual_pattern_id: Optional[str] = Field(
+        default=None,
+        description=(
+            "Visual pattern chosen for this slide (e.g. 'CL-06', 'IG-03'). "
+            "Set once during content generation and carried through to the "
+            "renderer so layout selection and content shaping agree."
+        ),
+    )
+    visual_confidence: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Confidence of the carried visual pattern selection.",
+    )
+    asset_id: Optional[str] = Field(
+        default=None,
+        description=(
+            "Presentation Asset chosen for this slide ( Presentation Asset "
+            "Library id, e.g. 'ROADMAP-3PHASE-001'). Set once by the Deck "
+            "Executor's sibling Asset Selector call (after Visual Planner, "
+            "before Content Generator) and carried through to the Populator. "
+            "None for legacy/direct callers; the legacy renderer ignores it."
+        ),
     )

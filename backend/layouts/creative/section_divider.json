@@ -1,0 +1,66 @@
+{
+  "layout_id": "SECTION_DIVIDER",
+  "visual_pattern": "SECTION-DIVIDER",
+  "category": "creative_listing",
+  "canvas_type": "widescreen_16_9",
+  "header": {
+    "height": 0.15,
+    "title_area": {
+      "x": 0.05,
+      "y": 0.04,
+      "width": 0.9,
+      "height": 0.06
+    },
+    "subtitle_area": {
+      "x": 0.05,
+      "y": 0.1,
+      "width": 0.9,
+      "height": 0.04
+    }
+  },
+  "body": {
+    "x": 0.25,
+    "y": 0.3,
+    "width": 0.5,
+    "height": 0.4
+  },
+  "footer": {
+    "height": 0.1,
+    "note_area": {
+      "x": 0.05,
+      "y": 0.9,
+      "width": 0.9,
+      "height": 0.05
+    }
+  },
+  "components": [
+    {
+      "component_id": "section_label",
+      "type": "label",
+      "placeholder": "section_title",
+      "x": 0.25,
+      "y": 0.45,
+      "width": 0.5,
+      "height": 0.1,
+      "constraints": [
+        "center",
+        "large"
+      ]
+    }
+  ],
+  "spacing": "equal",
+  "alignment": "center",
+  "color_scheme": "default",
+  "supports_images": false,
+  "supports_percentages": false,
+  "metadata": {
+    "min_items": 1,
+    "max_items": 1,
+    "variant": "section_divider"
+  },
+  "grid": {
+    "strategy": "single",
+    "gap": 0.0,
+    "margin": 0.0
+  }
+}

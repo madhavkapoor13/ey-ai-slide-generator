@@ -2,13 +2,19 @@ import unittest
 from typing import Optional
 from unittest.mock import MagicMock, patch
 
-from backend.modules.deck_executor import execute_deck
+from backend.modules.deck_executor import (
+    _asset_compatibility_score,
+    _gate_deck_plan,
+    execute_deck,
+)
+from schemas.presentation_asset import AssetManifest, AssetSelection
 from schemas.context import EnterpriseContext
 from schemas.intent import IntentResult
 from schemas.presentation import DeckSpec, SlidePlan
 from schemas.process import ProcessResult
 from schemas.slide_spec import SlideSpec
 from schemas.validation import ValidationResult
+from schemas.visual import VisualBrief, VisualPatternSelection
 
 
 def _intent() -> IntentResult:
@@ -92,7 +98,7 @@ class DeckExecutorTests(unittest.TestCase):
     def test_one_slide_deck(self):
         deck = _deck(["Executive Summary"])
 
-        def fake_generate(intent, context, process_result, slide_plan):
+        def fake_generate(intent, context, process_result, slide_plan, **kwargs):
             return _slide_spec(slide_plan.slide_number, slide_plan.slide_role)
 
         def fake_validate(spec):
@@ -112,7 +118,7 @@ class DeckExecutorTests(unittest.TestCase):
         roles = ["Executive Summary", "Current State", "Opportunities", "Future State", "Roadmap", "Next Steps"]
         deck = _deck(roles)
 
-        def fake_generate(intent, context, process_result, slide_plan):
+        def fake_generate(intent, context, process_result, slide_plan, **kwargs):
             return _slide_spec(slide_plan.slide_number, slide_plan.slide_role)
 
         def fake_validate(spec):
@@ -132,7 +138,7 @@ class DeckExecutorTests(unittest.TestCase):
         roles = [f"Slide {i}" for i in range(1, 11)]
         deck = _deck(roles)
 
-        def fake_generate(intent, context, process_result, slide_plan):
+        def fake_generate(intent, context, process_result, slide_plan, **kwargs):
             return _slide_spec(slide_plan.slide_number, slide_plan.slide_role)
 
         with patch("backend.modules.deck_executor.generate_slide_content", side_effect=fake_generate):
@@ -164,10 +170,126 @@ class DeckExecutorTests(unittest.TestCase):
         mock_generate.assert_not_called()
         mock_validate.assert_not_called()
 
+    def test_deck_plan_gate_drops_duplicate_canonical_roles(self):
+        deck = _deck([
+            "Executive Summary",
+            "AI Procurement Transformation Executive Summary",
+            "KPIs for Success",
+            "KPI Maturity Assessment",
+            "Implementation Risks",
+        ])
+
+        gated = _gate_deck_plan(deck)
+
+        self.assertEqual(
+            [slide.slide_role for slide in gated.slides],
+            ["Executive Summary", "KPIs for Success", "Implementation Risks"],
+        )
+        self.assertEqual([slide.slide_number for slide in gated.slides], [1, 2, 3])
+
+    def test_risk_slide_rejects_kpi_asset_family(self):
+        slide_plan = SlidePlan(
+            slide_number=1,
+            slide_role="Implementation Risks",
+            purpose="Assess implementation risks and mitigations.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Risk Matrix",
+        )
+        manifest = AssetManifest(
+            asset_id="KPI-4METRIC-001",
+            schema_version="1.0.0",
+            family="kpi",
+            family_aliases=["kpi_dashboard"],
+            purpose="KPI scorecard",
+            audience_tags=[],
+            style_tags=[],
+            recommended_for=[],
+            avoid_for=[],
+            density=4,
+            density_range=[1, 4],
+            fits_content_kinds=["KPI Dashboard"],
+            supports_images=False,
+            placeholders=[],
+        )
+        selection = AssetSelection(
+            asset_id=manifest.asset_id,
+            family="kpi",
+            manifest=manifest,
+            confidence=0.9,
+            score_breakdown={},
+            reasoning="test",
+            candidate_ids=[manifest.asset_id],
+        )
+
+        brief = VisualBrief(
+            message_type="risk_matrix",
+            information_shape="matrix",
+            content_units=4,
+            audience="board",
+            density="balanced",
+        )
+
+        score, reasons = _asset_compatibility_score(slide_plan, brief, selection)
+
+        self.assertLess(score, 0.35)
+        self.assertEqual(reasons, ["no_metadata_overlap"])
+
+    def test_risk_slide_accepts_matrix_asset_family(self):
+        slide_plan = SlidePlan(
+            slide_number=1,
+            slide_role="Implementation Risks",
+            purpose="Assess implementation risks and mitigations.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Risk Matrix",
+        )
+        manifest = AssetManifest(
+            asset_id="RISK-MATRIX-4ITEM-001",
+            schema_version="1.0.0",
+            family="matrix",
+            family_aliases=["risk_matrix"],
+            purpose="Risk matrix",
+            audience_tags=[],
+            style_tags=[],
+            recommended_for=[],
+            avoid_for=[],
+            density=4,
+            density_range=[1, 4],
+            fits_content_kinds=["Risk Matrix"],
+            supports_images=False,
+            placeholders=[],
+            message_type="risk_matrix",
+            information_shape="matrix",
+        )
+        selection = AssetSelection(
+            asset_id=manifest.asset_id,
+            family="matrix",
+            manifest=manifest,
+            confidence=0.9,
+            score_breakdown={},
+            reasoning="test",
+            candidate_ids=[manifest.asset_id],
+        )
+
+        brief = VisualBrief(
+            message_type="risk_matrix",
+            information_shape="matrix",
+            content_units=4,
+            audience="board",
+            density="balanced",
+        )
+
+        score, reasons = _asset_compatibility_score(slide_plan, brief, selection)
+
+        self.assertGreaterEqual(score, 0.35)
+        self.assertIn("message_type", reasons)
+        self.assertIn("information_shape", reasons)
+
     def test_failed_slide_generation(self):
         deck = _deck(["Executive Summary", "Current State"])
 
-        def fake_generate(intent, context, process_result, slide_plan):
+        def fake_generate(intent, context, process_result, slide_plan, **kwargs):
             if slide_plan.slide_role == "Current State":
                 raise RuntimeError("LLM unavailable")
             return _slide_spec(slide_plan.slide_number, slide_plan.slide_role)
@@ -186,7 +308,7 @@ class DeckExecutorTests(unittest.TestCase):
     def test_partial_deck_generation_with_validation_failure(self):
         deck = _deck(["Executive Summary", "Current State", "Future State"])
 
-        def fake_generate(intent, context, process_result, slide_plan):
+        def fake_generate(intent, context, process_result, slide_plan, **kwargs):
             return _slide_spec(slide_plan.slide_number, slide_plan.slide_role)
 
         def fake_validate(spec):
@@ -210,7 +332,7 @@ class DeckExecutorTests(unittest.TestCase):
         deck = _deck(roles)
         generated_order: list[int] = []
 
-        def fake_generate(intent, context, process_result, slide_plan):
+        def fake_generate(intent, context, process_result, slide_plan, **kwargs):
             generated_order.append(slide_plan.slide_number)
             return _slide_spec(slide_plan.slide_number, slide_plan.slide_role)
 
@@ -220,6 +342,33 @@ class DeckExecutorTests(unittest.TestCase):
 
         self.assertEqual(generated_order, [1, 2, 3])
         self.assertTrue(result.all_succeeded)
+
+    def test_visual_rhythm_avoids_consecutive_same_family(self):
+        deck = _deck(["Executive Summary", "Current State"])
+
+        def fake_generate(intent, context, process_result, slide_plan, **kwargs):
+            return _slide_spec(slide_plan.slide_number, slide_plan.slide_role)
+
+        calls: list[tuple[int, str | None]] = []
+
+        def fake_plan_visual_pattern(slide_plan, slide_spec, exclude_category=None):
+            calls.append((slide_plan.slide_number, exclude_category))
+            # First slide creative; second would also be creative without guard.
+            family = "creative_listing" if slide_plan.slide_number == 1 else "infographic"
+            return VisualPatternSelection(
+                pattern_id="CL-01" if family == "creative_listing" else "IG-01",
+                category=family,
+                confidence=0.9,
+                reasoning="test",
+                recommended_variant=None,
+            )
+
+        with patch("backend.modules.deck_executor.generate_slide_content", side_effect=fake_generate):
+            with patch("backend.modules.deck_executor.validate_content", side_effect=_valid_result):
+                with patch("backend.modules.deck_executor.plan_visual_pattern", side_effect=fake_plan_visual_pattern):
+                    execute_deck(deck, _intent(), _context(), _process())
+
+        self.assertEqual(calls, [(1, None), (2, "creative_listing")])
 
 
 if __name__ == "__main__":

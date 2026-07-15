@@ -1,0 +1,364 @@
+{
+  "asset_id": "PROCESS-MATURITY-SLIDER-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "message_type": "process_maturity",
+  "information_shape": "comparison",
+  "text_fit_policy": "regenerate_then_reject",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:10.298407+00:00",
+    "preview_hash": "40345e3635cf4a4c",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: oleObject"
+    ],
+    "errors": []
+  },
+  "family": "process",
+  "family_aliases": [],
+  "purpose": "Process maturity slider showing current state, ambition and capability gaps.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "operations",
+    "program_team"
+  ],
+  "style_tags": [
+    "structured",
+    "process",
+    "maturity",
+    "analytical"
+  ],
+  "recommended_for": [
+    "process maturity",
+    "capability assessment",
+    "as-is to-be",
+    "maturity model"
+  ],
+  "avoid_for": [
+    "simple lists",
+    "kpi dashboards",
+    "roadmap",
+    "risk matrix"
+  ],
+  "density": 10,
+  "density_range": [
+    4,
+    10
+  ],
+  "fits_content_kinds": [
+    "process",
+    "maturity",
+    "capability",
+    "assessment"
+  ],
+  "supports_images": true,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "top_block_1",
+      "role": "top_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 250,
+        "max_lines": 4
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TopBlock1"
+      }
+    },
+    {
+      "id": "top_block_2",
+      "role": "top_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 250,
+        "max_lines": 4
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TopBlock2"
+      }
+    },
+    {
+      "id": "top_block_3",
+      "role": "top_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 250,
+        "max_lines": 4
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TopBlock3"
+      }
+    },
+    {
+      "id": "top_block_4",
+      "role": "top_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 250,
+        "max_lines": 4
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TopBlock4"
+      }
+    },
+    {
+      "id": "bottom_block_1",
+      "role": "bottom_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 250,
+        "max_lines": 4
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "BottomBlock1"
+      }
+    },
+    {
+      "id": "bottom_block_2",
+      "role": "bottom_block",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 250,
+        "max_lines": 4
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "BottomBlock2"
+      }
+    },
+    {
+      "id": "slider_1",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider1"
+      }
+    },
+    {
+      "id": "slider_2",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider2"
+      }
+    },
+    {
+      "id": "slider_3",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider3"
+      }
+    },
+    {
+      "id": "slider_4",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider4"
+      }
+    },
+    {
+      "id": "slider_5",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider5"
+      }
+    },
+    {
+      "id": "slider_6",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider6"
+      }
+    },
+    {
+      "id": "slider_7",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider7"
+      }
+    },
+    {
+      "id": "slider_8",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider8"
+      }
+    },
+    {
+      "id": "slider_9",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider9"
+      }
+    },
+    {
+      "id": "slider_10",
+      "role": "slider",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Slider10"
+      }
+    },
+    {
+      "id": "timeline_1",
+      "role": "timeline",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Timeline1"
+      }
+    },
+    {
+      "id": "timeline_2",
+      "role": "timeline",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Timeline2"
+      }
+    }
+  ],
+  "repeating": null
+}

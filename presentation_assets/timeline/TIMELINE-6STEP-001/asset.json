@@ -1,0 +1,68 @@
+{
+  "asset_id": "TIMELINE-6STEP-001",
+  "schema_version": "1.0.0",
+  "family": "timeline",
+  "family_aliases": [],
+  "purpose": "Horizontal numbered timeline with up to six steps.",
+  "audience_tags": [],
+  "style_tags": [],
+  "recommended_for": [],
+  "avoid_for": [],
+  "density": 6,
+  "density_range": [
+    3,
+    6
+  ],
+  "fits_content_kinds": [
+    "timeline",
+    "steps",
+    "roadmap"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "step_label",
+      "role": "step",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Step{N}Label"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Step{N}Group",
+    "placeholders_per_group": [
+      "step_label"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:28.284334+00:00",
+    "preview_hash": "758bac13beb6c15d",
+    "warnings": [
+      "placeholder 'title' missing text-fit constraints",
+      "placeholder 'step_label' missing text-fit constraints"
+    ],
+    "errors": []
+  }
+}

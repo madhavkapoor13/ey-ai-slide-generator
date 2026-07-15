@@ -142,4 +142,5 @@ Thumbs.db
 
 # Project-specific generated assets
 generated_slide.pptx
+golden_deck_report.json
 *.pptx

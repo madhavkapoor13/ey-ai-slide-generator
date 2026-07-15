@@ -16,7 +16,7 @@ class ProcessMapperTests(unittest.TestCase):
             ("Unknown", "Manufacturing", "Manufacturing", "Manufacturing Operations", "Manufacturing"),
         ]
 
-        with patch("backend.modules.process_mapper._call_gemini_process_mapper") as llm_call:
+        with patch("backend.modules.process_mapper._call_process_mapper_llm") as llm_call:
             for company, industry, function, expected_process, expected_family in cases:
                 with self.subTest(company=company, business_function=function):
                     result = identify_process(
@@ -42,7 +42,7 @@ class ProcessMapperTests(unittest.TestCase):
             llm_call.assert_not_called()
 
     def test_sparse_intent_can_map_from_raw_content(self):
-        with patch("backend.modules.process_mapper._call_gemini_process_mapper") as llm_call:
+        with patch("backend.modules.process_mapper._call_process_mapper_llm") as llm_call:
             result = identify_process(
                 IntentResult(
                     slide_type="Current State",

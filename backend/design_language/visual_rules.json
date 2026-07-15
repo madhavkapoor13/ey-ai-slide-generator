@@ -1,0 +1,20 @@
+{
+  "max_lines": {
+    "card_title": 2,
+    "card_description": 3,
+    "label": 1,
+    "kpi_label": 2,
+    "comparison_item": 2
+  },
+  "density": {
+    "default": "comfortable",
+    "compact_max_items": 6,
+    "comfortable_max_items": 4
+  },
+  "whitespace": {
+    "min_component_gap": 0.05,
+    "preferred_component_gap": 0.1,
+    "min_margin": 0.04,
+    "preferred_margin": 0.06
+  }
+}

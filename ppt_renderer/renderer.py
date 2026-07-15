@@ -1,8 +1,8 @@
 from pptx import Presentation
+from pptx.util import Inches
 
-from ppt_renderer.theme import EYTheme
-from ppt_renderer.components import SlideComponents
-from ppt_renderer.layouts import ProcessLayout
+from backend.design_system.theme_loader import get_current_theme
+from ppt_renderer.operating_model_renderer import _render_text_fallback
 
 
 class ProcessFlowRenderer:
@@ -12,90 +12,73 @@ class ProcessFlowRenderer:
         self.prs = Presentation()
 
         # Widescreen 16:9
-        self.prs.slide_width = EYTheme.SLIDE_WIDTH
-        self.prs.slide_height = EYTheme.SLIDE_HEIGHT
+        theme = get_current_theme()
+        self.prs.slide_width = theme.SLIDE_WIDTH if hasattr(theme, "SLIDE_WIDTH") else Inches(13.333)
+        self.prs.slide_height = theme.SLIDE_HEIGHT if hasattr(theme, "SLIDE_HEIGHT") else Inches(7.5)
 
-    def render(self, slide_spec, output_path="output.pptx"):
+    def render(
+        self,
+        slide_spec,
+        output_path="output.pptx",
+        presentation=None,
+        layout_spec=None,
+    ):
+        """
+        Render a single process-flow slide.
 
-        slide = self.prs.slides.add_slide(
-            self.prs.slide_layouts[6]
+        If ``presentation`` is supplied, the slide is appended to that
+        presentation and no save occurs, enabling multi-slide deck
+        rendering. When ``presentation`` is omitted, behaviour matches the
+        original single-slide contract.
+
+        If ``layout_spec`` is supplied, the new Visual Layout Engine path is
+        used and the legacy hardcoded drawing is skipped. This preserves
+        full backward compatibility when ``layout_spec`` is omitted.
+        """
+        prs = presentation if presentation is not None else self.prs
+
+        slide = prs.slides.add_slide(
+            prs.slide_layouts[6]
         )
 
-        # -------------------------
-        # Title
-        # -------------------------
-
-        SlideComponents.draw_title(
-            slide,
-            slide_spec.get("title", ""),
-            slide_spec.get("subtitle", ""),
-            slide_spec.get("description", ""),
-        )
-
-        # -------------------------
-        # Layout Calculation
-        # -------------------------
-
-        layout = ProcessLayout.calculate(
-            slide_spec.get("nodes", []),
-            slide_spec.get("connections", []),
-            slide_spec.get("pain_points", []),
-        )
-
-        # -------------------------
-        # Draw Process Boxes
-        # -------------------------
-
-        for item in layout["nodes"]:
-
-            SlideComponents.draw_process_box(
-                slide,
-                item["node"],
-                item["x"],
-                item["y"],
-                item["width"],
-                item["height"],
-            )
-
-        # -------------------------
-        # Draw Connectors
-        # -------------------------
-
-        for connector in layout["connectors"]:
-
-            SlideComponents.draw_connector(
-                slide,
-                connector["start_x"],
-                connector["start_y"],
-                connector["end_x"],
-                connector["end_y"],
-            )
-
-        # -------------------------
-        # Draw Pain Points
-        # -------------------------
-
-        for pain in layout["pain_points"]:
-
-            SlideComponents.draw_pain_point(
-                slide,
-                pain["x"],
-                pain["y"],
-                pain["width"],
-                pain["height"],
-                pain["text"],
-                pain["anchor_x"],
-                pain["anchor_y"],
-            )
-
-        # -------------------------
-        # Footer
-        # -------------------------
-
-        SlideComponents.draw_footer(slide, len(self.prs.slides))
+        if layout_spec is not None:
+            self._render_layout(slide_spec, layout_spec, prs, slide)
+        else:
+            self._render_legacy(slide_spec, slide, prs)
 
         # -------------------------
         # Save
         # -------------------------
 
-        self.prs.save(output_path)
+        if presentation is None:
+            prs.save(output_path)
+
+        return prs
+
+    def _render_legacy(self, slide_spec, slide, prs):
+        """Clean fallback: title, subtitle, and up to six bullet lines."""
+        _render_text_fallback(slide, slide_spec)
+
+    def _render_layout(self, slide_spec, layout_spec, presentation, slide):
+        """Visual Layout Engine path: delegate each component to the dispatcher."""
+        from ppt_renderer.components import component_dispatcher
+        from ppt_renderer.components.header_renderer import render_header
+        from ppt_renderer.components.footer_renderer import render_footer
+
+        pattern_id = getattr(layout_spec, "visual_pattern", None)
+        render_header(layout_spec.header, presentation, slide, slide_spec, pattern_id=pattern_id)
+
+        layout_context = {"pattern_id": pattern_id}
+        for component in layout_spec.components:
+            component_dispatcher.render(
+                component, presentation, slide, slide_spec, layout_context=layout_context
+            )
+
+        render_footer(
+            layout_spec.footer,
+            presentation,
+            slide,
+            slide_spec,
+            len(presentation.slides),
+            pattern_id=pattern_id,
+        )

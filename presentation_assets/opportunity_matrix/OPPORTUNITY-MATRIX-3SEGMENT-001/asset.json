@@ -1,0 +1,683 @@
+{
+  "asset_id": "OPPORTUNITY-MATRIX-3SEGMENT-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "message_type": "opportunity",
+  "information_shape": "matrix",
+  "text_fit_policy": "regenerate_then_reject",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-15T06:50:02.388235+00:00",
+    "preview_hash": "014f25c7b0f3a9a7",
+    "warnings": [
+      "unsupported or fragile relationship feature detected: oleObject"
+    ],
+    "errors": []
+  },
+  "family": "opportunity_matrix",
+  "family_aliases": [],
+  "purpose": "Three-segment opportunity matrix with category panels and supporting item lines.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "strategy_team"
+  ],
+  "style_tags": [
+    "structured",
+    "matrix",
+    "strategic",
+    "board-ready"
+  ],
+  "recommended_for": [
+    "opportunity matrix",
+    "market opportunity",
+    "growth levers",
+    "strategic opportunities"
+  ],
+  "avoid_for": [
+    "risk assessment",
+    "process flows",
+    "kpi dashboards",
+    "timeline"
+  ],
+  "density": 20,
+  "density_range": [
+    8,
+    20
+  ],
+  "fits_content_kinds": [
+    "opportunity_matrix",
+    "matrix",
+    "opportunities",
+    "growth"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "category_1",
+      "role": "category",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 3
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category1"
+      }
+    },
+    {
+      "id": "category_2",
+      "role": "category",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 3
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category2"
+      }
+    },
+    {
+      "id": "category_3",
+      "role": "category",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 3
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category3"
+      }
+    },
+    {
+      "id": "category_indicator_1",
+      "role": "category_indicator",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 5,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category1Indicator"
+      }
+    },
+    {
+      "id": "category_indicator_2",
+      "role": "category_indicator",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 5,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category2Indicator"
+      }
+    },
+    {
+      "id": "category_indicator_3",
+      "role": "category_indicator",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 5,
+        "max_lines": 1
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category3Indicator"
+      }
+    },
+    {
+      "id": "item_1_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item1Label"
+      }
+    },
+    {
+      "id": "item_2_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item2Label"
+      }
+    },
+    {
+      "id": "item_3_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item3Label"
+      }
+    },
+    {
+      "id": "item_4_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item4Label"
+      }
+    },
+    {
+      "id": "item_5_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item5Label"
+      }
+    },
+    {
+      "id": "item_6_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item6Label"
+      }
+    },
+    {
+      "id": "item_7_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item7Label"
+      }
+    },
+    {
+      "id": "item_8_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item8Label"
+      }
+    },
+    {
+      "id": "item_9_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item9Label"
+      }
+    },
+    {
+      "id": "item_10_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item10Label"
+      }
+    },
+    {
+      "id": "item_11_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item11Label"
+      }
+    },
+    {
+      "id": "item_12_label",
+      "role": "item_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item12Label"
+      }
+    },
+    {
+      "id": "item_1_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item1Body"
+      }
+    },
+    {
+      "id": "item_2_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item2Body"
+      }
+    },
+    {
+      "id": "item_3_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item3Body"
+      }
+    },
+    {
+      "id": "item_4_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item4Body"
+      }
+    },
+    {
+      "id": "item_5_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item5Body"
+      }
+    },
+    {
+      "id": "item_6_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item6Body"
+      }
+    },
+    {
+      "id": "item_7_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item7Body"
+      }
+    },
+    {
+      "id": "item_8_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item8Body"
+      }
+    },
+    {
+      "id": "item_9_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item9Body"
+      }
+    },
+    {
+      "id": "item_10_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item10Body"
+      }
+    },
+    {
+      "id": "item_11_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item11Body"
+      }
+    },
+    {
+      "id": "item_12_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item12Body"
+      }
+    },
+    {
+      "id": "item_13_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item13Body"
+      }
+    },
+    {
+      "id": "item_14_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item14Body"
+      }
+    },
+    {
+      "id": "item_15_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item15Body"
+      }
+    },
+    {
+      "id": "item_16_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item16Body"
+      }
+    },
+    {
+      "id": "item_17_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item17Body"
+      }
+    },
+    {
+      "id": "item_18_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item18Body"
+      }
+    },
+    {
+      "id": "item_19_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item19Body"
+      }
+    },
+    {
+      "id": "item_20_body",
+      "role": "item_body",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Item20Body"
+      }
+    }
+  ],
+  "repeating": null
+}

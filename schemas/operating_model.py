@@ -28,5 +28,5 @@ class OperatingModelSpec(BaseModel):
     subtitle: str = ""
     description: str = ""
     summary: OperatingModelSummary
-    stages: list[OperatingModelStage] = Field(min_length=4, max_length=8)
+    stages: list[OperatingModelStage] = Field(min_length=0, max_length=8)
     risks: list[OperatingModelRisk] = Field(default_factory=list)

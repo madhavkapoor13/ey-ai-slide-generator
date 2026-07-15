@@ -1,0 +1,115 @@
+{
+  "asset_id": "CAPABILITY-6DOMAIN-001",
+  "schema_version": "1.0.0",
+  "certification": {
+    "certified": false,
+    "certified_at": "2026-07-15T00:00:00+00:00",
+    "preview_hash": null,
+    "warnings": [],
+    "errors": [
+      "quarantined: unbound placeholder leakage shapes contain visible 'Text'"
+    ]
+  },
+  "family": "capability_map",
+  "family_aliases": [
+    "capabilities",
+    "domain",
+    "taxonomy"
+  ],
+  "purpose": "Six-domain capability list with category label and supporting body per row. Suitable for capability taxonomies, domain overviews, and maturity summaries.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "program_team",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "structured",
+    "list",
+    "board-ready",
+    "clean"
+  ],
+  "recommended_for": [
+    "capability map",
+    "capabilities",
+    "domain overview",
+    "taxonomy",
+    "future state",
+    "target operating model"
+  ],
+  "avoid_for": [
+    "detailed process flows",
+    "data-heavy dashboards",
+    "comparisons",
+    "timeline visualizations"
+  ],
+  "density": 6,
+  "density_range": [
+    5,
+    6
+  ],
+  "fits_content_kinds": [
+    "capability_map",
+    "capabilities",
+    "domain",
+    "taxonomy"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {},
+      "binding": {
+        "native_placeholder_idx": 0,
+        "shape_name": null
+      }
+    },
+    {
+      "id": "category_label",
+      "role": "domain_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category{N}Label"
+      }
+    },
+    {
+      "id": "category_body",
+      "role": "domain_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 180,
+        "max_lines": 3
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "Category{N}Body"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "Category{N}Group",
+    "placeholders_per_group": [
+      "category_label",
+      "category_body"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  }
+}

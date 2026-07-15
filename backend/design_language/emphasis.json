@@ -1,0 +1,18 @@
+{
+  "primary": {
+    "bold": true,
+    "color_role": "ink"
+  },
+  "secondary": {
+    "bold": false,
+    "color_role": "charcoal"
+  },
+  "accent": {
+    "bold": true,
+    "color_role": "primary"
+  },
+  "muted": {
+    "bold": false,
+    "color_role": "grey"
+  }
+}

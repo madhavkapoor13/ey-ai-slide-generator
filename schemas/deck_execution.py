@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 from schemas.presentation import DeckSpec, SlidePlan
 from schemas.slide_spec import SlideSpec
 from schemas.validation import ValidationResult
+from schemas.evaluation import DeckEvaluationReport, SlideEvaluationReport
 
 
 class SlideExecutionResult(BaseModel):
@@ -51,6 +52,10 @@ class SlideExecutionResult(BaseModel):
     error: Optional[str] = Field(
         default=None,
         description="Error message when the slide failed.",
+    )
+    evaluation_report: Optional[SlideEvaluationReport] = Field(
+        default=None,
+        description="V2 slide-level asset/content/population evaluation report.",
     )
 
 
@@ -94,4 +99,8 @@ class DeckExecutionResult(BaseModel):
     partial_success: bool = Field(
         ...,
         description="True when at least one slide succeeded and at least one failed.",
+    )
+    evaluation_report: DeckEvaluationReport = Field(
+        default_factory=DeckEvaluationReport,
+        description="V2 deck-level quality and fallback metrics.",
     )

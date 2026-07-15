@@ -1,0 +1,88 @@
+{
+  "IG-01": {
+    "spacing": {
+      "timeline": {
+        "connector_width": 0.017361,
+        "node_gap": 0.14
+      }
+    },
+    "alignment": {
+      "timeline": {
+        "default": "center",
+        "preferred": "distributed"
+      }
+    }
+  },
+  "IG-02": {
+    "spacing": {
+      "timeline": {
+        "connector_width": 0.02,
+        "node_gap": 0.1
+      }
+    },
+    "alignment": {
+      "roadmap": {
+        "default": "left",
+        "preferred": "distributed"
+      }
+    }
+  },
+  "IG-03": {
+    "spacing": {
+      "timeline": {
+        "connector_width": 0.017361,
+        "node_gap": 0.12
+      }
+    },
+    "alignment": {
+      "timeline": {
+        "default": "center",
+        "preferred": "distributed"
+      }
+    }
+  },
+  "IG-04": {
+    "spacing": {
+      "matrix": {
+        "padding_x": 0.1,
+        "padding_y": 0.07,
+        "cell_gap": 0.05
+      }
+    },
+    "alignment": {
+      "matrix": {
+        "default": "center",
+        "preferred": "stretch"
+      }
+    }
+  },
+  "IG-05": {
+    "spacing": {
+      "timeline": {
+        "connector_width": 0.017361,
+        "node_gap": 0.12
+      }
+    },
+    "alignment": {
+      "timeline": {
+        "default": "center",
+        "preferred": "distributed"
+      }
+    }
+  },
+  "IG-06": {
+    "spacing": {
+      "matrix": {
+        "padding_x": 0.08,
+        "padding_y": 0.06,
+        "cell_gap": 0.04
+      }
+    },
+    "alignment": {
+      "matrix": {
+        "default": "center",
+        "preferred": "stretch"
+      }
+    }
+  }
+}

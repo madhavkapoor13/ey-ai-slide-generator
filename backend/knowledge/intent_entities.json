@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Reusable entity mappings for deterministic intent extraction. Canonical values are preferred; aliases provide fuzzy matching.",
+  "industries": {
+    "Technology": [
+      "Technology",
+      "Software",
+      "Cloud",
+      "SaaS",
+      "Artificial Intelligence",
+      "AI",
+      "Tech",
+      "Information Technology",
+      "IT",
+      "Cybersecurity",
+      "Data Analytics"
+    ],
+    "Financial Services": [
+      "Financial Services",
+      "Banking",
+      "Finance",
+      "Insurance",
+      "Fintech",
+      "Investment",
+      "Wealth Management"
+    ],
+    "Healthcare": [
+      "Healthcare",
+      "Health Care",
+      "Pharma",
+      "Pharmaceuticals",
+      "Biotech",
+      "Life Sciences",
+      "Medical Devices"
+    ],
+    "Automotive": [
+      "Automotive",
+      "Auto",
+      "Mobility",
+      "Vehicle"
+    ],
+    "Retail": [
+      "Retail",
+      "Consumer Goods",
+      "E-commerce",
+      "CPG"
+    ],
+    "Manufacturing": [
+      "Manufacturing",
+      "Industrial",
+      "Factory"
+    ],
+    "Energy": [
+      "Energy",
+      "Oil & Gas",
+      "Utilities",
+      "Renewable Energy"
+    ]
+  },
+  "business_functions": {
+    "Procurement": [
+      "Procurement",
+      "Purchasing",
+      "Sourcing",
+      "Category Management",
+      "Spend Management",
+      "Supplier Management",
+      "Vendor Management"
+    ],
+    "Finance": [
+      "Finance",
+      "Accounting",
+      "Controllership",
+      "FP&A",
+      "Financial Planning",
+      "Treasury",
+      "Record-to-Report"
+    ],
+    "Human Resources": [
+      "Human Resources",
+      "HR",
+      "People",
+      "Talent",
+      "Workforce",
+      "Hire-to-Retire"
+    ],
+    "Supply Chain": [
+      "Supply Chain",
+      "Logistics",
+      "Distribution",
+      "Demand Planning",
+      "Inventory Management",
+      "Plan-Source-Make-Deliver"
+    ],
+    "Manufacturing": [
+      "Manufacturing",
+      "Production",
+      "Plant Operations",
+      "Shop Floor",
+      "Make"
+    ],
+    "Sales": [
+      "Sales",
+      "Revenue",
+      "Commercial",
+      "Order-to-Cash"
+    ],
+    "Marketing": [
+      "Marketing",
+      "Demand Generation",
+      "Campaign-to-Lead"
+    ],
+    "Customer Service": [
+      "Customer Service",
+      "Customer Support",
+      "Customer Success",
+      "Case-to-Resolution"
+    ],
+    "Operations": [
+      "Operations"
+    ],
+    "AI": [
+      "AI",
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Generative AI",
+      "GenAI",
+      "Data Science"
+    ]
+  },
+  "audiences": {
+    "Board of Directors": [
+      "Board",
+      "Board of Directors",
+      "Executive Committee",
+      "ExCo",
+      "BOD",
+      "Steering Committee"
+    ],
+    "Senior Leadership": [
+      "Senior Leadership",
+      "Leadership",
+      "Executives",
+      "Executive",
+      "C-Suite",
+      "CEO",
+      "CFO",
+      "COO",
+      "CIO"
+    ],
+    "Management": [
+      "Management",
+      "Managers",
+      "Department Heads"
+    ],
+    "Stakeholders": [
+      "Stakeholders",
+      "Sponsors",
+      "Project Team",
+      "Team"
+    ]
+  },
+  "known_companies": {
+    "Microsoft": "Technology",
+    "EY": "Financial Services",
+    "Ernst & Young": "Financial Services",
+    "Google": "Technology",
+    "Apple": "Technology",
+    "Amazon": "Retail",
+    "Toyota": "Automotive",
+    "JPMorgan": "Financial Services",
+    "Pfizer": "Healthcare",
+    "Nike": "Retail"
+  },
+  "company_stop_phrases": [
+    "current state",
+    "future state",
+    "process",
+    "workflow",
+    "slide",
+    "deck",
+    "presentation",
+    "transformation",
+    "strategy",
+    "proposal",
+    "roadmap",
+    "update",
+    "plan",
+    "initiative",
+    "program",
+    "operating model"
+  ]
+}

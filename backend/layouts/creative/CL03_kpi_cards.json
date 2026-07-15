@@ -1,0 +1,99 @@
+{
+  "layout_id": "CL03",
+  "visual_pattern": "CL-03",
+  "category": "creative_listing",
+  "canvas_type": "widescreen_16_9",
+  "header": {
+    "height": 0.15,
+    "title_area": {
+      "x": 0.05,
+      "y": 0.04,
+      "width": 0.9,
+      "height": 0.06
+    },
+    "subtitle_area": {
+      "x": 0.05,
+      "y": 0.1,
+      "width": 0.9,
+      "height": 0.04
+    }
+  },
+  "body": {
+    "x": 0.05,
+    "y": 0.18,
+    "width": 0.9,
+    "height": 0.62
+  },
+  "footer": {
+    "height": 0.1,
+    "note_area": {
+      "x": 0.05,
+      "y": 0.9,
+      "width": 0.9,
+      "height": 0.05
+    }
+  },
+  "components": [
+    {
+      "component_id": "kpi_1",
+      "type": "kpi_card",
+      "placeholder": "kpi_1",
+      "x": 0.1,
+      "y": 0.24,
+      "width": 0.2,
+      "height": 0.48,
+      "constraints": [
+        "value_large",
+        "label_below",
+        "icon_top",
+        "percentage_allowed"
+      ]
+    },
+    {
+      "component_id": "kpi_2",
+      "type": "kpi_card",
+      "placeholder": "kpi_2",
+      "x": 0.4,
+      "y": 0.24,
+      "width": 0.2,
+      "height": 0.48,
+      "constraints": [
+        "value_large",
+        "label_below",
+        "icon_top",
+        "percentage_allowed"
+      ]
+    },
+    {
+      "component_id": "kpi_3",
+      "type": "kpi_card",
+      "placeholder": "kpi_3",
+      "x": 0.7,
+      "y": 0.24,
+      "width": 0.2,
+      "height": 0.48,
+      "constraints": [
+        "value_large",
+        "label_below",
+        "icon_top",
+        "percentage_allowed"
+      ]
+    }
+  ],
+  "spacing": "equal",
+  "alignment": "center",
+  "color_scheme": "default",
+  "supports_images": false,
+  "supports_percentages": true,
+  "metadata": {
+    "min_items": 3,
+    "max_items": 6,
+    "variant": "three_kpis"
+  },
+  "grid": {
+    "strategy": "cards",
+    "gap": 0.04,
+    "margin": 0.02,
+    "max_cell_height": 0.35
+  }
+}
