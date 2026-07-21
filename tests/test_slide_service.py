@@ -9,6 +9,7 @@ from pptx import Presentation
 from backend.services import slide_service
 from schemas.clarification import ClarificationQuestion, ClarificationResult
 from schemas.deck_execution import DeckExecutionResult, SlideExecutionResult
+from schemas.evaluation import DeckEvaluationReport, SlideEvaluationReport
 from schemas.executive_card import ExecutiveCardContent
 from schemas.layout import (
     BodySpecification,
@@ -81,6 +82,123 @@ class SlideServiceTests(unittest.TestCase):
             version="2.0",
             generated_by="test",
         )
+
+    def test_final_pptx_qa_blocks_incomplete_populated_text(self):
+        prs = Presentation()
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        slide.shapes.add_textbox(0, 0, 5000000, 500000).text = "Board decisions launch the procurement AI"
+        plan = SlidePlan(
+            slide_number=1,
+            slide_role="Board Decisions",
+            purpose="Clarify decisions.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Board Decisions",
+        )
+        spec = SlideSpec(slide_type="operating_model", raw_spec={"title": "Board Decisions"})
+        slide_report = SlideEvaluationReport(slide_number=1, role="Board Decisions")
+        deck_result = DeckExecutionResult(
+            deck_spec=DeckSpec(
+                presentation_type="Transformation Proposal",
+                objective="o",
+                audience="a",
+                narrative="n",
+                estimated_slide_count=1,
+                slides=[plan],
+            ),
+            slides=[
+                SlideExecutionResult(
+                    slide_plan=plan,
+                    slide_spec=spec,
+                    validation_result=None,
+                    success=True,
+                    evaluation_report=slide_report,
+                )
+            ],
+            successful_slides=[spec],
+            failed_slides=[],
+            all_succeeded=True,
+            partial_success=False,
+            evaluation_report=DeckEvaluationReport(demo_ready=True, slide_reports=[slide_report]),
+        )
+
+        slide_service._apply_final_pptx_qa(prs, deck_result)
+
+        self.assertFalse(deck_result.evaluation_report.demo_ready)
+        self.assertTrue(deck_result.evaluation_report.consulting_language_warnings)
+        self.assertTrue(slide_report.consulting_language_warnings)
+
+    def test_final_pptx_qa_blocks_blank_populated_slide(self):
+        prs = Presentation()
+        prs.slides.add_slide(prs.slide_layouts[6])
+        plan = SlidePlan(
+            slide_number=1,
+            slide_role="Next Steps",
+            purpose="Close the deck.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Next Steps",
+        )
+        spec = SlideSpec(slide_type="operating_model", raw_spec={"title": "Next Steps"})
+        slide_report = SlideEvaluationReport(slide_number=1, role="Next Steps")
+        deck_result = DeckExecutionResult(
+            deck_spec=DeckSpec(
+                presentation_type="Transformation Proposal",
+                objective="o",
+                audience="a",
+                narrative="n",
+                estimated_slide_count=1,
+                slides=[plan],
+            ),
+            slides=[
+                SlideExecutionResult(
+                    slide_plan=plan,
+                    slide_spec=spec,
+                    validation_result=None,
+                    success=True,
+                    evaluation_report=slide_report,
+                )
+            ],
+            successful_slides=[spec],
+            failed_slides=[],
+            all_succeeded=True,
+            partial_success=False,
+            evaluation_report=DeckEvaluationReport(demo_ready=True, slide_reports=[slide_report]),
+        )
+
+        slide_service._apply_final_pptx_qa(prs, deck_result)
+
+        self.assertFalse(deck_result.evaluation_report.demo_ready)
+        self.assertIn(
+            "post-population blank slide at position 1",
+            deck_result.evaluation_report.consulting_language_warnings,
+        )
+
+    def test_final_pptx_qa_allows_metric_sentences_and_activity_lists(self):
+        self.assertFalse(
+            slide_service._looks_like_incomplete_populated_text(
+                "cell_accelerate_items_text",
+                "Streamlined procurement workflows reduce cycle time by 30%.",
+            )
+        )
+        self.assertFalse(
+            slide_service._looks_like_incomplete_populated_text(
+                "stage_2_activities_text",
+                "Launch event Compare bids Select supplier",
+            )
+        )
+
+    def test_trim_trailing_blank_slide_uses_meaningful_text_not_shapes(self):
+        prs = Presentation()
+        content_slide = prs.slides.add_slide(prs.slide_layouts[6])
+        content_slide.shapes.add_textbox(0, 0, 5000000, 500000).text = "Meaningful slide title"
+        blank_slide = prs.slides.add_slide(prs.slide_layouts[6])
+        blank_slide.shapes.add_textbox(0, 0, 500000, 200000).text = ""
+
+        removed = slide_service._trim_trailing_blank_slides(prs)
+
+        self.assertEqual(removed, 1)
+        self.assertEqual(len(prs.slides), 1)
 
     def _cl01_slide_spec(self, source: str = "business_benefits") -> SlideSpec:
         """Return a SlideSpec whose raw content exercises CL-01 card derivation."""

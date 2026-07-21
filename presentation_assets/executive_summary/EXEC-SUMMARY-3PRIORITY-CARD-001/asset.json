@@ -1,0 +1,241 @@
+{
+  "asset_id": "EXEC-SUMMARY-3PRIORITY-CARD-001",
+  "asset_version": 2,
+  "schema_version": "1.0.0",
+  "family": "executive_summary",
+  "family_aliases": [
+    "summary",
+    "takeaways",
+    "key_messages",
+    "priorities"
+  ],
+  "message_type": "executive_summary",
+  "information_shape": "three_priority_cards",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Board-ready executive summary with three priority cards, card-level descriptions, three bullets per card, and one bottom-line takeaway banner.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "clean",
+    "priority-cards",
+    "transformation"
+  ],
+  "recommended_for": [
+    "executive_summary",
+    "transformation_summary",
+    "strategic_priorities",
+    "board_summary",
+    "three priorities",
+    "summary"
+  ],
+  "avoid_for": [
+    "detailed process flows",
+    "data-heavy dashboards",
+    "timelines",
+    "risk registers",
+    "implementation roadmap"
+  ],
+  "density": 3,
+  "density_range": [
+    3,
+    3
+  ],
+  "fits_content_kinds": [
+    "executive_summary",
+    "summary",
+    "key_messages",
+    "strategic_priorities",
+    "transformation_priorities"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 34,
+        "bold": false,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 55,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 18,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "card_header",
+      "role": "card_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 18,
+        "bold": true,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "card_{N}_header_text"
+      }
+    },
+    {
+      "id": "card_description",
+      "role": "card_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 55,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 13,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "card_{N}_description_text"
+      }
+    },
+    {
+      "id": "card_bullet_1",
+      "role": "card_bullet",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 15,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "card_{N}_bullet_1_text"
+      }
+    },
+    {
+      "id": "card_bullet_2",
+      "role": "card_bullet",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 15,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "card_{N}_bullet_2_text"
+      }
+    },
+    {
+      "id": "card_bullet_3",
+      "role": "card_bullet",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 15,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "card_{N}_bullet_3_text"
+      }
+    },
+    {
+      "id": "banner_takeaway",
+      "role": "executive_message",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "font_size_pt": 18,
+        "bold": true,
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "banner_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "card_{N}_group",
+    "placeholders_per_group": [
+      "card_header",
+      "card_description",
+      "card_bullet_1",
+      "card_bullet_2",
+      "card_bullet_3"
+    ],
+    "index_token": "{N}",
+    "count": 3
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "406a72ea4e67255d",
+    "warnings": [],
+    "errors": []
+  }
+}

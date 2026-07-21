@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "current_future_comparison",
+  "information_shape": "comparison",
+  "purpose": "Current-state versus future-state comparison showing five transformation shifts.",
+  "family_aliases": [
+    "comparison",
+    "current_future",
+    "from_to"
+  ],
+  "recommended_for": [
+    "current vs future",
+    "from-to comparison",
+    "transformation shifts",
+    "future state comparison"
+  ],
+  "avoid_for": [
+    "risk register",
+    "kpi dashboard",
+    "section divider"
+  ],
+  "density": 5,
+  "density_range": [
+    5,
+    5
+  ],
+  "fits_content_kinds": [
+    "comparison",
+    "future_state",
+    "current_state"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 125,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "current_state",
+      "role": "current_state",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 36,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "current_{N}_text"
+      }
+    },
+    {
+      "id": "transformation_shift",
+      "role": "shift",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 32,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "shift_{N}_text"
+      }
+    },
+    {
+      "id": "future_state",
+      "role": "future_state",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 46,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "future_{N}_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "takeaway",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 140,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "shift_{N}",
+    "placeholders_per_group": [
+      "current_state",
+      "transformation_shift",
+      "future_state"
+    ],
+    "index_token": "{N}",
+    "count": 5
+  },
+  "asset_id": "CURRENT-FUTURE-COMPARISON-5SHIFT-001",
+  "asset_version": 1,
+  "family": "capability_map",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-21T10:34:26.503835+00:00",
+    "preview_hash": "d330ded9bac2c0ad",
+    "warnings": [],
+    "errors": []
+  }
+}

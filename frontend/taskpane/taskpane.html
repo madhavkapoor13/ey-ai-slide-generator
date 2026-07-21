@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>EY AI Pitch</title>
-    <link rel="stylesheet" href="./taskpane.css?v=dev-20260702-v2-endpoint">
+    <link rel="stylesheet" href="./taskpane.css?v=dev-20260721-clarification-reply">
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   </head>
   <body>
@@ -17,7 +17,7 @@
         </div>
       </header>
 
-      <section class="prompt-panel" aria-labelledby="prompt-label">
+      <section id="promptPanel" class="prompt-panel" aria-labelledby="prompt-label">
         <label id="prompt-label" for="slidePrompt">Describe the slide you want</label>
         <textarea
           id="slidePrompt"
@@ -25,9 +25,32 @@
           placeholder="Example: Generate a detailed Current State operating model for the Procure-to-Pay process..."
         ></textarea>
 
-        <button id="generateButton" type="button">
-          Generate Slide
+        <button id="createPlanButton" type="button">
+          Create Plan
         </button>
+      </section>
+
+      <section id="planPanel" class="plan-panel" aria-labelledby="plan-heading" hidden>
+        <div class="plan-panel-header">
+          <div>
+            <h2 id="plan-heading">Review deck plan</h2>
+            <p id="planSummary"></p>
+          </div>
+          <button id="backToPromptButton" class="secondary-button" type="button">
+            Back
+          </button>
+        </div>
+
+        <div id="planList" class="plan-list"></div>
+
+        <div class="plan-actions">
+          <button id="addSlideButton" class="secondary-button" type="button">
+            Add Slide
+          </button>
+          <button id="generateDeckButton" type="button">
+            Generate Deck
+          </button>
+        </div>
       </section>
 
       <section class="status-panel" aria-live="polite">
@@ -36,6 +59,6 @@
       </section>
     </main>
 
-    <script src="./taskpane.js?v=dev-20260714-geometry-fix"></script>
+    <script src="./taskpane.js?v=dev-20260721-clarification-reply"></script>
   </body>
 </html>

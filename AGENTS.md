@@ -30,9 +30,11 @@ npm install
 npm start
 ```
 
-- Serves HTTPS on `https://localhost:3000/taskpane/taskpane.html` and installs dev certs.
+- `npm start` installs dev certs then runs `scripts/start-server.js`, a custom Node static server (the `http-server` package hangs on Node 25).
+- Serves HTTPS on `https://localhost:3000/taskpane/taskpane.html` and binds `::` by default.
 - Plain HTTP alternative: `npm run start:http` (not sufficient for PowerPoint sideload on macOS).
 - Sideload into PowerPoint: `npm run sideload`.
+- Stop sideload: `npm run stop`.
 
 ## Testing
 
@@ -48,7 +50,9 @@ npm start
 
 - `POST /generate` — Phase 1 legacy single-slide pipeline.
 - `POST /generate-slide` — Alias to Phase 1.
-- `POST /generate/v2` — Phase 2 orchestrated consulting deck. Always returns a `.pptx`: completed deck, clarification placeholder, or failure placeholder.
+- `POST /plan/v2` — Phase 2 editable deck plan preview (JSON). Returns clarification questions when information is insufficient.
+- `POST /generate/v2` — Full Phase 2 orchestrated consulting deck. Always returns a `.pptx`: completed deck, clarification placeholder, or failure placeholder.
+- `POST /generate/v2/from-plan` — Generate a `.pptx` from a user-approved `DeckSpec` returned by `/plan/v2`.
 
 Backend CORS allows only `https://localhost:3000` and `https://127.0.0.1:3000`; `POST` and `OPTIONS` only.
 
@@ -56,8 +60,8 @@ Backend CORS allows only `https://localhost:3000` and `https://127.0.0.1:3000`; 
 
 See `.env.example`. Configure only the providers you use; the router skips unconfigured ones.
 
-- `GEMINI_API_KEY` (also accepts `GOOGLE_API_KEY`) — Phase 2 primary provider.
-- `OPENAI_API_KEY` — Phase 1 direct calls + Phase 2 fallback.
+- `OPENAI_API_KEY` — Primary provider for Phase 1 direct calls and all Phase 2 modules.
+- `GEMINI_API_KEY` (also accepts `GOOGLE_API_KEY`) — Additional provider; used for Google Search grounding in the Enterprise Context Builder and as a router fallback.
 - `GROQ_API_KEY`, `CEREBRAS_API_KEY`, `OPENROUTER_API_KEY` — additional router providers.
 - Optional `GEMINI_CONTEXT_MODEL` overrides the Gemini model used by legacy direct calls and router fallback.
 
@@ -67,7 +71,7 @@ Module→provider priority and model IDs are the single source of truth in `back
 
 ## Architecture gotchas
 
-- **Orchestrator owns the topology.** `backend/orchestrator.py` is the only place that knows the full Phase 2 order: Intent → Presentation Planning → Information Analysis → (Clarification) → Context → Process Mapping → Deck Execution → Render. Modules do not call each other directly.
+- **Orchestrator owns the topology.** `backend/orchestrator.py` is the only place that knows the full Phase 2 order: Intent → Presentation Planning (classifier is internal) → Information Analysis → (Clarification) → Context → Process Mapping → Deck Execution → Render. Modules do not call each other directly.
 - **Module boundaries are Pydantic schemas.** No raw dicts cross module boundaries except `SlideSpec.raw_spec`, which is the renderer contract.
 - **Prompts live in `backend/ai/`.** `backend/llm/prompt_loader.py` loads `backend/ai/instructions.md` once at startup and composes module prompts from `backend/ai/prompts/*.md`. The files in `backend/prompts/*.txt` and `prompts/slide_prompt.py` are dead; do not edit them. Phase 1 prompts live in `backend/llm/prompts.py`.
 - **Multi-Provider LLM Router is the single entry point for business modules.** `backend/llm/router.py` exposes `generate_json(module_name, prompt, ...)`. The router retries transient errors, falls back through the priority list, and keeps using the same provider for a module within a deck session.

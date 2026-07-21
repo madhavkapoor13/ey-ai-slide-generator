@@ -1,0 +1,446 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "governance_model",
+  "information_shape": "operating_model",
+  "purpose": "Governance model showing decision forums, PMO responsibilities, workstreams, cadence, decision rights, and takeaway.",
+  "family_aliases": [
+    "governance",
+    "operating_model",
+    "decision_model"
+  ],
+  "recommended_for": [
+    "governance model",
+    "program governance",
+    "decision rights",
+    "operating model governance"
+  ],
+  "avoid_for": [
+    "current process",
+    "risk register",
+    "kpi dashboard"
+  ],
+  "density": 4,
+  "density_range": [
+    3,
+    4
+  ],
+  "fits_content_kinds": [
+    "governance",
+    "operating_model",
+    "decision_rights"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 115,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "steering_committee_title",
+      "role": "forum_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "steering_committee_title_text"
+      }
+    },
+    {
+      "id": "steering_committee_mandate",
+      "role": "forum_mandate",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "steering_committee_mandate_text"
+      }
+    },
+    {
+      "id": "steering_responsibility_1",
+      "role": "responsibility",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "steering_responsibility_1_text"
+      }
+    },
+    {
+      "id": "steering_responsibility_2",
+      "role": "responsibility",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "steering_responsibility_2_text"
+      }
+    },
+    {
+      "id": "steering_responsibility_3",
+      "role": "responsibility",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "steering_responsibility_3_text"
+      }
+    },
+    {
+      "id": "pmo_title",
+      "role": "forum_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "pmo_title_text"
+      }
+    },
+    {
+      "id": "pmo_mandate",
+      "role": "forum_mandate",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 85,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "pmo_mandate_text"
+      }
+    },
+    {
+      "id": "pmo_responsibility_1",
+      "role": "responsibility",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "pmo_responsibility_1_text"
+      }
+    },
+    {
+      "id": "pmo_responsibility_2",
+      "role": "responsibility",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "pmo_responsibility_2_text"
+      }
+    },
+    {
+      "id": "pmo_responsibility_3",
+      "role": "responsibility",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "pmo_responsibility_3_text"
+      }
+    },
+    {
+      "id": "pmo_responsibility_4",
+      "role": "responsibility",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "pmo_responsibility_4_text"
+      }
+    },
+    {
+      "id": "workstream_title",
+      "role": "workstream_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 28,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "workstream_{N}_title_text"
+      }
+    },
+    {
+      "id": "workstream_responsibilities",
+      "role": "responsibility_list",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 72,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "workstream_{N}_responsibilities_text"
+      }
+    },
+    {
+      "id": "forum_name",
+      "role": "forum_name",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "forum_{N}_name_text"
+      }
+    },
+    {
+      "id": "forum_cadence",
+      "role": "cadence",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "forum_{N}_cadence_text"
+      }
+    },
+    {
+      "id": "decision_right_label",
+      "role": "decision_right",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "decision_right_{N}_label_text"
+      }
+    },
+    {
+      "id": "decision_right_description",
+      "role": "decision_right_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 46,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "decision_right_{N}_description_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "takeaway",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "workstream_{N}",
+    "placeholders_per_group": [
+      "workstream_title",
+      "workstream_responsibilities"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  },
+  "asset_id": "GOVERNANCE-MODEL-001",
+  "asset_version": 1,
+  "family": "capability_map",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "439a526957211b31",
+    "warnings": [],
+    "errors": []
+  }
+}

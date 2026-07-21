@@ -1,0 +1,235 @@
+{
+  "asset_id": "KPI-6PRIORITY-METRICS-001",
+  "asset_version": 2,
+  "schema_version": "1.0.0",
+  "family": "kpi",
+  "family_aliases": [
+    "scorecard",
+    "dashboard",
+    "metrics",
+    "success_metrics",
+    "performance_indicators"
+  ],
+  "message_type": "kpi_dashboard",
+  "information_shape": "metrics",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Six-priority KPI dashboard with metric name, compact display value, description, target, trend, and summary note/source.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "operations"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "data-driven",
+    "kpi",
+    "dashboard",
+    "metrics"
+  ],
+  "recommended_for": [
+    "kpi",
+    "kpi dashboard",
+    "metrics",
+    "success metrics",
+    "performance indicators",
+    "scorecard"
+  ],
+  "avoid_for": [
+    "process flows",
+    "roadmaps",
+    "risk register",
+    "case for change",
+    "long narrative summaries"
+  ],
+  "density": 6,
+  "density_range": [
+    6,
+    6
+  ],
+  "fits_content_kinds": [
+    "kpi",
+    "kpi_dashboard",
+    "metrics",
+    "success_metrics",
+    "performance_indicators",
+    "scorecard"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "summary",
+      "role": "so_what",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 130,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_text"
+      }
+    },
+    {
+      "id": "kpi_name",
+      "role": "metric_name",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "kpi_{N}_name_text"
+      }
+    },
+    {
+      "id": "kpi_value",
+      "role": "metric_value",
+      "kind": "metric",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 12,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_metric_display_value; One concise value only; include the unit only when required, e.g. 95%, 8.5, 2 days, $12M"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "kpi_{N}_value_text"
+      }
+    },
+    {
+      "id": "kpi_description",
+      "role": "metric_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "kpi_{N}_description_text"
+      }
+    },
+    {
+      "id": "kpi_target",
+      "role": "metric_target",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "kpi_{N}_target_text"
+      }
+    },
+    {
+      "id": "kpi_trend",
+      "role": "metric_trend",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 14,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "kpi_{N}_trend_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "kpi_{N}_group",
+    "placeholders_per_group": [
+      "kpi_name",
+      "kpi_value",
+      "kpi_description",
+      "kpi_target",
+      "kpi_trend"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-21T06:14:37Z",
+    "preview_hash": "1f1c456737ca5f24",
+    "warnings": [],
+    "errors": []
+  }
+}

@@ -1,0 +1,688 @@
+{
+  "asset_id": "RISK-MATRIX-HEATMAP-001",
+  "asset_version": 2,
+  "schema_version": "1.0.0",
+  "family": "risk",
+  "family_aliases": [
+    "risk_matrix",
+    "heatmap",
+    "risk_heatmap",
+    "implementation_risks",
+    "mitigation"
+  ],
+  "message_type": "risk_matrix",
+  "information_shape": "matrix",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Risk heatmap matrix with likelihood-impact cells, risk list, severity guidance, and risk appetite statement.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "risk_committee",
+    "program_team"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "risk",
+    "matrix",
+    "heatmap",
+    "analytical"
+  ],
+  "recommended_for": [
+    "risk matrix",
+    "risk heat map",
+    "implementation risks",
+    "risk assessment",
+    "mitigation priorities",
+    "risk appetite"
+  ],
+  "avoid_for": [
+    "roadmaps",
+    "process flows",
+    "kpi dashboards",
+    "business benefits",
+    "executive summary"
+  ],
+  "density": 11,
+  "density_range": [
+    9,
+    11
+  ],
+  "fits_content_kinds": [
+    "risk",
+    "risk_matrix",
+    "risk_heatmap",
+    "implementation_risks",
+    "assessment",
+    "mitigation"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 65,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 110,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "summary",
+      "role": "summary",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 110,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_text"
+      }
+    },
+    {
+      "id": "risk_appetite",
+      "role": "risk_appetite",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 140,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_appetite_text"
+      }
+    },
+    {
+      "id": "cell_high_likelihood_low_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_high_likelihood_low_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_high_likelihood_low_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_high_likelihood_low_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_high_likelihood_medium_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_high_likelihood_medium_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_high_likelihood_medium_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_high_likelihood_medium_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_high_likelihood_high_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_high_likelihood_high_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_high_likelihood_high_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_high_likelihood_high_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_medium_likelihood_low_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_medium_likelihood_low_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_medium_likelihood_low_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_medium_likelihood_low_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_medium_likelihood_medium_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_medium_likelihood_medium_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_medium_likelihood_medium_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_medium_likelihood_medium_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_medium_likelihood_high_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_medium_likelihood_high_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_medium_likelihood_high_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_medium_likelihood_high_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_low_likelihood_low_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_low_likelihood_low_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_low_likelihood_low_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_low_likelihood_low_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_low_likelihood_medium_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_low_likelihood_medium_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_low_likelihood_medium_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_low_likelihood_medium_impact_risks_text"
+      }
+    },
+    {
+      "id": "cell_low_likelihood_high_impact_level",
+      "role": "matrix_cell_level",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_low_likelihood_high_impact_level_text"
+      }
+    },
+    {
+      "id": "cell_low_likelihood_high_impact_risks",
+      "role": "matrix_cell_risk_ids",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_low_likelihood_high_impact_risks_text"
+      }
+    },
+    {
+      "id": "severity_1_label",
+      "role": "severity_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_1_label_text"
+      }
+    },
+    {
+      "id": "severity_1_guidance",
+      "role": "severity_guidance",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_1_guidance_text"
+      }
+    },
+    {
+      "id": "severity_2_label",
+      "role": "severity_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_2_label_text"
+      }
+    },
+    {
+      "id": "severity_2_guidance",
+      "role": "severity_guidance",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_2_guidance_text"
+      }
+    },
+    {
+      "id": "severity_3_label",
+      "role": "severity_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_3_label_text"
+      }
+    },
+    {
+      "id": "severity_3_guidance",
+      "role": "severity_guidance",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_3_guidance_text"
+      }
+    },
+    {
+      "id": "severity_4_label",
+      "role": "severity_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_4_label_text"
+      }
+    },
+    {
+      "id": "severity_4_guidance",
+      "role": "severity_guidance",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "severity_4_guidance_text"
+      }
+    },
+    {
+      "id": "risk_id",
+      "role": "risk_id",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 6,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_id_text"
+      }
+    },
+    {
+      "id": "risk_description",
+      "role": "risk_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 55,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_description_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "risk_{N}_group",
+    "placeholders_per_group": [
+      "risk_id",
+      "risk_description"
+    ],
+    "index_token": "{N}",
+    "count": 11
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "896fef993edd3dc0",
+    "warnings": [],
+    "errors": []
+  }
+}

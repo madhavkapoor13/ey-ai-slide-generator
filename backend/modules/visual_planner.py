@@ -61,6 +61,7 @@ _CONFIDENCE_THRESHOLD = 0.25
 _ROLE_PATTERN_OVERRIDES: tuple[tuple[tuple[str, ...], str], ...] = (
     (("executive summary",), "CL-06"),
     (("current procurement process", "current state", "as-is", "process"), "IG-03"),
+    (("case for change", "case_for_change", "why change", "change imperative"), "IG-16"),
     (("future-state operating model", "future state", "operating model", "capability"), "IG-06"),
     (("ai use case", "use case portfolio", "use cases"), "CL-02"),
     (("business benefit", "benefits", "value case", "value realization"), "IG-14"),

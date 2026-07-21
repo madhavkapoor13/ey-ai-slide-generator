@@ -150,6 +150,10 @@ def _shorten_text(text: str, placeholder: AssetPlaceholder) -> tuple[str, bool]:
     if overflow_policy == "truncate":
         return text[: max(limit - 1, 0)].rstrip() + ("…" if limit > 1 else ""), True
 
+    complete = _complete_prefix(text, limit)
+    if complete:
+        return complete, True
+
     words = text.split()
     shortened = ""
     for word in words:
@@ -157,9 +161,52 @@ def _shorten_text(text: str, placeholder: AssetPlaceholder) -> tuple[str, bool]:
         if len(candidate) > limit:
             break
         shortened = candidate
-    if shortened:
+    shortened = _trim_dangling_words(shortened)
+    if shortened and not _looks_incomplete(shortened):
         return shortened, True
-    return text[:limit].rstrip(), True
+
+    # Do not manufacture broken phrases. Leave the original text in place so
+    # the caller rejects the slide and routes to fallback instead of shipping
+    # visibly clipped language.
+    return text, False
+
+
+def _complete_prefix(text: str, limit: int) -> str:
+    """Return a sentence/clause prefix that fits and does not end mid-thought."""
+    candidates: list[str] = []
+    for sep in (". ", "; ", ": ", " - ", " – ", " — "):
+        if sep in text:
+            part = text.split(sep, 1)[0].strip(" -:;,.")
+            if part:
+                candidates.append(part)
+    for candidate in candidates:
+        compact = _trim_dangling_words(candidate)
+        if compact and len(compact) <= limit and not _looks_incomplete(compact):
+            return compact
+    return ""
+
+
+def _trim_dangling_words(text: str) -> str:
+    cleaned = text.strip(" -:;,.")
+    dangling = {
+        "and", "or", "for", "with", "through", "by", "to", "of", "in", "on",
+        "from", "across", "using", "via", "into", "based", "toward",
+    }
+    words = cleaned.split()
+    while words and words[-1].lower() in dangling:
+        words.pop()
+    return " ".join(words).strip(" -:;,.")
+
+
+def _looks_incomplete(text: str) -> bool:
+    words = text.split()
+    if not words:
+        return True
+    return words[-1].lower() in {
+        "and", "or", "for", "with", "through", "by", "to", "of", "in", "on",
+        "from", "across", "using", "via", "into", "based", "toward", "all",
+        "driving", "highlighting", "including", "enabling", "leading",
+    }
 
 
 def _coerce_text(value: Any, placeholder: AssetPlaceholder) -> str:

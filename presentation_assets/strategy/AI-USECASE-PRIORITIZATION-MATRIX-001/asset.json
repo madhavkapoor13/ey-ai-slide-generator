@@ -1,0 +1,325 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "use_case_prioritization",
+  "information_shape": "prioritization_matrix",
+  "purpose": "AI use case prioritization matrix by business value and feasibility with shortlist recommendations.",
+  "family_aliases": [
+    "use_case_matrix",
+    "prioritization_matrix"
+  ],
+  "recommended_for": [
+    "ai use case prioritization",
+    "use case matrix",
+    "value feasibility matrix",
+    "portfolio prioritization"
+  ],
+  "avoid_for": [
+    "risk register",
+    "roadmap",
+    "kpi dashboard"
+  ],
+  "density": 9,
+  "density_range": [
+    5,
+    9
+  ],
+  "fits_content_kinds": [
+    "ai_use_cases",
+    "prioritization",
+    "matrix"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 55,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 125,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "prioritize_items",
+      "role": "matrix_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_prioritize_items_text"
+      }
+    },
+    {
+      "id": "scale_items",
+      "role": "matrix_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_scale_items_text"
+      }
+    },
+    {
+      "id": "explore_items",
+      "role": "matrix_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_explore_items_text"
+      }
+    },
+    {
+      "id": "selective_items",
+      "role": "matrix_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_selective_items_text"
+      }
+    },
+    {
+      "id": "accelerate_items",
+      "role": "matrix_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "cell_accelerate_items_text"
+      }
+    },
+    {
+      "id": "shortlist_1_label",
+      "role": "shortlist_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "shortlist_1_label_text"
+      }
+    },
+    {
+      "id": "shortlist_1_items",
+      "role": "shortlist_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_use_case_label; 2-5 words; no full sentence; no trailing period"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "shortlist_1_items_text"
+      }
+    },
+    {
+      "id": "shortlist_2_label",
+      "role": "shortlist_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "shortlist_2_label_text"
+      }
+    },
+    {
+      "id": "shortlist_2_items",
+      "role": "shortlist_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_use_case_label; 2-5 words; no full sentence; no trailing period"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "shortlist_2_items_text"
+      }
+    },
+    {
+      "id": "shortlist_3_label",
+      "role": "shortlist_label",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "shortlist_3_label_text"
+      }
+    },
+    {
+      "id": "shortlist_3_items",
+      "role": "shortlist_items",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_use_case_label; 2-5 words; no full sentence; no trailing period"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "shortlist_3_items_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "takeaway",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 100,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "asset_id": "AI-USECASE-PRIORITIZATION-MATRIX-001",
+  "asset_version": 1,
+  "family": "strategy",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "41cc96c3c0380951",
+    "warnings": [],
+    "errors": []
+  }
+}

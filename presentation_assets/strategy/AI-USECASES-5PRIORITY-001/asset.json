@@ -1,0 +1,191 @@
+{
+  "asset_id": "AI-USECASES-5PRIORITY-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "family": "strategy",
+  "family_aliases": [
+    "use_cases",
+    "ai_use_cases",
+    "portfolio",
+    "initiatives",
+    "priorities"
+  ],
+  "message_type": "ai_use_case_portfolio",
+  "information_shape": "portfolio",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Five-priority AI use case portfolio with title, description, value statement, and synthesis takeaway.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "program_team"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "use-case",
+    "portfolio",
+    "priority-list"
+  ],
+  "recommended_for": [
+    "ai use cases",
+    "use case portfolio",
+    "priority use cases",
+    "automation opportunities",
+    "initiative portfolio"
+  ],
+  "avoid_for": [
+    "roadmaps",
+    "risk register",
+    "current-state process flow",
+    "future-state operating model",
+    "kpi dashboard"
+  ],
+  "density": 5,
+  "density_range": [
+    5,
+    5
+  ],
+  "fits_content_kinds": [
+    "ai_use_cases",
+    "use_cases",
+    "portfolio",
+    "initiatives",
+    "automation_opportunities"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 50,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "use_case_title",
+      "role": "use_case_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 42,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "use_case_{N}_title_text"
+      }
+    },
+    {
+      "id": "use_case_description",
+      "role": "workflow_ai_capability",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 130,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "use_case_{N}_description_text"
+      }
+    },
+    {
+      "id": "use_case_value",
+      "role": "business_outcome",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "use_case_{N}_value_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "so_what",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 130,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "use_case_{N}_group",
+    "placeholders_per_group": [
+      "use_case_title",
+      "use_case_description",
+      "use_case_value"
+    ],
+    "index_token": "{N}",
+    "count": 5
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "86b5408df6d97e5e",
+    "warnings": [],
+    "errors": []
+  }
+}

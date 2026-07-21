@@ -82,6 +82,7 @@ _KNOWN_FAMILIES = frozenset(
         "journey",
         "kpi",
         "business_benefits",
+        "case_for_change",
         "risk",
         "next_steps",
         "opportunity_matrix",

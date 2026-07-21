@@ -1,0 +1,385 @@
+{
+  "asset_id": "ROADMAP-3PHASE-4WORKSTREAM-V2-001",
+  "asset_version": 3,
+  "schema_version": "1.0.0",
+  "family": "roadmap",
+  "family_aliases": [
+    "implementation",
+    "workstream_plan",
+    "workstreams",
+    "rollout",
+    "timeline"
+  ],
+  "message_type": "implementation_roadmap",
+  "information_shape": "workstream_sequence",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Three-phase implementation roadmap organized by four workstreams, with phase timing, workstream activities, phase outcomes, and synthesis takeaway.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "program_team"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "roadmap",
+    "workstream",
+    "phased",
+    "implementation"
+  ],
+  "recommended_for": [
+    "implementation roadmap",
+    "workstream roadmap",
+    "workstream plan",
+    "phased plan",
+    "rollout plan",
+    "transformation roadmap"
+  ],
+  "avoid_for": [
+    "simple roadmap without workstreams",
+    "current-state process flow",
+    "case for change",
+    "risk register",
+    "kpi dashboard"
+  ],
+  "density": 4,
+  "density_range": [
+    4,
+    4
+  ],
+  "fits_content_kinds": [
+    "implementation_roadmap",
+    "roadmap",
+    "workstreams",
+    "phases",
+    "activities",
+    "phase_outcomes"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 65,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "phase_1_title",
+      "role": "phase_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_1_title_text"
+      }
+    },
+    {
+      "id": "phase_1_timing",
+      "role": "phase_timing",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_1_timing_text"
+      }
+    },
+    {
+      "id": "phase_2_title",
+      "role": "phase_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_2_title_text"
+      }
+    },
+    {
+      "id": "phase_2_timing",
+      "role": "phase_timing",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_2_timing_text"
+      }
+    },
+    {
+      "id": "phase_3_title",
+      "role": "phase_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_3_title_text"
+      }
+    },
+    {
+      "id": "phase_3_timing",
+      "role": "phase_timing",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_3_timing_text"
+      }
+    },
+    {
+      "id": "phase_1_outcome",
+      "role": "phase_outcome",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_1_outcome_text"
+      }
+    },
+    {
+      "id": "phase_2_outcome",
+      "role": "phase_outcome",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_2_outcome_text"
+      }
+    },
+    {
+      "id": "phase_3_outcome",
+      "role": "phase_outcome",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_3_outcome_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "so_what",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 130,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    },
+    {
+      "id": "workstream_label",
+      "role": "workstream_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "workstream_{N}_label_text"
+      }
+    },
+    {
+      "id": "workstream_phase_1_activity",
+      "role": "workstream_activity",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 55,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "workstream_{N}_phase_1_activity_text"
+      }
+    },
+    {
+      "id": "workstream_phase_2_activity",
+      "role": "workstream_activity",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 55,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "workstream_{N}_phase_2_activity_text"
+      }
+    },
+    {
+      "id": "workstream_phase_3_activity",
+      "role": "workstream_activity",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 55,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "workstream_{N}_phase_3_activity_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "workstream_{N}_group",
+    "placeholders_per_group": [
+      "workstream_label",
+      "workstream_phase_1_activity",
+      "workstream_phase_2_activity",
+      "workstream_phase_3_activity"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "507547f56a521eef",
+    "warnings": [],
+    "errors": []
+  }
+}

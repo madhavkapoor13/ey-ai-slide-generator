@@ -1,0 +1,442 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "decision_request",
+  "information_shape": "decision_cards",
+  "purpose": "Board decision request with three required decisions, rationale, impact, and delay consequences.",
+  "family_aliases": [
+    "decision_request",
+    "board_decisions"
+  ],
+  "recommended_for": [
+    "board decisions",
+    "decision request",
+    "approval request",
+    "next steps"
+  ],
+  "avoid_for": [
+    "risk register",
+    "kpi dashboard",
+    "current process"
+  ],
+  "density": 3,
+  "density_range": [
+    3,
+    3
+  ],
+  "fits_content_kinds": [
+    "decisions",
+    "next_steps",
+    "approval_request"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 45,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 115,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "decision_label",
+      "role": "decision_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "decision_{N}_label_text"
+      }
+    },
+    {
+      "id": "decision_title",
+      "role": "decision_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_decision_title; 2-5 words; start with Approve, Authorize, Confirm, or Endorse; no sentence"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "decision_{N}_title_text"
+      }
+    },
+    {
+      "id": "decision_1_why_now_detail",
+      "role": "why_now_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 36,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_rationale; One short fragment; no full sentence; no quantified claim unless grounded"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 11"
+      }
+    },
+    {
+      "id": "decision_1_request_detail",
+      "role": "decision_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 38,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_decision_request; One short approval action; start with Approve, Authorize, Confirm, Endorse, or Fund"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 14"
+      }
+    },
+    {
+      "id": "decision_1_impact_detail",
+      "role": "impact_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_decision_impact; One concise outcome phrase; avoid unsupported percentages"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 17"
+      }
+    },
+    {
+      "id": "decision_2_why_now_detail",
+      "role": "why_now_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 36,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_rationale; One short fragment; no full sentence; no quantified claim unless grounded"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 26"
+      }
+    },
+    {
+      "id": "decision_2_request_detail",
+      "role": "decision_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 38,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_decision_request; One short approval action; start with Approve, Authorize, Confirm, Endorse, or Fund"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 29"
+      }
+    },
+    {
+      "id": "decision_2_impact_detail",
+      "role": "impact_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_decision_impact; One concise outcome phrase; avoid unsupported percentages"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 32"
+      }
+    },
+    {
+      "id": "decision_3_why_now_detail",
+      "role": "why_now_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 36,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_rationale; One short fragment; no full sentence; no quantified claim unless grounded"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 41"
+      }
+    },
+    {
+      "id": "decision_3_request_detail",
+      "role": "decision_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 38,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_decision_request; One short approval action; start with Approve, Authorize, Confirm, Endorse, or Fund"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 44"
+      }
+    },
+    {
+      "id": "decision_3_impact_detail",
+      "role": "impact_detail",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_decision_impact; One concise outcome phrase; avoid unsupported percentages"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "TextBox 47"
+      }
+    },
+    {
+      "id": "delay_1_title",
+      "role": "delay_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_delay_title; Short noun phrase, not a sentence"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "delay_1_title_text"
+      }
+    },
+    {
+      "id": "delay_1_impact",
+      "role": "delay_impact",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 42,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_delay_impact; One concise consequence phrase"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "delay_1_impact_text"
+      }
+    },
+    {
+      "id": "delay_2_title",
+      "role": "delay_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_delay_title; Short noun phrase, not a sentence"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "delay_2_title_text"
+      }
+    },
+    {
+      "id": "delay_2_impact",
+      "role": "delay_impact",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 42,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_delay_impact; One concise consequence phrase"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "delay_2_impact_text"
+      }
+    },
+    {
+      "id": "delay_3_title",
+      "role": "delay_title",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 30,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_delay_title; Short noun phrase, not a sentence"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "delay_3_title_text"
+      }
+    },
+    {
+      "id": "delay_3_impact",
+      "role": "delay_impact",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 42,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_delay_impact; One concise consequence phrase"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "delay_3_impact_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "decision_{N}",
+    "placeholders_per_group": [
+      "decision_label",
+      "decision_title"
+    ],
+    "index_token": "{N}",
+    "count": 3
+  },
+  "asset_id": "DECISION-REQUEST-3CARD-001",
+  "asset_version": 1,
+  "family": "next_steps",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "c4c806dcc7788827",
+    "warnings": [],
+    "errors": []
+  }
+}

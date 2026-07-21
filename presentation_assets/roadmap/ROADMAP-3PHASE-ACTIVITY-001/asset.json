@@ -1,0 +1,272 @@
+{
+  "asset_id": "ROADMAP-3PHASE-ACTIVITY-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "family": "roadmap",
+  "family_aliases": [
+    "implementation",
+    "implementation_plan",
+    "rollout",
+    "phases",
+    "timeline"
+  ],
+  "message_type": "implementation_roadmap",
+  "information_shape": "sequence",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Three-phase implementation roadmap with timing, objective, three activities, deliverable, and synthesis takeaway.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "program_team"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "roadmap",
+    "phased",
+    "implementation"
+  ],
+  "recommended_for": [
+    "implementation roadmap",
+    "roadmap",
+    "phased plan",
+    "rollout plan",
+    "implementation plan",
+    "transformation roadmap"
+  ],
+  "avoid_for": [
+    "current-state process flow",
+    "case for change",
+    "risk register",
+    "kpi dashboard",
+    "executive summary"
+  ],
+  "density": 3,
+  "density_range": [
+    3,
+    3
+  ],
+  "fits_content_kinds": [
+    "implementation_roadmap",
+    "roadmap",
+    "phases",
+    "activities",
+    "deliverables"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 42,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 115,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "phase_title",
+      "role": "phase_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_{N}_title_text"
+      }
+    },
+    {
+      "id": "phase_timing",
+      "role": "phase_timing",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_{N}_timing_text"
+      }
+    },
+    {
+      "id": "phase_objective",
+      "role": "phase_objective",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 95,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_{N}_objective_text"
+      }
+    },
+    {
+      "id": "phase_activity_1",
+      "role": "phase_activity",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 45,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_{N}_activity_1_text"
+      }
+    },
+    {
+      "id": "phase_activity_2",
+      "role": "phase_activity",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 45,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_{N}_activity_2_text"
+      }
+    },
+    {
+      "id": "phase_activity_3",
+      "role": "phase_activity",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 45,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_{N}_activity_3_text"
+      }
+    },
+    {
+      "id": "phase_deliverable",
+      "role": "phase_deliverable",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 75,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phase_{N}_deliverable_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "so_what",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 100,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "phase_{N}_group",
+    "placeholders_per_group": [
+      "phase_title",
+      "phase_timing",
+      "phase_objective",
+      "phase_activity_1",
+      "phase_activity_2",
+      "phase_activity_3",
+      "phase_deliverable"
+    ],
+    "index_token": "{N}",
+    "count": 3
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "34a544c4cd4c6447",
+    "warnings": [],
+    "errors": []
+  }
+}

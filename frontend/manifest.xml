@@ -10,7 +10,7 @@
   <Description DefaultValue="Generate AI-assisted editable PowerPoint slides from inside PowerPoint."/>
   <IconUrl DefaultValue="https://localhost:3000/assets/logo.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/logo.png"/>
-  <SupportUrl DefaultValue="https://localhost:3000/taskpane/taskpane.html?v=dev-20260702-v2-endpoint-fix1"/>
+  <SupportUrl DefaultValue="https://localhost:3000/taskpane/taskpane.html?v=dev-20260721-clarification-reply"/>
   <AppDomains>
     <AppDomain>https://localhost:3000</AppDomain>
     <AppDomain>https://127.0.0.1:3000</AppDomain>
@@ -21,7 +21,7 @@
     <Host Name="Presentation"/>
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://localhost:3000/taskpane/taskpane.html?v=dev-20260702-v2-endpoint-fix1"/>
+    <SourceLocation DefaultValue="https://localhost:3000/taskpane/taskpane.html?v=dev-20260721-clarification-reply"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
 </OfficeApp>

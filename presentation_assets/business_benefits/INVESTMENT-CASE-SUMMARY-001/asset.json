@@ -1,0 +1,505 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "investment_case",
+  "information_shape": "business_case",
+  "purpose": "Board-level investment case summarizing required funding, value created, timing, economics, and recommendation.",
+  "family_aliases": [
+    "business_benefits",
+    "business_case",
+    "value_case"
+  ],
+  "recommended_for": [
+    "investment case",
+    "business case",
+    "funding request",
+    "value case",
+    "ROI summary"
+  ],
+  "avoid_for": [
+    "current process",
+    "risk register",
+    "section divider"
+  ],
+  "density": 4,
+  "density_range": [
+    3,
+    4
+  ],
+  "fits_content_kinds": [
+    "investment_case",
+    "business_case",
+    "value",
+    "benefits"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 65,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 82,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "investment_required_value",
+      "role": "metric_value",
+      "kind": "currency",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 12,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "investment_required_value_text"
+      }
+    },
+    {
+      "id": "investment_scope",
+      "role": "scope",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "investment_scope_text"
+      }
+    },
+    {
+      "id": "value_created_value",
+      "role": "metric_value",
+      "kind": "currency",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 12,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "value_created_value_text"
+      }
+    },
+    {
+      "id": "value_drivers",
+      "role": "value_drivers",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "value_drivers_text"
+      }
+    },
+    {
+      "id": "timing_value",
+      "role": "metric_value",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 8,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "timing_value_text"
+      }
+    },
+    {
+      "id": "phased_approach",
+      "role": "phasing",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 28,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "phased_approach_text"
+      }
+    },
+    {
+      "id": "payback_value",
+      "role": "metric_value",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "payback_value_text"
+      }
+    },
+    {
+      "id": "value_investment_value",
+      "role": "metric_value",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "value_investment_value_text"
+      }
+    },
+    {
+      "id": "npv",
+      "role": "economic_indicator",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 20,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "npv_text"
+      }
+    },
+    {
+      "id": "roi",
+      "role": "economic_indicator",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 20,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "roi_text"
+      }
+    },
+    {
+      "id": "assumptions",
+      "role": "assumptions",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "assumptions_text"
+      }
+    },
+    {
+      "id": "investment_component_label",
+      "role": "component_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "investment_component_{N}_label_text"
+      }
+    },
+    {
+      "id": "investment_component_value",
+      "role": "component_value",
+      "kind": "currency",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "investment_component_{N}_value_text"
+      }
+    },
+    {
+      "id": "value_component_label",
+      "role": "component_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "value_component_{N}_label_text"
+      }
+    },
+    {
+      "id": "value_component_value",
+      "role": "component_value",
+      "kind": "currency",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "value_component_{N}_value_text"
+      }
+    },
+    {
+      "id": "timeline_label",
+      "role": "timeline_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "timeline_{N}_label_text"
+      }
+    },
+    {
+      "id": "timeline_duration",
+      "role": "timeline_duration",
+      "kind": "date",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "timeline_{N}_duration_text"
+      }
+    },
+    {
+      "id": "bridge_label",
+      "role": "bridge_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 20,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "bridge_{N}_label_text"
+      }
+    },
+    {
+      "id": "bridge_description",
+      "role": "bridge_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 38,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "bridge_{N}_description_text"
+      }
+    },
+    {
+      "id": "capture_value",
+      "role": "capture_value",
+      "kind": "percentage",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 8,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "capture_{N}_value_text"
+      }
+    },
+    {
+      "id": "recommendation",
+      "role": "recommendation",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 72,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "recommendation_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "bridge_{N}",
+    "placeholders_per_group": [
+      "bridge_label",
+      "bridge_description"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  },
+  "asset_id": "INVESTMENT-CASE-SUMMARY-001",
+  "asset_version": 1,
+  "family": "investment_case",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "03b366397f270222",
+    "warnings": [],
+    "errors": []
+  }
+}

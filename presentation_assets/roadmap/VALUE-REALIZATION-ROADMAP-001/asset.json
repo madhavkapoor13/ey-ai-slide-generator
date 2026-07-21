@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "value_realization_roadmap",
+  "information_shape": "benefit_timeline",
+  "purpose": "Roadmap showing benefit pools, time-phased value capture, owners, and cumulative realization.",
+  "family_aliases": [
+    "value_roadmap",
+    "benefits_roadmap"
+  ],
+  "recommended_for": [
+    "value realization",
+    "benefit capture",
+    "benefits roadmap",
+    "business case timeline"
+  ],
+  "avoid_for": [
+    "current process",
+    "risk matrix",
+    "executive summary"
+  ],
+  "density": 4,
+  "density_range": [
+    4,
+    4
+  ],
+  "fits_content_kinds": [
+    "value_realization",
+    "benefits",
+    "roadmap",
+    "timeline"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 65,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 115,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "benefit_pool",
+      "role": "benefit_pool",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_pool_text"
+      }
+    },
+    {
+      "id": "benefit_description",
+      "role": "benefit_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 58,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_description_text"
+      }
+    },
+    {
+      "id": "foundation_action",
+      "role": "foundation_action",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_foundation_text"
+      }
+    },
+    {
+      "id": "accelerate_action",
+      "role": "accelerate_action",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_accelerate_text"
+      }
+    },
+    {
+      "id": "scale_action",
+      "role": "scale_action",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_scale_text"
+      }
+    },
+    {
+      "id": "benefit_owner",
+      "role": "owner",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 28,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_owner_text"
+      }
+    },
+    {
+      "id": "milestone_value",
+      "role": "milestone_value",
+      "kind": "metric",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 8,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "milestone_{N}_value_text"
+      }
+    },
+    {
+      "id": "milestone_description",
+      "role": "milestone_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 72,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "milestone_{N}_description_text"
+      }
+    },
+    {
+      "id": "total_value",
+      "role": "total_value",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 35,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "total_value_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "takeaway",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 130,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "benefit_{N}",
+    "placeholders_per_group": [
+      "benefit_pool",
+      "benefit_description",
+      "foundation_action",
+      "accelerate_action",
+      "scale_action",
+      "benefit_owner"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  },
+  "asset_id": "VALUE-REALIZATION-ROADMAP-001",
+  "asset_version": 1,
+  "family": "roadmap",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "ec459119a87e1af4",
+    "warnings": [],
+    "errors": []
+  }
+}

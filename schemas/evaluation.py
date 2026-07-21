@@ -16,7 +16,10 @@ class SlideEvaluationReport(BaseModel):
 
     slide_number: int = Field(..., ge=1)
     role: str = ""
+    slide_type: Optional[str] = None
     pattern: Optional[str] = None
+    variant_id: Optional[str] = None
+    template_source_slide: Optional[int] = None
     asset: Optional[str] = None
     asset_version: Optional[int] = None
     population: str = "not_attempted"
@@ -37,6 +40,7 @@ class DeckEvaluationReport(BaseModel):
     """Aggregate quality metrics for a generated deck."""
 
     asset_coverage: float = Field(default=0.0, ge=0.0, le=1.0)
+    variant_coverage: float = Field(default=0.0, ge=0.0, le=1.0)
     asset_diversity: float = Field(default=0.0, ge=0.0, le=1.0)
     repeated_asset_count: int = 0
     max_family_repetition: int = 0

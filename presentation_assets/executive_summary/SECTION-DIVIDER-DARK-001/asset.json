@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "section_divider",
+  "information_shape": "section_break",
+  "purpose": "Dark EY section divider for major narrative transitions.",
+  "family_aliases": [
+    "section_divider",
+    "section_break"
+  ],
+  "recommended_for": [
+    "section divider",
+    "section break",
+    "chapter divider"
+  ],
+  "avoid_for": [
+    "data slides",
+    "roadmaps",
+    "risk registers"
+  ],
+  "density": 3,
+  "density_range": [
+    2,
+    4
+  ],
+  "fits_content_kinds": [
+    "section_divider",
+    "section_break"
+  ],
+  "placeholders": [
+    {
+      "id": "section_number",
+      "role": "section_number",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "section_number_text"
+      }
+    },
+    {
+      "id": "title",
+      "role": "section_title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "section_title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "section_subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 82,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "section_subtitle_text"
+      }
+    },
+    {
+      "id": "tagline",
+      "role": "tagline",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 42,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "section_tagline_text"
+      }
+    }
+  ],
+  "asset_id": "SECTION-DIVIDER-DARK-001",
+  "asset_version": 1,
+  "family": "executive_summary",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "0beab1b2bf26e728",
+    "warnings": [],
+    "errors": []
+  }
+}

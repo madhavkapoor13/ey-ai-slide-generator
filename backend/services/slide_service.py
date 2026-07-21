@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import tempfile
 from pathlib import Path
 from typing import Any, Optional, Tuple
@@ -189,11 +190,25 @@ def generate_slide_v2(title: str, content: str) -> str:
         Path to the generated ``.pptx`` file.
     """
     from backend.orchestrator import run_pipeline  # local import avoids circular deps at module load
-    from schemas.pipeline_result import PipelineResult
 
     logger.info("v2 generation started: title=%s", title)
 
     result = run_pipeline(title, content)
+    return _render_pipeline_result(result)
+
+
+def generate_slide_v2_from_plan(title: str, content: str, deck_spec, preferences=None) -> str:
+    """Generate a PPTX from a user-approved editable deck plan."""
+    from backend.orchestrator import execute_approved_plan  # local import avoids circular deps at module load
+
+    logger.info("v2 generation from approved plan started: title=%s slides=%d", title, len(deck_spec.slides))
+
+    result = execute_approved_plan(title, content, deck_spec, preferences=preferences)
+    return _render_pipeline_result(result)
+
+
+def _render_pipeline_result(result) -> str:
+    """Render a completed or clarification PipelineResult into a PPTX file path."""
     mode = _generation_mode()
     output_path = _new_output_path("generated_slide_v2", mode=mode)
 
@@ -225,9 +240,7 @@ def generate_slide_v2(title: str, content: str) -> str:
         logger.error("v2 demo mode blocked non-demo-ready deck: %s", errors)
         return render_placeholder_deck(output_path, errors)
 
-    prs = Presentation()
-    prs.slide_width = Inches(_SLIDE_WIDTH_IN)
-    prs.slide_height = Inches(_SLIDE_HEIGHT_IN)
+    prs = _new_asset_template_presentation(deck_result.slides)
 
     for slide_result in deck_result.slides:
         if not slide_result.success:
@@ -334,6 +347,21 @@ def generate_slide_v2(title: str, content: str) -> str:
             spec.slide_type,
         )
 
+    trimmed_blanks = _trim_trailing_blank_slides(prs)
+    if trimmed_blanks:
+        logger.warning("v2 removed %d trailing blank slide(s) before save", trimmed_blanks)
+        try:
+            deck_result.evaluation_report.narrative_consistency_warnings.append(
+                f"Removed {trimmed_blanks} trailing blank slide(s)."
+            )
+        except Exception:
+            pass
+    _apply_final_pptx_qa(prs, deck_result)
+    if mode in {_DEMO_MODE, _PRODUCTION_MODE} and not deck_result.evaluation_report.demo_ready:
+        errors = _demo_failure_messages(deck_result)
+        _persist_generation_metadata(output_path, deck_result)
+        logger.error("v2 %s mode blocked post-population deck: %s", mode, errors)
+        return render_placeholder_deck(output_path, errors)
     prs.save(output_path)
     _persist_generation_metadata(output_path, deck_result)
 
@@ -397,6 +425,8 @@ def _demo_failure_messages(deck_result) -> list[str]:
         messages.append(f"Placeholder leakage: {len(report.placeholder_leakage)}")
     if report.overflow_slides:
         messages.append(f"Text-fit failures on slides: {report.overflow_slides}")
+    if report.narrative_consistency_warnings:
+        messages.extend(report.narrative_consistency_warnings[:5])
     return messages or ["Deck did not meet demo readiness gates."]
 
 
@@ -409,6 +439,202 @@ def _mark_population(slide_result, population: str, *, fallback_used: bool = Fal
         report.fallback_used = True
     if warning:
         report.warnings.append(warning)
+
+
+def _new_asset_template_presentation(slide_results) -> Presentation:
+    """Create the output deck from the first selected asset's template package.
+
+    Starting from a real asset deck keeps the EY slide masters, layouts, theme,
+    and inherited branding available to generated slides. The visible slides
+    are removed immediately; later population copies only selected asset slide
+    content onto matching layouts.
+    """
+    for slide_result in slide_results:
+        if not getattr(slide_result, "success", False):
+            continue
+        spec = getattr(slide_result, "slide_spec", None)
+        asset_id = getattr(spec, "asset_id", None)
+        if not asset_id:
+            continue
+        asset_dir = asset_registry.get_asset_path(asset_id)
+        if asset_dir is None:
+            continue
+        pptx_path = asset_dir / "asset.pptx"
+        if not pptx_path.exists():
+            continue
+        try:
+            prs = Presentation(str(pptx_path))
+            _remove_all_slides(prs)
+            return prs
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("could not initialize output deck from asset %s: %s", asset_id, exc)
+            break
+
+    prs = Presentation()
+    prs.slide_width = Inches(_SLIDE_WIDTH_IN)
+    prs.slide_height = Inches(_SLIDE_HEIGHT_IN)
+    return prs
+
+
+def _remove_all_slides(prs: Presentation) -> None:
+    slide_id_list = prs.slides._sldIdLst
+    for slide_id in list(slide_id_list):
+        rel_id = slide_id.rId
+        prs.part.drop_rel(rel_id)
+        slide_id_list.remove(slide_id)
+
+
+def _trim_trailing_blank_slides(prs: Presentation) -> int:
+    """Remove unlabeled trailing slides with no meaningful text content."""
+    removed = 0
+    slide_id_list = prs.slides._sldIdLst
+    while len(prs.slides) > 0:
+        last_index = len(prs.slides) - 1
+        slide = prs.slides[last_index]
+        if _slide_has_meaningful_text(slide):
+            break
+        slide_id = list(slide_id_list)[last_index]
+        rel_id = slide_id.rId
+        prs.part.drop_rel(rel_id)
+        slide_id_list.remove(slide_id)
+        removed += 1
+    return removed
+
+
+def _slide_has_meaningful_text(slide) -> bool:
+    return any(text for _, text in _iter_slide_text(slide))
+
+
+def _iter_slide_text(slide):
+    for shape in slide.shapes:
+        yield from _iter_shape_text(shape)
+
+
+def _iter_shape_text(shape):
+    if hasattr(shape, "shapes"):
+        for child in shape.shapes:
+            yield from _iter_shape_text(child)
+        return
+    if not getattr(shape, "has_text_frame", False):
+        return
+    text = " ".join((shape.text or "").split())
+    if text:
+        yield getattr(shape, "name", ""), text
+
+
+_FINAL_QA_INCOMPLETE_ENDINGS = {
+    "accountable",
+    "alignment",
+    "competitive",
+    "data-driven",
+    "measurable",
+    "predictive",
+    "procurement",
+    "strategic",
+    "supplier",
+    "targeted",
+    "their",
+    "with",
+    "through",
+    "and",
+    "to",
+    "for",
+    "of",
+    "by",
+    "driving",
+    "highlighting",
+    "including",
+    "enabling",
+    "leading",
+}
+
+
+def _apply_final_pptx_qa(prs: Presentation, deck_result) -> None:
+    """Inspect the actual populated deck text before saving demo/production output."""
+    report = getattr(deck_result, "evaluation_report", None)
+    if report is None:
+        return
+
+    successful_reports = [
+        getattr(slide, "evaluation_report", None)
+        for slide in getattr(deck_result, "slides", [])
+        if getattr(slide, "success", False) and getattr(slide, "evaluation_report", None) is not None
+    ]
+    issues: list[str] = []
+    for slide_index, slide in enumerate(prs.slides, start=1):
+        slide_report = successful_reports[slide_index - 1] if slide_index - 1 < len(successful_reports) else None
+        slide_texts = list(_iter_slide_text(slide))
+        if not slide_texts:
+            issues.append(f"post-population blank slide at position {slide_index}")
+            continue
+        for shape_name, text in slide_texts:
+            if _is_footer_or_page_marker(shape_name, text):
+                continue
+            if _looks_like_incomplete_populated_text(shape_name, text):
+                issue = f"post-population incomplete phrase on slide {slide_index}: {text!r}"
+                issues.append(issue)
+                if slide_report is not None:
+                    _append_unique(slide_report.consulting_language_warnings, issue)
+                    _append_unique(slide_report.warnings, issue)
+
+    if len(prs.slides) != len(successful_reports):
+        issues.append(
+            f"post-population slide count mismatch: rendered={len(prs.slides)} expected={len(successful_reports)}"
+        )
+
+    if not issues:
+        return
+    for issue in issues:
+        _append_unique(report.consulting_language_warnings, issue)
+    report.demo_ready = False
+
+
+def _is_footer_or_page_marker(shape_name: str, text: str) -> bool:
+    normalized_name = str(shape_name or "").lower()
+    normalized_text = " ".join(str(text or "").split()).lower()
+    return (
+        "footer" in normalized_name
+        or "page" in normalized_name
+        or normalized_text.startswith("page ")
+        or normalized_text in {"ey", "ey parthenon"}
+    )
+
+
+def _looks_like_incomplete_populated_text(shape_name: str, text: str) -> bool:
+    cleaned = " ".join(str(text or "").split()).strip(" -:;,.")
+    if not cleaned:
+        return False
+    name = str(shape_name or "").lower()
+    if (
+        "trend" in name
+        or "target" in name
+        or "number" in name
+        or "label" in name
+        or "activit" in name
+        or "milestone" in name
+    ):
+        return False
+    if re.fullmatch(r"[\d$,.%xX -]+", cleaned):
+        return False
+    if re.search(r"\d+\s*%$", cleaned):
+        return False
+    words = re.findall(r"[A-Za-z][A-Za-z'-]*", cleaned)
+    if len(words) < 3:
+        return False
+    lowered = cleaned.lower()
+    if re.search(r"\b(this slide outlines|this slide highlights|this slide shows)\b", lowered):
+        return True
+    terminal = words[-1].lower()
+    if terminal in _FINAL_QA_INCOMPLETE_ENDINGS:
+        return True
+    if terminal in {"ai", "it", "hr"} and len(words) >= 5:
+        return True
+    return False
+
+
+def _append_unique(items: list[str], value: str) -> None:
+    if value not in items:
+        items.append(value)
 
 
 def _try_family_fallback(prs: Presentation, spec: SlideSpec, slide_result) -> bool:

@@ -1,0 +1,234 @@
+{
+  "asset_id": "FUTURE-STATE-OPERATING-MODEL-4CAPABILITY-001",
+  "asset_version": 2,
+  "schema_version": "1.0.0",
+  "family": "capability_map",
+  "family_aliases": [
+    "operating_model",
+    "capabilities",
+    "domain",
+    "taxonomy",
+    "future_state",
+    "target_state"
+  ],
+  "message_type": "operating_model",
+  "information_shape": "capability_map",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Future-state operating model with four integrated capabilities, key elements, outcomes, and cross-cutting integration enablers.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "program_team"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "future-state",
+    "operating-model",
+    "capability-map"
+  ],
+  "recommended_for": [
+    "future state",
+    "future-state operating model",
+    "target operating model",
+    "capability map",
+    "operating model",
+    "transformation model"
+  ],
+  "avoid_for": [
+    "current-state process flow",
+    "case for change",
+    "risk register",
+    "kpi dashboard",
+    "next steps"
+  ],
+  "density": 4,
+  "density_range": [
+    4,
+    4
+  ],
+  "fits_content_kinds": [
+    "operating_model",
+    "future_state",
+    "capability_map",
+    "capabilities",
+    "target_state"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 45,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 115,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "capability_title",
+      "role": "capability_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 28,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "capability_{N}_title_text"
+      }
+    },
+    {
+      "id": "capability_summary",
+      "role": "capability_summary",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 105,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "capability_{N}_summary_text"
+      }
+    },
+    {
+      "id": "capability_elements",
+      "role": "capability_elements",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 210,
+        "max_lines": 6,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "capability_{N}_elements_text"
+      }
+    },
+    {
+      "id": "capability_outcome",
+      "role": "capability_outcome",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "capability_{N}_outcome_text"
+      }
+    },
+    {
+      "id": "enabler_title",
+      "role": "integration_enabler_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "enabler_{N}_title_text"
+      }
+    },
+    {
+      "id": "enabler_body",
+      "role": "integration_enabler_body",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 45,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "enabler_{N}_body_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "capability_{N}_group",
+    "placeholders_per_group": [
+      "capability_title",
+      "capability_summary",
+      "capability_elements",
+      "capability_outcome",
+      "enabler_title",
+      "enabler_body"
+    ],
+    "index_token": "{N}",
+    "count": 4
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "3c5563c74cc432d8",
+    "warnings": [],
+    "errors": []
+  }
+}

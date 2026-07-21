@@ -1,0 +1,212 @@
+{
+  "asset_id": "OPPORTUNITY-6AREA-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "family": "opportunity_matrix",
+  "family_aliases": [
+    "opportunities",
+    "opportunity",
+    "value_drivers",
+    "opportunity_matrix"
+  ],
+  "message_type": "opportunities",
+  "information_shape": "opportunity_grid",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Six-area opportunity grid showing current issue, opportunity, and value unlocked for each improvement area.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "opportunities",
+    "value-drivers"
+  ],
+  "recommended_for": [
+    "opportunities",
+    "value drivers",
+    "improvement opportunities",
+    "transformation opportunities",
+    "supply chain opportunities",
+    "performance improvement"
+  ],
+  "avoid_for": [
+    "risk register",
+    "kpi dashboard",
+    "implementation roadmap",
+    "section divider"
+  ],
+  "density": 6,
+  "density_range": [
+    6,
+    6
+  ],
+  "fits_content_kinds": [
+    "opportunities",
+    "value_drivers",
+    "improvement_areas",
+    "transformation_levers"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 88,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 130,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "opportunity_title",
+      "role": "opportunity_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 24,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_opportunity_title; 2-4 words; noun phrase; no sentence"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "opportunity_{N}_title_text"
+      }
+    },
+    {
+      "id": "current_issue",
+      "role": "current_issue",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 50,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_current_issue; One concise issue phrase with business context; no long causal chains"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "opportunity_{N}_current_issue_text"
+      }
+    },
+    {
+      "id": "opportunity",
+      "role": "opportunity",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 50,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_opportunity_action; One concise action phrase; start with a verb; include the operating lever"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "opportunity_{N}_opportunity_text"
+      }
+    },
+    {
+      "id": "value_unlocked",
+      "role": "value_unlocked",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true,
+        "prompt_guidance": "compact_value_phrase; One concise value outcome with enough context; avoid unsupported percentages"
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "opportunity_{N}_value_unlocked_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "takeaway",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 145,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "opportunity_{N}",
+    "placeholders_per_group": [
+      "opportunity_title",
+      "current_issue",
+      "opportunity",
+      "value_unlocked"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "20806e92a9bf0a7b",
+    "warnings": [],
+    "errors": []
+  }
+}

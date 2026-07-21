@@ -164,6 +164,32 @@ class IntentExtractionTests(unittest.TestCase):
         self.assertIn("AI Procurement Transformation", result.objective)
         self.assertIsNotNone(result.objective)
 
+    def test_curly_possessive_unilever_prompt(self):
+        """Regression: curly apostrophes should not hide the company name."""
+        content = (
+            "Create a consulting presentation for Unilever’s HR Transformation using AI. "
+            "The audience is the CHRO and Executive Committee."
+        )
+        result = self._extract(content)
+
+        self.assertEqual(result.company, "Unilever")
+        self.assertEqual(result.industry, "Retail")
+        self.assertEqual(result.business_function, "Human Resources")
+        self.assertEqual(result.audience, "Board of Directors")
+
+    def test_structured_clarification_company_answer(self):
+        """Regression: plan-preview clarification answers are keyed by field id."""
+        content = (
+            "Create a consulting presentation for HR Transformation using AI.\n\n"
+            "Clarification answers:\n"
+            "- company: hindustan uniliver"
+        )
+        result = self._extract(content)
+
+        self.assertEqual(result.company, "Hindustan Unilever")
+        self.assertEqual(result.industry, "Retail")
+        self.assertEqual(result.business_function, "Human Resources")
+
 
 if __name__ == "__main__":
     unittest.main()

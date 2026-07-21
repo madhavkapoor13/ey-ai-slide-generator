@@ -46,6 +46,21 @@ from schemas.visual import VisualBrief
 
 logger = logging.getLogger(__name__)
 
+_INVESTMENT_ROLE_TERMS = (
+    "investment",
+    "investment case",
+    "business case",
+    "funding",
+    "funding request",
+    "budget",
+    "roi",
+    "return on investment",
+    "payback",
+    "value case",
+    "financial case",
+    "economics",
+)
+
 # Slide roles that anchor on the mapped enterprise process. All other roles
 # receive an empty ProcessResult so the LLM is not biased toward generic
 # procurement stages.
@@ -68,6 +83,7 @@ _ROLE_FAMILY_COMPATIBILITY: dict[str, set[str]] = {
     "kpis_for_success": {"kpi"},
     "implementation_roadmap": {"roadmap", "timeline"},
     "current_state": {"process"},
+    "case_for_change": {"case_for_change", "comparison", "matrix"},
     "future_state": {"capability_map", "comparison"},
     "executive_summary": {"executive_summary"},
     "opportunities": {"opportunity_matrix", "comparison", "strategy"},
@@ -317,8 +333,32 @@ def _gate_deck_plan(deck_spec: DeckSpec) -> DeckSpec:
     """
     seen: set[str] = set()
     gated: list[SlidePlan] = []
+    strict_pilot_roles = {
+        "executive_summary",
+        "current_state",
+        "current_future_comparison",
+        "future_state",
+        "governance_model",
+        "business_benefits",
+        "investment_case",
+        "opportunities",
+        "ai_use_cases",
+        "implementation_roadmap",
+        "kpis_for_success",
+        "implementation_risks",
+        "next_steps",
+        "case_for_change",
+    }
     for slide in deck_spec.slides:
         canonical = _canonical_slide_role(slide.slide_role)
+        if _requires_certified_assets() and canonical and canonical not in strict_pilot_roles:
+            logger.warning(
+                "deck_executor: dropping unsupported strict-pilot role slide=%d role=%s canonical=%s",
+                slide.slide_number,
+                slide.slide_role,
+                canonical,
+            )
+            continue
         if canonical and canonical in seen:
             logger.warning(
                 "deck_executor: dropping duplicate canonical role slide=%d role=%s canonical=%s",
@@ -359,14 +399,28 @@ def _gate_deck_plan(deck_spec: DeckSpec) -> DeckSpec:
 
 def _canonical_slide_role(role: str) -> str | None:
     text = (role or "").lower()
+    if "section" in text and ("divider" in text or "break" in text):
+        return "section_divider"
+    if "divider slide" in text or "chapter divider" in text:
+        return "section_divider"
     if "executive summary" in text or "transformation overview" in text:
         return "executive_summary"
+    if ("current" in text and "future" in text) or ("from" in text and "to" in text):
+        return "current_future_comparison"
     if "current" in text and ("process" in text or "state" in text):
         return "current_state"
+    if "governance" in text or "decision right" in text:
+        return "governance_model"
+    if any(term in text for term in _INVESTMENT_ROLE_TERMS):
+        return "investment_case"
+    if "risk" in text or "mitigation" in text:
+        return "implementation_risks"
     if "future" in text or "operating model" in text:
         return "future_state"
-    if "benefit" in text or "value case" in text:
+    if "benefit" in text:
         return "business_benefits"
+    if "case for change" in text or "change imperative" in text or "why change" in text:
+        return "case_for_change"
     if "use case" in text:
         return "ai_use_cases"
     if "roadmap" in text:
@@ -375,10 +429,10 @@ def _canonical_slide_role(role: str) -> str | None:
         return "transformation_timeline"
     if "kpi" in text or "metric" in text:
         return "kpis_for_success"
-    if "risk" in text or "mitigation" in text:
-        return "implementation_risks"
     if "next step" in text or "decision" in text or "action" in text:
         return "next_steps"
+    if "opportunit" in text:
+        return "opportunities"
     return None
 
 
@@ -386,6 +440,20 @@ def _canonical_generated_role(raw: dict) -> str | None:
     """Infer canonical role from generated visible text."""
     if not isinstance(raw, dict):
         return None
+    keys = set(raw.keys())
+    if (
+        any(key == "decision_title" or key.startswith("decision_") for key in keys)
+        and any("why_now" in key for key in keys)
+        and any(key.startswith("delay_") or "delay" in key for key in keys)
+    ):
+        return "next_steps"
+    if "section_number" in raw and (
+        {"title", "subtitle"}.issubset(raw)
+        or {"section_title", "section_subtitle"}.issubset(raw)
+    ):
+        return "section_divider"
+    if any(key in raw for key in ("card_header", "card_description", "card_bullet_1")):
+        return "executive_summary"
     fields: list[str] = []
     for key in ("title", "subtitle", "description", "executive_summary"):
         value = raw.get(key)
@@ -461,6 +529,30 @@ def _select_asset_for_slide(
     try:
         family = asset_selector.family_for_pattern(visual_selection.pattern_id)
         visual_brief = _visual_brief_for_slide(slide_plan, visual_selection, intent)
+        from backend.presentation_assets.visual_variant_registry import resolve_variant_for_slide
+
+        variant_selection = resolve_variant_for_slide(
+            slide_plan,
+            visual_brief,
+            user_preferences=user_preferences,
+            require_certified=_requires_certified_assets(),
+        )
+        if variant_selection is not None:
+            logger.info(
+                "deck_executor: visual variant resolved — slide=%d role=%s asset=%s brief=%s/%s",
+                slide_plan.slide_number,
+                slide_plan.slide_role,
+                variant_selection.asset_id,
+                visual_brief.message_type,
+                visual_brief.information_shape,
+            )
+            return variant_selection
+        if _requires_certified_assets():
+            raise ValueError(
+                "no certified pilot visual variant matched this slide; "
+                "demo/production mode will not fall back to legacy layout assets"
+            )
+
         audience: list[str] = []
         style: list[str] = []
         keywords: list[str] = []
@@ -651,12 +743,31 @@ def _visual_brief_for_slide(
         )
         if part
     ).lower()
-    if "risk" in text or "mitigation" in text:
+    if "section" in text and ("divider" in text or "break" in text):
+        message_type, information_shape = "section_divider", "section_break"
+    elif "divider slide" in text or "chapter divider" in text:
+        message_type, information_shape = "section_divider", "section_break"
+    elif any(term in text for term in _INVESTMENT_ROLE_TERMS):
+        message_type, information_shape = "investment_case", "business_case"
+    elif (
+        "risk register" in text
+        or "risk log" in text
+        or "mitigation register" in text
+        or ("risk" in text and "owner" in text and "status" in text)
+    ):
+        message_type, information_shape = "risk_register", "risk_table"
+    elif "risk" in text or "mitigation" in text:
         message_type, information_shape = "risk_matrix", "matrix"
     elif "next step" in text or "decision" in text or "action" in text:
         message_type, information_shape = "board_decisions", "actions"
+    elif "scorecard" in text and ("kpi" in text or "metric" in text or "performance" in text):
+        message_type, information_shape = "kpi_scorecard", "scorecard_table"
     elif "kpi" in text or "metric" in text:
         message_type, information_shape = "kpi_dashboard", "metrics"
+    elif "case for change" in text or "case_for_change" in text or "why change" in text or "change imperative" in text:
+        message_type, information_shape = "case_for_change", "three_drivers"
+    elif "compare" in text or "comparison" in text or ("current" in text and "future" in text):
+        message_type, information_shape = "comparison", "comparison"
     elif "current state" in text or "current process" in text or "as is" in text or "as-is" in text:
         message_type, information_shape = "process_flow", "sequence"
     elif "future state" in text or "target state" in text or "target operating model" in text:
@@ -669,10 +780,8 @@ def _visual_brief_for_slide(
         message_type, information_shape = "ai_use_case_portfolio", "portfolio"
     elif "strategy" in text or "pillar" in text or "priority" in text:
         message_type, information_shape = "strategy_pillars", "portfolio"
-    elif "benefit" in text or "value case" in text:
+    elif "benefit" in text:
         message_type, information_shape = "business_benefits", "stack"
-    elif "compare" in text or "comparison" in text or "current" in text and "future" in text:
-        message_type, information_shape = "comparison", "comparison"
     elif "process" in text or "flow" in text:
         message_type, information_shape = "process_flow", "sequence"
     elif "operating model" in text or "capability" in text:
@@ -730,9 +839,22 @@ def _slide_evaluation_report(
     required = []
     missing = 0
     asset_version = None
+    variant_id = None
+    variant_slide_type = None
+    template_source_slide = None
     if asset_selection is not None:
         manifest = getattr(asset_selection, "manifest", None)
         asset_version = getattr(manifest, "asset_version", None)
+        try:
+            from backend.presentation_assets.visual_variant_registry import variant_for_asset_id
+
+            variant = variant_for_asset_id(slide_spec.asset_id)
+            if variant is not None:
+                variant_id = variant.variant_id
+                variant_slide_type = variant.slide_type
+                template_source_slide = variant.source_slide_index
+        except Exception:
+            variant = None
         placeholders = getattr(manifest, "placeholders", [])
         if not isinstance(placeholders, list):
             placeholders = []
@@ -750,7 +872,10 @@ def _slide_evaluation_report(
     return SlideEvaluationReport(
         slide_number=slide_plan.slide_number,
         role=slide_plan.slide_role,
+        slide_type=variant_slide_type,
         pattern=getattr(visual_selection, "pattern_id", None),
+        variant_id=variant_id,
+        template_source_slide=template_source_slide,
         asset=slide_spec.asset_id,
         asset_version=asset_version,
         population="validated" if validation_result and validation_result.is_valid else "validation_failed",
@@ -773,6 +898,7 @@ def _deck_evaluation_report(slides: list[SlideExecutionResult]) -> DeckEvaluatio
     if not reports:
         return DeckEvaluationReport()
     asset_ids = [r.asset for r in reports if r.asset]
+    variant_ids = [r.variant_id for r in reports if r.variant_id]
     repeated_assets = sorted({asset for asset in asset_ids if asset_ids.count(asset) > 1})
     titles = [
         slide.slide_spec.raw_spec.get("title", "")
@@ -837,6 +963,7 @@ def _deck_evaluation_report(slides: list[SlideExecutionResult]) -> DeckEvaluatio
     )
     return DeckEvaluationReport(
         asset_coverage=round(len(asset_ids) / len(reports), 4),
+        variant_coverage=round(len(variant_ids) / len(reports), 4),
         asset_diversity=round(len(set(asset_ids)) / len(asset_ids), 4) if asset_ids else 0.0,
         repeated_asset_count=len(repeated_assets),
         max_family_repetition=max(family_counts) if family_counts else 0,

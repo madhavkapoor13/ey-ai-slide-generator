@@ -20,6 +20,9 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
+from schemas.clarification import ClarificationResult
+from schemas.intent import IntentResult
+from schemas.presentation import DeckSpec
 from schemas.presentation_asset import UserPreferences
 
 
@@ -54,6 +57,47 @@ class GenerateV2Request(BaseModel):
         default=None,
         description="Optional explicit user preferences; overrides inferred defaults.",
     )
+
+
+class PlanV2Request(GenerateV2Request):
+    """Request body for ``POST /plan/v2``."""
+
+
+class SlideVariantOption(BaseModel):
+    """One visual variant the user can choose for a planned slide."""
+
+    variant_id: str = Field(..., description="User-facing visual variant identifier.")
+    asset_id: str = Field(..., description="Presentation Asset id backing the variant.")
+    label: str = Field(..., description="Human-readable variant label.")
+
+
+class SlidePlanVariantOptions(BaseModel):
+    """Available and recommended visual variants for one planned slide."""
+
+    slide_number: int = Field(..., ge=1, description="Slide number from the deck plan.")
+    slide_role: str = Field(..., description="Slide role from the deck plan.")
+    slide_type: Optional[str] = Field(default=None, description="Resolved pilot slide type.")
+    recommended_variant: Optional[str] = Field(default=None, description="Recommended variant id.")
+    available_variants: list[SlideVariantOption] = Field(default_factory=list)
+
+
+class PlanV2Response(BaseModel):
+    """JSON plan preview returned before PowerPoint generation."""
+
+    title: str = Field(..., description="Original request title.")
+    content: str = Field(..., description="Original request content.")
+    intent: IntentResult = Field(..., description="Structured intent extracted from the prompt.")
+    deck_spec: DeckSpec = Field(..., description="Editable deck plan.")
+    needs_clarification: bool = Field(default=False)
+    clarification_result: Optional[ClarificationResult] = Field(default=None)
+    warnings: list[str] = Field(default_factory=list)
+    slide_variants: list[SlidePlanVariantOptions] = Field(default_factory=list)
+
+
+class GenerateFromPlanV2Request(GenerateV2Request):
+    """Request body for ``POST /generate/v2/from-plan``."""
+
+    deck_spec: DeckSpec = Field(..., description="User-approved edited deck plan.")
 
 
 # ── Phase 2 Response ──────────────────────────────────────────────────────────

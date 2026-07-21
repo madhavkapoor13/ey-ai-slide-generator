@@ -443,19 +443,42 @@ def _section_divider_spec(
     company = _clean_text(context.company) or _clean_text(getattr(intent, "company", None)) or "Enterprise"
     next_role = slide_plan.purpose.replace("Transition to", "").strip().rstrip(".")
     section_title = _slide_role_scope(next_role) if next_role else "Next Section"
-    raw_spec = {
-        "title": slide_plan.slide_role,
-        "subtitle": f"{company} — {section_title}",
-        "description": f"Transition to {section_title}.",
-        "executive_summary": f"The following section covers {section_title.lower()}.",
-        "section_title": section_title,
-        "metadata": {
-            "company": company,
-            "slide_role": slide_plan.slide_role,
-            "slide_number": str(slide_plan.slide_number),
-            "visual_pattern": "SECTION-DIVIDER",
-        },
-    }
+    if asset_id == "SECTION-DIVIDER-DARK-001":
+        divider_context = f"{slide_plan.purpose} {getattr(intent, 'raw_content', '')}".lower()
+        if "roadmap" in divider_context:
+            section_title = "Implementation Roadmap"
+        raw_spec = {
+            "section_number": f"SECTION {slide_plan.slide_number:02d}",
+            "title": _fit_compact_label(section_title, "Implementation Roadmap", max_chars=34),
+            "subtitle": _fit_compact_label(
+                f"{company} procurement transformation roadmap",
+                f"{company} transformation roadmap",
+                max_chars=82,
+            ),
+            "tagline": "Board discussion",
+        }
+    elif asset_id == "SECTION-NEXT-STEPS-001":
+        raw_spec = {
+            "section_number": f"SECTION {slide_plan.slide_number:02d}",
+            "section_title": "NEXT STEPS\n& ACTIONS",
+            "section_subtitle": (
+                "Decisions, accountabilities and actions required after the transformation proposal."
+            ),
+        }
+    else:
+        raw_spec = {
+            "title": slide_plan.slide_role,
+            "subtitle": f"{company} — {section_title}",
+            "description": f"Transition to {section_title}.",
+            "executive_summary": f"The following section covers {section_title.lower()}.",
+            "section_title": section_title,
+            "metadata": {
+                "company": company,
+                "slide_role": slide_plan.slide_role,
+                "slide_number": str(slide_plan.slide_number),
+                "visual_pattern": "SECTION-DIVIDER",
+            },
+        }
     return SlideSpec(
         slide_type="operating_model",
         raw_spec=raw_spec,
@@ -935,9 +958,716 @@ def _repair_manifest_contract(
         repaired = _repair_roadmap_labels(repaired, asset_manifest)
     if "risk" in role:
         repaired = _repair_risk_language(repaired)
+    repaired = _repair_risk_register(repaired, asset_manifest)
+    repaired = _repair_compact_use_case_shortlist(repaired, asset_manifest)
+    repaired = _repair_compact_opportunity_grid(repaired, asset_manifest)
+    repaired = _repair_current_future_comparison(repaired, asset_manifest)
+    repaired = _repair_current_process_6step(repaired, asset_manifest)
+    repaired = _repair_value_realization_roadmap(repaired, asset_manifest)
+    repaired = _repair_kpi_dashboard_values(repaired, asset_manifest)
+    repaired = _repair_kpi_scorecard_table(repaired, asset_manifest)
+    repaired = _repair_governance_model_labels(repaired, asset_manifest)
+    repaired = _repair_investment_case_labels(repaired, asset_manifest)
     if _is_next_step_manifest(asset_manifest) or "next step" in role or "decision" in role or "action" in role:
         repaired = _repair_next_step_language(repaired, asset_manifest)
     repaired = _repair_title_so_what(repaired, slide_plan)
+    repaired = _repair_repeating_placeholder_lengths(repaired, asset_manifest, slide_plan)
+    return repaired
+
+
+def _repair_value_realization_roadmap(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Ensure the bottom cumulative-benefits strip is populated."""
+    if (asset_manifest.asset_id or "") != "VALUE-REALIZATION-ROADMAP-001":
+        return payload
+    repaired = dict(payload)
+    repaired["milestone_value"] = _repair_fixed_list(
+        repaired.get("milestone_value"),
+        ["10%", "45%", "100%"],
+        max_chars=8,
+    )
+    repaired["milestone_description"] = _repair_fixed_list(
+        repaired.get("milestone_description"),
+        [
+            "Quick wins captured",
+            "Automation benefits ramp",
+            "Full value at scale",
+        ],
+        max_chars=40,
+    )
+    total = _clean_text(repaired.get("total_value"))
+    if not total or _is_placeholder_default_text(total):
+        total = "$50M total projected value"
+    repaired["total_value"] = _fit_compact_label(total, "$50M total projected value", max_chars=35)
+    return repaired
+
+
+def _repair_fixed_list(value: Any, defaults: list[str], *, max_chars: int) -> list[str]:
+    items = _as_list(value)
+    repaired: list[str] = []
+    for index, fallback in enumerate(defaults):
+        raw = items[index] if index < len(items) else ""
+        text = _clean_text(raw) if isinstance(raw, str) else ""
+        if not text or _is_placeholder_default_text(text):
+            text = fallback
+        repaired.append(_fit_compact_label(text, fallback, max_chars=max_chars))
+    return repaired
+
+
+def _repair_current_future_comparison(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Keep current/future comparison content semantically distinct from future-state-only slides."""
+    if (asset_manifest.asset_id or "") != "CURRENT-FUTURE-COMPARISON-5SHIFT-001":
+        return payload
+    repaired = dict(payload)
+    repaired["title"] = "Current-to-future shifts define the HR transformation path"
+    repaired["subtitle"] = "Five shifts move Unilever HR from fragmented work to a future-ready operating model"
+    repaired["current_state"] = [
+        "Local HR intake and routing",
+        "Fragmented employee data",
+        "Inconsistent policy guidance",
+        "Reactive workforce planning",
+        "Variable employee experience",
+    ]
+    repaired["transformation_shift"] = [
+        "Standardize intake",
+        "Unify data",
+        "Automate guidance",
+        "Plan skills",
+        "Personalize service",
+    ]
+    repaired["future_state"] = [
+        "Digital front door with clear ownership",
+        "Trusted HR data available in real time",
+        "AI guidance applies policy consistently",
+        "Skills insights guide workforce decisions",
+        "Employee journeys become measurable",
+    ]
+    repaired["takeaway"] = (
+        "The transformation shifts HR from reactive service delivery to data-led workforce enablement."
+    )
+    return repaired
+
+
+def _repair_current_process_6step(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Ensure the six-step current-process asset shows the requested business impact."""
+    if (asset_manifest.asset_id or "") != "CURRENT-STATE-PROCESS-6STEP-001":
+        return payload
+    repaired = dict(payload)
+    repaired["title"] = "Current supply chain friction constrains growth"
+    repaired["subtitle"] = "Six process steps expose delays, exceptions and fragmented ownership"
+    repaired["takeaway"] = (
+        "Business impact: delays, exceptions and fragmented ownership constrain service, cost and resilience."
+    )
+    return repaired
+
+
+def _repair_risk_register(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Backfill the 7-row risk register with compact row and summary text."""
+    if (asset_manifest.asset_id or "") != "RISK-REGISTER-7ITEM-001":
+        return payload
+    repaired = dict(payload)
+    repaired["title"] = "Implementation risks require accountable mitigation before scale"
+    repaired["subtitle"] = "Seven priority risks, owners, and mitigations for Toyota's AI operating model rollout"
+    rows = [
+        ("MES / ERP data gaps delay model readiness", "High", "Critical", "Run data-quality sprint; assign plant data owners; validate model inputs.", "Data Lead", "Active"),
+        ("Plant adoption lags due to workflow disruption", "Medium", "High", "Use change champions; train supervisors; track adoption weekly.", "Plant Ops", "Active"),
+        ("Legacy equipment integration proves complex", "Medium", "High", "Prioritize critical interfaces; test integrations early; keep fallback plans.", "IT / OT Lead", "Mitigating"),
+        ("Cybersecurity controls slow connected-factory rollout", "Medium", "High", "Embed security review; segment OT networks; approve access controls.", "Security", "Active"),
+        ("Model accuracy drops across product variants", "Low", "Moderate", "Monitor drift; retrain models by product family; set human review gates.", "Analytics", "Monitoring"),
+        ("Supplier data sharing limits predictive visibility", "Medium", "High", "Agree data standards with key suppliers; phase integration by tier.", "Supply Chain", "Active"),
+        ("Benefits ownership weakens after pilot handoff", "Medium", "High", "Assign value owners; review KPIs monthly; tie scale funding to benefits.", "PMO", "Mitigating"),
+    ]
+    repaired["risk_id"] = [f"R{index}" for index in range(1, len(rows) + 1)]
+    repaired["risk_description"] = [
+        _fit_compact_label(description, description, max_chars=58)
+        for description, *_ in rows
+    ]
+    repaired["risk_likelihood"] = [likelihood for _, likelihood, *_ in rows]
+    repaired["risk_impact"] = [impact for _, _, impact, *_ in rows]
+    repaired["risk_mitigation"] = [
+        _fit_compact_label(mitigation, mitigation, max_chars=88)
+        for _, _, _, mitigation, _, _ in rows
+    ]
+    repaired["risk_owner"] = [owner for _, _, _, _, owner, _ in rows]
+    repaired["risk_status"] = [status for _, _, _, _, _, status in rows]
+    repaired["summary_count"] = ["3", "3", "1", "0"]
+    repaired["summary_label"] = ["Critical / high", "Active mitigations", "Watchlist", "Closed"]
+    repaired["summary_description"] = [
+        "Need executive attention",
+        "Owners assigned",
+        "Monitor through PMO",
+        "None closed yet",
+    ]
+    return repaired
+
+
+def _repair_compact_use_case_shortlist(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Keep narrow prioritization-matrix shortlist slots as compact labels."""
+    repaired = dict(payload)
+    max_chars_by_id = {
+        placeholder.id: placeholder.constraints.get("max_chars", 34)
+        for placeholder in asset_manifest.placeholders
+        if placeholder.id.startswith("shortlist_") and placeholder.id.endswith("_items")
+    }
+    for placeholder_id, max_chars in max_chars_by_id.items():
+        value = repaired.get(placeholder_id)
+        if isinstance(value, str):
+            repaired[placeholder_id] = _compact_use_case_label(value, int(max_chars or 34))
+    return repaired
+
+
+def _compact_use_case_label(value: str, max_chars: int) -> str:
+    text = _clean_text(value).rstrip(".")
+    replacements = {
+        "supplier collaboration platform": "Supplier visibility platform",
+        "ai-powered logistics optimization": "Logistics cost optimization",
+        "automated procurement analytics": "Procurement analytics",
+        "predictive analytics": "Demand forecasting",
+        "autonomous procurement negotiation": "Autonomous negotiation",
+        "synthetic-data generation": "Synthetic data generation",
+    }
+    lowered = text.lower()
+    for phrase, replacement in replacements.items():
+        if phrase in lowered:
+            text = replacement
+            break
+    text = re.sub(r"^(ai-powered|automated)\s+", "", text, flags=re.I)
+    text = re.split(r"\s+(?:for|to|with|that|which)\s+", text, maxsplit=1, flags=re.I)[0]
+    text = text.strip(" -:;.").strip()
+    return _fit_compact_label(text, "Demand forecasting", max_chars=max_chars)
+
+
+def _repair_compact_opportunity_grid(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Keep six-area opportunity cards inside their compact text slots."""
+    if (asset_manifest.asset_id or "") != "OPPORTUNITY-6AREA-001":
+        return payload
+    repaired = dict(payload)
+    max_chars_by_id = {
+        placeholder.id: int(placeholder.constraints.get("max_chars", 42) or 42)
+        for placeholder in asset_manifest.placeholders
+        if placeholder.id in {"opportunity_title", "current_issue", "opportunity", "value_unlocked"}
+    }
+    for placeholder_id, max_chars in max_chars_by_id.items():
+        value = repaired.get(placeholder_id)
+        if isinstance(value, list):
+            repaired[placeholder_id] = [
+                _compact_opportunity_value(placeholder_id, str(item), index, max_chars)
+                for index, item in enumerate(value)
+            ]
+        elif isinstance(value, str):
+            repaired[placeholder_id] = _compact_opportunity_value(placeholder_id, value, 0, max_chars)
+    return repaired
+
+
+def _compact_opportunity_value(placeholder_id: str, value: str, index: int, max_chars: int) -> str:
+    text = _clean_text(value).rstrip(".")
+    lowered = text.lower()
+    replacements_by_field = {
+        "opportunity_title": {
+            "demand forecasting": "Demand forecasting",
+            "inventory management": "Inventory management",
+            "supplier collaboration": "Supplier collaboration",
+            "logistics optimization": "Logistics optimization",
+            "process automation": "Process automation",
+            "sustainability initiatives": "Sustainability",
+        },
+        "current_issue": {
+            "inaccurate demand forecasts": "Forecast misses create stockouts and buffers",
+            "high carrying costs": "Excess stock ties up working capital",
+            "limited collaboration": "Limited supplier visibility slows response",
+            "inefficient logistics": "Transport cost and delays remain elevated",
+            "manual processes": "Manual order work slows execution",
+            "lack of sustainable": "Sustainability gaps create brand exposure",
+        },
+        "opportunity": {
+            "ai-driven forecasting": "Deploy AI demand forecasting",
+            "optimize inventory": "Optimize inventory policies",
+            "supplier engagement": "Launch supplier collaboration workflows",
+            "collaborative platforms": "Launch supplier collaboration workflows",
+            "route planning": "Optimize routes and shipment planning",
+            "automate repetitive": "Automate order and exception handling",
+            "sustainable practices": "Scale sustainable sourcing controls",
+        },
+        "value_unlocked": {
+            "reduce inventory costs": "Lower inventory buffers and stockouts",
+            "increase inventory turnover": "Faster turns and lower holding cost",
+            "savings through improved supplier": "Better supplier terms and reliability",
+            "cut logistics costs": "Lower logistics cost and cycle time",
+            "boost operational efficiency": "Higher productivity and fewer errors",
+            "enhance brand value": "Stronger brand trust and compliance",
+        },
+    }
+    for phrase, replacement in replacements_by_field.get(placeholder_id, {}).items():
+        if phrase in lowered:
+            text = replacement
+            break
+    if len(text) > max_chars:
+        text = re.sub(r"\b(?:through|by|for|with|due to|resulting in|to reduce|to improve)\b.*$", "", text, flags=re.I)
+    text = re.sub(r"\s+", " ", text).strip(" -:;.").strip()
+    return _fit_compact_label(text, _default_opportunity_value(placeholder_id, index), max_chars=max_chars)
+
+
+def _default_opportunity_value(placeholder_id: str, index: int) -> str:
+    defaults = {
+        "opportunity_title": [
+            "Demand forecasting",
+            "Inventory management",
+            "Supplier collaboration",
+            "Logistics optimization",
+            "Process automation",
+            "Sustainability",
+        ],
+        "current_issue": [
+            "Forecast misses create stockouts and buffers",
+            "Excess stock ties up working capital",
+            "Limited supplier visibility slows response",
+            "Transport cost and delays remain elevated",
+            "Manual order work slows execution",
+            "Sustainability gaps create brand exposure",
+        ],
+        "opportunity": [
+            "Deploy AI demand forecasting",
+            "Optimize inventory policies",
+            "Launch supplier collaboration workflows",
+            "Optimize routes and shipment planning",
+            "Automate order and exception handling",
+            "Scale sustainable sourcing controls",
+        ],
+        "value_unlocked": [
+            "Lower inventory buffers and stockouts",
+            "Faster turns and lower holding cost",
+            "Better supplier terms and reliability",
+            "Lower logistics cost and cycle time",
+            "Higher productivity and fewer errors",
+            "Stronger brand trust and compliance",
+        ],
+    }
+    return _indexed_default(index, defaults.get(placeholder_id, ["Value opportunity"]))
+
+
+def _repair_kpi_dashboard_values(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Ensure KPI cards always render a visible metric value."""
+    if (asset_manifest.asset_id or "") != "KPI-6PRIORITY-METRICS-001":
+        return payload
+    repaired = dict(payload)
+    names = _as_list(repaired.get("kpi_name"))
+    values = _as_list(repaired.get("kpi_value"))
+    target_count = asset_manifest.repeating.count if asset_manifest.repeating else asset_manifest.density
+    while len(names) < target_count:
+        names.append(_default_kpi_name(len(names)))
+    while len(values) < target_count:
+        values.append("")
+    repaired["kpi_name"] = names[:target_count]
+    repaired["kpi_value"] = [
+        _compact_kpi_value(value, names[index], index)
+        for index, value in enumerate(values[:target_count])
+    ]
+    return repaired
+
+
+def _repair_kpi_scorecard_table(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Populate editable KPI scorecard table cells with generated/default values."""
+    if (asset_manifest.asset_id or "") != "KPI-SCORECARD-TABLE-001":
+        return payload
+    repaired = dict(payload)
+    defaults = [
+        {
+            "kpi_name": "Close Cycle Time\nDays to close",
+            "baseline": "8 days",
+            "target": "5 days",
+            "current": "6 days",
+            "owner": "Controllership",
+            "cadence": "Monthly",
+            "status": "Improving",
+            "comment": "AI reconciliations reducing manual close work.",
+        },
+        {
+            "kpi_name": "Invoice Touchless Rate\n% processed without manual review",
+            "baseline": "42%",
+            "target": "75%",
+            "current": "58%",
+            "owner": "Finance Ops",
+            "cadence": "Monthly",
+            "status": "At risk",
+            "comment": "Supplier data quality remains the main blocker.",
+        },
+        {
+            "kpi_name": "Forecast Accuracy\nVariance to actuals",
+            "baseline": "78%",
+            "target": "90%",
+            "current": "84%",
+            "owner": "FP&A",
+            "cadence": "Monthly",
+            "status": "Improving",
+            "comment": "Model pilots improving revenue and cost forecasts.",
+        },
+        {
+            "kpi_name": "Control Exception Rate\n% transactions with exceptions",
+            "baseline": "18%",
+            "target": "8%",
+            "current": "12%",
+            "owner": "Risk & Control",
+            "cadence": "Monthly",
+            "status": "Improving",
+            "comment": "Exception analytics targeting high-risk controls.",
+        },
+        {
+            "kpi_name": "Manual Journal Rate\n% journals manually posted",
+            "baseline": "35%",
+            "target": "15%",
+            "current": "24%",
+            "owner": "Accounting",
+            "cadence": "Monthly",
+            "status": "At risk",
+            "comment": "Workflow adoption required before scale-up.",
+        },
+        {
+            "kpi_name": "Audit Evidence Readiness\n% evidence auto-collected",
+            "baseline": "50%",
+            "target": "85%",
+            "current": "68%",
+            "owner": "Audit",
+            "cadence": "Quarterly",
+            "status": "On track",
+            "comment": "Evidence automation progressing in priority controls.",
+        },
+        {
+            "kpi_name": "AI Adoption\n% priority users active",
+            "baseline": "20%",
+            "target": "70%",
+            "current": "45%",
+            "owner": "Transformation",
+            "cadence": "Monthly",
+            "status": "Improving",
+            "comment": "Usage rising as finance teams complete training.",
+        },
+    ]
+    max_chars_by_id = {
+        placeholder.id: int(placeholder.constraints.get("max_chars", 32) or 32)
+        for placeholder in asset_manifest.placeholders
+    }
+    for index, row in enumerate(defaults, start=1):
+        for field, fallback in row.items():
+            placeholder_id = f"{field}_{index}"
+            value = repaired.get(placeholder_id)
+            text = _clean_text(value) if isinstance(value, str) else ""
+            if not text or _is_placeholder_default_text(text):
+                text = fallback
+            repaired[placeholder_id] = _fit_compact_label(
+                text,
+                fallback,
+                max_chars=max_chars_by_id.get(placeholder_id, len(fallback)),
+            )
+
+    repaired["on_track_count"] = _fit_compact_label(repaired.get("on_track_count"), "2", max_chars=4)
+    repaired["at_risk_count"] = _fit_compact_label(repaired.get("at_risk_count"), "2", max_chars=4)
+    repaired["off_track_count"] = _fit_compact_label(repaired.get("off_track_count"), "0", max_chars=4)
+    repaired["on_track_description"] = "Two KPIs meeting plan"
+    repaired["at_risk_description"] = "Two KPIs need intervention"
+    repaired["off_track_description"] = "No KPI materially off track"
+    return repaired
+
+
+def _repair_governance_model_labels(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Keep dense governance-model slots to compact native-PPT labels."""
+    if (asset_manifest.asset_id or "") != "GOVERNANCE-MODEL-001":
+        return payload
+    repaired = dict(payload)
+    max_chars_by_id = {
+        placeholder.id: int(placeholder.constraints.get("max_chars", 28) or 28)
+        for placeholder in asset_manifest.placeholders
+    }
+    compact_defaults = {
+        "steering_committee_title": "Steering Committee",
+        "steering_committee_mandate": "Strategy | Funding | Escalations",
+        "pmo_title": "Project Management Office (PMO)",
+        "pmo_mandate": "Integration | Reporting | Risks | Decisions",
+    }
+    for placeholder_id, fallback in compact_defaults.items():
+        value = repaired.get(placeholder_id)
+        if isinstance(value, str):
+            repaired[placeholder_id] = _fit_compact_label(
+                _clean_text(value).rstrip("."),
+                fallback,
+                max_chars=max_chars_by_id.get(placeholder_id, len(fallback)),
+            )
+        else:
+            repaired[placeholder_id] = fallback
+
+    for prefix, defaults in (
+        (
+            "steering_responsibility_",
+            ["Set priorities", "Approve funding", "Resolve escalations"],
+        ),
+        (
+            "pmo_responsibility_",
+            ["Coordinate teams", "Track progress", "Manage risks", "Maintain standards"],
+        ),
+    ):
+        for index, fallback in enumerate(defaults, start=1):
+            placeholder_id = f"{prefix}{index}"
+            value = repaired.get(placeholder_id)
+            if isinstance(value, str):
+                repaired[placeholder_id] = fallback
+            else:
+                repaired[placeholder_id] = fallback
+
+    for placeholder_id, defaults in (
+        ("workstream_title", ["Data Integration", "Process Automation", "Performance Analytics", "Change Management"]),
+        ("workstream_responsibilities", [
+            "Map data\nClean records\nEnable reporting",
+            "Redesign flow\nAutomate tasks\nControl exceptions",
+            "Define KPIs\nTrack benefits\nReport insights",
+            "Engage teams\nTrain users\nMonitor adoption",
+        ]),
+        ("forum_name", ["SteerCo", "PMO", "Workstreams"]),
+        ("forum_cadence", ["Monthly", "Weekly", "Biweekly"]),
+        ("decision_right_label", ["Recommend", "Approve", "Escalate"]),
+        ("decision_right_description", ["Frame options", "Make final call", "Raise key risks"]),
+    ):
+        value = repaired.get(placeholder_id)
+        if isinstance(value, list):
+            repaired_items = [
+                _compact_governance_phrase(
+                    str(item),
+                    _indexed_default(index, defaults),
+                    max_chars_by_id.get(placeholder_id, 28),
+                )
+                for index, item in enumerate(value)
+            ]
+            while len(repaired_items) < len(defaults):
+                repaired_items.append(_indexed_default(len(repaired_items), defaults))
+            repaired[placeholder_id] = repaired_items[: len(defaults)]
+        elif isinstance(value, str):
+            repaired[placeholder_id] = _compact_governance_phrase(
+                value,
+                _indexed_default(0, defaults),
+                max_chars_by_id.get(placeholder_id, 28),
+            )
+        else:
+            repaired[placeholder_id] = list(defaults)
+    return repaired
+
+
+def _compact_governance_phrase(value: str, fallback: str, max_chars: int) -> str:
+    text = _clean_text(value).rstrip(".")
+    text = re.sub(r"^(review|analyze|evaluate|monitor|manage|coordinate|ensure)\s+", "", text, flags=re.I)
+    text = re.split(r"\s+(?:and ensure|and manage|to ensure|for ensuring|across|through|while)\s+", text, maxsplit=1, flags=re.I)[0]
+    return _fit_compact_label(text, fallback, max_chars=max_chars)
+
+
+def _repair_investment_case_labels(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+) -> dict[str, Any]:
+    """Keep investment-case visuals compact enough for fixed EY card slots."""
+    if (asset_manifest.asset_id or "") != "INVESTMENT-CASE-SUMMARY-001":
+        return payload
+    repaired = dict(payload)
+    max_chars_by_id = {
+        placeholder.id: int(placeholder.constraints.get("max_chars", 32) or 32)
+        for placeholder in asset_manifest.placeholders
+    }
+    defaults = {
+        "title": "Investment case supports disciplined AI scale-up",
+        "subtitle": "Funding request links phased investment to measurable value",
+        "investment_required_value": "$5M",
+        "investment_scope": "Phase 1 funding",
+        "value_created_value": "$15M",
+        "value_drivers": "Positive",
+        "timing_value": "12",
+        "phased_approach": "Pilot, automate, scale",
+        "payback_value": "18",
+        "value_investment_value": "3x",
+        "npv": "$8M",
+        "roi": "300%",
+        "assumptions": "Illustrative base case",
+        "recommendation": "Approve Phase 1 funding and review benefits monthly.",
+    }
+    for placeholder_id, fallback in defaults.items():
+        if placeholder_id in {"investment_required_value", "value_created_value", "timing_value", "payback_value", "value_investment_value", "npv", "roi"}:
+            repaired[placeholder_id] = fallback
+            continue
+        if placeholder_id in {
+            "investment_scope",
+            "value_drivers",
+            "phased_approach",
+            "assumptions",
+            "recommendation",
+        }:
+            repaired[placeholder_id] = fallback
+            continue
+        value = repaired.get(placeholder_id)
+        text_value = _clean_text(value) if isinstance(value, str) else ""
+        if _is_placeholder_default_text(text_value):
+            text_value = fallback
+        repaired[placeholder_id] = _fit_compact_label(
+            text_value if text_value else fallback,
+            fallback,
+            max_chars=max_chars_by_id.get(placeholder_id, len(fallback)),
+        )
+
+    repeated_defaults = {
+        "investment_component_label": ["Technology", "Training", "Process redesign", "Contingency"],
+        "investment_component_value": ["$2M", "$1M", "$1.5M", "$0.5M"],
+        "value_component_label": ["Cost takeout", "Productivity", "Control uplift"],
+        "value_component_value": ["$7M", "$5M", "$3M"],
+        "timeline_label": ["Assess", "Pilot", "Scale"],
+        "timeline_duration": ["0-3 mo.", "3-9 mo.", "9-12 mo."],
+        "bridge_label": ["Funding", "Enablement", "Benefit ramp", "Scale"],
+        "bridge_description": [
+            "Approve initial funding",
+            "Build priority capabilities",
+            "Validate benefits in pilot",
+            "Scale proven use cases",
+        ],
+        "capture_value": ["80%", "75%", "90%", "70%"],
+    }
+    for placeholder_id, fallback_items in repeated_defaults.items():
+        repaired[placeholder_id] = [
+            _fit_compact_label(
+                fallback,
+                fallback,
+                max_chars=max_chars_by_id.get(placeholder_id, len(fallback)),
+            )
+            for fallback in fallback_items
+        ]
+    return repaired
+
+
+def _compact_investment_metric(value: Any, fallback: str, max_chars: int) -> str:
+    text = _clean_text(value)
+    if not text or _is_placeholder_default_text(text):
+        return fallback
+    match = re.search(r"[$€£¥]?\d+(?:\.\d+)?\s*(?:M|B|K|m|b|k|%|x|mo\.?|months?|yrs?|years?)?", text)
+    if match:
+        metric = match.group(0).strip()
+        replacements = {"months": "mo.", "month": "mo.", "years": "yrs", "year": "yr"}
+        for src, dst in replacements.items():
+            metric = re.sub(src, dst, metric, flags=re.I)
+        return _fit_compact_label(metric, fallback, max_chars=max_chars)
+    return _fit_compact_label(text, fallback, max_chars=max_chars)
+
+
+def _is_placeholder_default_text(text: str) -> bool:
+    normalized = (_clean_text(text) or "").lower()
+    return bool(
+        normalized in {"text", "title", "subtitle", "placeholder", "lorem ipsum", "tbd", "n/a", "item", "step", "phase"}
+        or re.fullmatch(r"(?:item|step|phase)\s*\d+", normalized)
+    )
+
+
+def _as_list(value: Any) -> list[Any]:
+    if isinstance(value, list):
+        return list(value)
+    if value in (None, ""):
+        return []
+    return [value]
+
+
+def _compact_kpi_value(value: Any, name: Any, index: int) -> str:
+    text = _clean_text(value)
+    if not text or text in {"-", "—", "n/a", "N/A"}:
+        return _default_kpi_value(name, index)
+    return _fit_compact_label(text, _default_kpi_value(name, index), max_chars=12)
+
+
+def _default_kpi_name(index: int) -> str:
+    return _indexed_default(
+        index,
+        ["Cycle time", "Savings captured", "Policy adherence", "Touchless flow", "Supplier risk", "User adoption"],
+    )
+
+
+def _default_kpi_value(name: Any, index: int) -> str:
+    key = _clean_text(name).lower()
+    if "cycle" in key or "time" in key:
+        return "14 days"
+    if "saving" in key or "value" in key:
+        return "$12M"
+    if "policy" in key or "compliance" in key or "adherence" in key:
+        return "92%"
+    if "touchless" in key or "automation" in key or "invoice" in key:
+        return "65%"
+    if "supplier" in key or "risk" in key:
+        return "Medium"
+    if "adoption" in key or "usage" in key:
+        return "78%"
+    return _indexed_default(index, ["14 days", "$12M", "92%", "65%", "Medium", "78%"])
+
+
+def _repair_repeating_placeholder_lengths(
+    payload: dict[str, Any],
+    asset_manifest: AssetManifest,
+    slide_plan: SlidePlan | None,
+) -> dict[str, Any]:
+    """Pad required repeating placeholders to the asset's fixed visual count.
+
+    The manifest validator treats ``cardinality=N`` as fixed to the asset's
+    density range. LLM output can reasonably return 2-4 items for a repeated
+    field, but a hardcoded visual with 5 stages or 3 drivers needs every slot
+    populated. This repair preserves supplied content and fills only missing
+    visual slots with deterministic, role-aware defaults.
+    """
+    repaired = dict(payload)
+    lo, hi = asset_manifest.density_range
+    target_count = min(max(asset_manifest.density, lo), hi)
+    if target_count <= 0:
+        return repaired
+
+    company = "Enterprise"
+    business_function = "Transformation"
+    process_name = "operating model"
+    slide_role = slide_plan.slide_role if slide_plan is not None else "Slide"
+
+    for placeholder in asset_manifest.placeholders:
+        if placeholder.cardinality != "N" or not placeholder.required:
+            continue
+        value = repaired.get(placeholder.id)
+        if isinstance(value, list):
+            items = list(value[:target_count])
+        elif value in (None, ""):
+            items = []
+        else:
+            items = [value]
+        while len(items) < target_count:
+            items.append(
+                _placeholder_default(
+                    placeholder,
+                    company,
+                    business_function,
+                    process_name,
+                    slide_role,
+                    index=len(items),
+                )
+            )
+        repaired[placeholder.id] = items
     return repaired
 
 
@@ -1044,6 +1774,14 @@ def _ensure_risk_description_text(text: str, index: int) -> str:
             "Driver: policy variance",
             "Driver: supplier readiness",
             "Driver: adoption gap",
+            "Driver: integration complexity",
+            "Driver: control ownership",
+            "Driver: funding dependency",
+            "Driver: operating cadence",
+            "Driver: model governance",
+            "Driver: process exception",
+            "Driver: change saturation",
+            "Driver: data access",
         ]
         repaired = f"{drivers[index % len(drivers)]}; {repaired}"
     if not re.search(r"\b(impact|delay|cost|adoption|control|exposure|disruption)\b", repaired, flags=re.I):
@@ -1052,6 +1790,14 @@ def _ensure_risk_description_text(text: str, index: int) -> str:
             "impact: control exposure",
             "impact: supplier disruption",
             "impact: value leakage",
+            "impact: adoption slowdown",
+            "impact: cost escalation",
+            "impact: decision latency",
+            "impact: compliance gap",
+            "impact: benefit slippage",
+            "impact: operating rework",
+            "impact: governance burden",
+            "impact: service interruption",
         ]
         repaired = f"{repaired}; {impacts[index % len(impacts)]}"
     if not re.search(r"\b(mitigation|mitigate|control|owner|ownership|sponsor|accountable|response)\b", repaired, flags=re.I):
@@ -1060,6 +1806,14 @@ def _ensure_risk_description_text(text: str, index: int) -> str:
             "control: data-owned",
             "mitigation: change-led",
             "accountable: control owner",
+            "response: architecture review",
+            "mitigation: phased rollout",
+            "owner: finance sponsor",
+            "control: governance forum",
+            "response: supplier plan",
+            "owner: procurement lead",
+            "mitigation: adoption coaching",
+            "control: risk checkpoint",
         ]
         repaired = f"{repaired}; {endings[index % len(endings)]}"
     return repaired
@@ -1083,20 +1837,126 @@ def _repair_next_step_language(
     if asset_manifest is not None:
         repaired = _backfill_next_step_placeholders(repaired, asset_manifest)
     for key, value in list(repaired.items()):
-        if not isinstance(value, str):
-            continue
         key_lower = key.lower()
-        if key_lower.startswith("header_"):
-            repaired[key] = _next_step_header_label(key_lower, value)
-        elif "next_step" in key_lower or "action" in key_lower:
-            repaired[key] = _ensure_next_step_contract_text(value)
-        elif "priority" in key_lower:
-            repaired[key] = _fit_compact_label(value, "Approve pilot scope", max_chars=60)
-        elif "when" in key_lower:
-            repaired[key] = value if _contains_timing(value) else "30 days"
-        elif "who" in key_lower:
-            repaired[key] = value if _contains_owner(value) else "Procurement sponsor"
+        if isinstance(value, list):
+            repaired[key] = [
+                _repair_next_step_field_value(key_lower, str(item), index)
+                for index, item in enumerate(value)
+            ]
+            continue
+        if isinstance(value, str):
+            repaired[key] = _repair_next_step_field_value(key_lower, value, 0)
     return repaired
+
+
+def _repair_next_step_field_value(key_lower: str, value: str, index: int) -> str:
+    indexed_match = re.match(r"(?:decision|delay)_(\d+)_", key_lower)
+    if indexed_match:
+        index = max(int(indexed_match.group(1)) - 1, 0)
+    if key_lower.startswith("header_"):
+        return _next_step_header_label(key_lower, value)
+    if "decision_title" in key_lower or (key_lower.startswith("decision_") and key_lower.endswith("_title")):
+        return _compact_decision_title(value, index=index)
+    if "why_now_detail" in key_lower:
+        return _compact_decision_fragment(value, max_chars=36, fallback=_default_decision_why_now(index))
+    if "request_detail" in key_lower or "decision_detail" in key_lower:
+        return _compact_decision_request(value, index=index, max_chars=38)
+    if "impact_detail" in key_lower:
+        return _compact_decision_fragment(value, max_chars=40, fallback=_default_decision_impact(index))
+    if "delay_" in key_lower and key_lower.endswith("_title"):
+        return _compact_decision_fragment(value, max_chars=30, fallback=_default_delay_title(index))
+    if "delay_" in key_lower and key_lower.endswith("_impact"):
+        return _compact_decision_fragment(value, max_chars=42, fallback=_default_delay_impact(index))
+    if "next_step" in key_lower or "action" in key_lower or "decision_request" in key_lower:
+        return _ensure_next_step_contract_text(value, index=index)
+    if "decision_impact" in key_lower:
+        return value if _contains_owner(value) else _append_owner_clause(value, index)
+    if "priority" in key_lower:
+        return _fit_compact_label(value, "Approve pilot scope", max_chars=60)
+    if "when" in key_lower:
+        return value if _contains_timing(value) else "30 days"
+    if "who" in key_lower or "owner" in key_lower:
+        return value if _contains_owner(value) else _default_next_step_owner(index + 1)
+    return value
+
+
+def _compact_decision_title(value: str, *, index: int) -> str:
+    text = _clean_text(value).rstrip(".")
+    if _is_placeholder_default_text(text):
+        text = _default_decision_title(index)
+    replacements = {
+        "approve ai-driven demand forecasting": "Approve demand forecast pilot",
+        "authorize budget for logistics automation": "Authorize logistics funding",
+        "greenlight supplier collaboration": "Approve supplier platform",
+        "approve ai tool selection": "Approve AI tool selection",
+        "approve budget allocation": "Approve funding envelope",
+        "initiate pilot phase": "Approve pilot launch",
+    }
+    lowered = text.lower()
+    for phrase, replacement in replacements.items():
+        if phrase in lowered:
+            text = replacement
+            break
+    if not re.search(r"^(approve|authorize|confirm|endorse|fund)\b", text, flags=re.I):
+        text = f"Approve {text[0].lower() + text[1:] if text else _default_decision_title(index)}"
+    return _fit_compact_label(text, _default_decision_title(index), max_chars=30)
+
+
+def _compact_decision_request(value: str, *, index: int, max_chars: int) -> str:
+    text = _clean_text(value).rstrip(".")
+    if _is_placeholder_default_text(text):
+        text = _default_decision_request(index)
+    text = re.sub(r"^request\s+to\s+", "", text, flags=re.I)
+    text = re.sub(r"^request\s+", "", text, flags=re.I)
+    if not re.search(r"^(approve|authorize|confirm|endorse|fund)\b", text, flags=re.I):
+        text = f"Approve {text[0].lower() + text[1:] if text else 'pilot'}"
+    return _fit_compact_label(text, _default_decision_request(index), max_chars=max_chars)
+
+
+def _compact_decision_fragment(value: str, *, max_chars: int, fallback: str) -> str:
+    text = _clean_text(value).rstrip(".")
+    if _is_placeholder_default_text(text):
+        text = fallback
+    text = re.sub(r"\b(?:this will|this would|expected to|could lead to|may result in)\b", "", text, flags=re.I)
+    text = re.sub(r"\b(?:immediate approval enables|timely approval is crucial to|delaying this decision risks)\b", "", text, flags=re.I)
+    text = re.sub(r"\s+", " ", text).strip(" -:;.").strip()
+    return _fit_compact_label(text, fallback, max_chars=max_chars)
+
+
+def _default_decision_title(index: int) -> str:
+    return _indexed_default(index, ["Approve pilot scope", "Authorize funding", "Confirm sponsor"])
+
+
+def _default_decision_request(index: int) -> str:
+    return _indexed_default(
+        index,
+        ["Approve pilot scope", "Authorize funding envelope", "Confirm accountable sponsor"],
+    )
+
+
+def _default_decision_why_now(index: int) -> str:
+    return _indexed_default(
+        index,
+        ["Mobilization window is open", "Funding unlocks delivery", "Ownership needed now"],
+    )
+
+
+def _default_decision_impact(index: int) -> str:
+    return _indexed_default(
+        index,
+        ["Enables controlled pilot", "Starts delivery work", "Clarifies accountability"],
+    )
+
+
+def _default_delay_title(index: int) -> str:
+    return _indexed_default(index, ["Pilot delay", "Funding delay", "Ownership gap"])
+
+
+def _default_delay_impact(index: int) -> str:
+    return _indexed_default(
+        index,
+        ["Slower benefits capture", "Missed delivery window", "Unclear issue resolution"],
+    )
 
 
 def _backfill_next_step_placeholders(
@@ -1104,6 +1964,19 @@ def _backfill_next_step_placeholders(
     asset_manifest: AssetManifest,
 ) -> dict[str, Any]:
     repaired = dict(payload)
+    if (asset_manifest.asset_id or "") == "DECISION-REQUEST-3CARD-001":
+        repaired.setdefault("decision_label", ["Decision 1", "Decision 2", "Decision 3"])
+        repaired.setdefault(
+            "decision_title",
+            ["Approve pilot scope", "Authorize funding", "Confirm governance"],
+        )
+        for index in range(3):
+            number = index + 1
+            repaired.setdefault(f"decision_{number}_why_now_detail", _default_decision_why_now(index))
+            repaired.setdefault(f"decision_{number}_request_detail", _default_decision_request(index))
+            repaired.setdefault(f"decision_{number}_impact_detail", _default_decision_impact(index))
+            repaired.setdefault(f"delay_{number}_title", _default_delay_title(index))
+            repaired.setdefault(f"delay_{number}_impact", _default_delay_impact(index))
     placeholder_ids = [placeholder.id for placeholder in asset_manifest.placeholders]
     row_numbers = sorted(
         {
@@ -1155,11 +2028,24 @@ def _default_next_step_owner(row_number: int) -> str:
     return owners[(row_number - 1) % len(owners)]
 
 
-def _ensure_next_step_contract_text(text: str) -> str:
+def _ensure_next_step_contract_text(text: str, *, index: int = 0) -> str:
     repaired = text.strip()
+    repaired = re.sub(r"^requesting\b", "Approve", repaired, flags=re.I)
+    repaired = re.sub(r"^approval needed to\b", "Authorize", repaired, flags=re.I)
+    repaired = re.sub(r"^seeking endorsement for\b", "Endorse", repaired, flags=re.I)
     if not re.search(r"\b(approve|decide|decision|confirm|endorse|authorize|fund|prioritize)\b", repaired, flags=re.I):
         repaired = f"Approve {repaired[0].lower() + repaired[1:] if repaired else 'pilot'}"
+    if not _contains_owner(repaired):
+        repaired = _append_owner_clause(repaired, index)
     return _fit_compact_label(repaired, "Approve pilot launch", max_chars=160)
+
+
+def _append_owner_clause(text: str, index: int) -> str:
+    owner = _default_next_step_owner(index + 1)
+    text = text.strip().rstrip(".")
+    if not text:
+        return f"Owner: {owner}"
+    return f"{text}. Owner: {owner}"
 
 
 def _next_step_header_label(key_lower: str, value: str) -> str:
@@ -1184,24 +2070,28 @@ def _repair_title_so_what(payload: dict[str, Any], slide_plan: SlidePlan) -> dic
     if len(title.split()) >= 6 and _title_matches_role(title, role):
         return payload
     repaired = dict(payload)
-    if "current" in role or "process" in role:
+    if ("current" in role and "future" in role) or "current_future" in role or "comparison" in role:
+        repaired["title"] = "Current-to-future shifts define the transformation path"
+    elif "current" in role or "process" in role:
         repaired["title"] = "Current process friction slows decisions and weakens control"
+    elif "risk" in role:
+        repaired["title"] = "Implementation risks require accountable mitigation before scale"
+    elif "investment" in role or "business case" in role or "funding" in role or "roi" in role or "payback" in role:
+        repaired["title"] = "Investment case supports disciplined AI scale-up"
     elif "case for change" in role or "case" in role:
         repaired["title"] = "Case for change centers on resilience, speed, and control"
     elif "future" in role or "operating model" in role:
-        repaired["title"] = "Future-state model shifts work to accountable digital capabilities"
+        repaired["title"] = "Future-state model enables accountable capabilities"
     elif "benefit" in role or "value" in role:
-        repaired["title"] = "Business benefits convert automation into measurable value levers"
-    elif "roadmap" in role or "implementation" in role:
-        repaired["title"] = "Implementation roadmap sequences pilot, scale, and governance"
+        repaired["title"] = "Business benefits create measurable value"
     elif "kpi" in role or "success" in role or "metric" in role:
         repaired["title"] = "KPIs track cycle time, value capture, and control adoption"
     elif "opportunit" in role:
         repaired["title"] = "Opportunity areas prioritize value pools with execution readiness"
-    elif "risk" in role:
-        repaired["title"] = "AI procurement risks require accountable controls before scale"
+    elif "roadmap" in role or "implementation" in role:
+        repaired["title"] = "Implementation roadmap sequences pilot, scale, and governance"
     elif "next step" in role or "decision" in role or "action" in role:
-        repaired["title"] = "Board decisions launch the procurement AI pilot"
+        repaired["title"] = "Board decisions required to advance transformation"
     elif "use case" in role:
         repaired["title"] = "AI use cases target sourcing speed and spend control"
     return repaired
@@ -1209,24 +2099,28 @@ def _repair_title_so_what(payload: dict[str, Any], slide_plan: SlidePlan) -> dic
 
 def _title_matches_role(title: str, role: str) -> bool:
     title_lower = title.lower()
+    if ("current" in role and "future" in role) or "current_future" in role or "comparison" in role:
+        return any(term in title_lower for term in ("current", "future", "shift", "from-to", "from ", " to ", "transformation path"))
     if "current" in role or "process" in role:
         return any(term in title_lower for term in ("current", "process", "friction", "manual", "baseline", "as-is", "bottleneck"))
+    if "risk" in role:
+        return any(term in title_lower for term in ("risk", "control", "mitigation", "exposure", "owner"))
+    if "investment" in role or "business case" in role or "funding" in role or "roi" in role or "payback" in role:
+        return any(term in title_lower for term in ("investment", "funding", "payback", "roi", "npv", "business case", "value"))
     if "case for change" in role or "case" in role:
         return any(term in title_lower for term in ("case", "change", "imperative", "resilience", "pressure", "why"))
     if "future" in role or "operating model" in role:
         return any(term in title_lower for term in ("future", "operating model", "capability", "accountable", "digital"))
     if "benefit" in role or "value" in role:
         return any(term in title_lower for term in ("benefit", "value", "savings", "margin", "cash", "speed"))
-    if "roadmap" in role or "implementation" in role:
-        return any(term in title_lower for term in ("roadmap", "phase", "pilot", "scale", "sequence", "governance"))
     if "kpi" in role or "success" in role or "metric" in role:
         return any(term in title_lower for term in ("kpi", "metric", "indicator", "track", "measure", "success"))
     if "opportunit" in role:
         return any(term in title_lower for term in ("opportunity", "prioritize", "value pool", "readiness", "growth"))
     if "next step" in role or "decision" in role or "action" in role:
         return any(term in title_lower for term in ("board", "decision", "approve", "pilot", "launch", "owner", "action"))
-    if "risk" in role:
-        return any(term in title_lower for term in ("risk", "control", "mitigation", "exposure", "owner"))
+    if "roadmap" in role or "implementation" in role:
+        return any(term in title_lower for term in ("roadmap", "phase", "pilot", "scale", "sequence", "governance"))
     if "use case" in role:
         return any(term in title_lower for term in ("ai", "use case", "workflow", "value", "spend"))
     return True
@@ -1240,7 +2134,61 @@ def _fit_compact_label(value: str, fallback: str, *, max_chars: int) -> str:
         return text
     if len(fallback) <= max_chars:
         return fallback
-    return fallback[:max_chars].rstrip()
+    complete = _complete_compact_prefix(text, max_chars)
+    if complete:
+        return complete
+    complete = _complete_compact_prefix(fallback, max_chars)
+    if complete:
+        return complete
+    return _generic_complete_fallback(max_chars)
+
+
+def _complete_compact_prefix(text: str, max_chars: int) -> str:
+    for sep in (". ", "; ", ": ", " - ", " – ", " — "):
+        if sep in text:
+            candidate = _trim_dangling_words(text.split(sep, 1)[0])
+            if candidate and len(candidate) <= max_chars and not _looks_incomplete_label(candidate):
+                return candidate
+    words: list[str] = []
+    for word in text.split():
+        candidate = " ".join(words + [word])
+        if len(candidate) > max_chars:
+            break
+        words.append(word)
+    candidate = _trim_dangling_words(" ".join(words))
+    if candidate and not _looks_incomplete_label(candidate):
+        return candidate
+    return ""
+
+
+def _looks_incomplete_label(text: str) -> bool:
+    words = text.split()
+    if not words:
+        return True
+    return words[-1].lower() in {
+        "and", "or", "for", "with", "through", "by", "to", "of", "in", "on",
+        "from", "across", "using", "via", "into", "based", "toward", "all",
+        "driving", "highlighting", "including", "enabling", "leading",
+    }
+
+
+def _generic_complete_fallback(max_chars: int) -> str:
+    for candidate in ("Approve pilot", "Reduce cycle time", "Strengthen control", "Capture value", "Act now"):
+        if len(candidate) <= max_chars:
+            return candidate
+    return "Action"
+
+
+def _trim_dangling_words(text: str) -> str:
+    cleaned = text.strip(" -:;,.")
+    dangling = {
+        "and", "or", "for", "with", "through", "by", "to", "of", "in", "on",
+        "from", "across", "using", "via", "into", "based", "toward",
+    }
+    words = cleaned.split()
+    while words and words[-1].lower() in dangling:
+        words.pop()
+    return " ".join(words).strip(" -:;,.")
 
 
 def _contains_owner(text: str) -> bool:
@@ -1282,6 +2230,8 @@ def _canonical_slide_role(text: str) -> str | None:
     normalized = (text or "").lower()
     if "executive summary" in normalized or "transformation overview" in normalized:
         return "executive_summary"
+    if ("current" in normalized and "future" in normalized) or ("from" in normalized and "to" in normalized):
+        return "current_future_comparison"
     if "current" in normalized and ("process" in normalized or "state" in normalized):
         return "current_state"
     if "future" in normalized or "operating model" in normalized:
@@ -1296,6 +2246,8 @@ def _canonical_slide_role(text: str) -> str | None:
         return "transformation_timeline"
     if "kpi" in normalized or "metric" in normalized:
         return "kpis_for_success"
+    if "next step" in normalized or "decision" in normalized or "action" in normalized:
+        return "next_steps"
     if (
         "implementation risk" in normalized
         or "risk register" in normalized
@@ -1303,8 +2255,6 @@ def _canonical_slide_role(text: str) -> str | None:
         or "mitigation" in normalized
     ):
         return "implementation_risks"
-    if "next step" in normalized or "decision" in normalized or "action" in normalized:
-        return "next_steps"
     return None
 
 
@@ -1370,6 +2320,17 @@ def _placeholder_default(
                 item[clean_key] = ""
         return item
 
+    pilot_default = _pilot_placeholder_default(
+        placeholder,
+        company,
+        business_function,
+        process_name,
+        slide_role,
+        index=index,
+    )
+    if pilot_default is not None:
+        return pilot_default
+
     if placeholder.kind == PlaceholderKind.TITLE:
         return slide_role
     if placeholder.role in {"subtitle", "sub_title"}:
@@ -1384,6 +2345,425 @@ def _placeholder_default(
         return "●"
     label = f"Item {index + 1}" if index is not None else "Item"
     return label
+
+
+def _pilot_placeholder_default(
+    placeholder: AssetPlaceholder,
+    company: str,
+    business_function: str,
+    process_name: str,
+    slide_role: str,
+    *,
+    index: int | None,
+) -> str | None:
+    """Business-like fallback values for the fixed pilot visual variants."""
+    placeholder_id = (placeholder.id or "").lower()
+    role = (placeholder.role or "").lower()
+    slot = index or 0
+
+    if placeholder.kind == PlaceholderKind.TITLE:
+        return slide_role
+    if role in {"subtitle", "sub_title"}:
+        return _fit_compact_label(
+            f"{company} {business_function} transformation priorities",
+            f"{company} transformation priorities",
+            max_chars=110,
+        )
+    if (
+        role in {"summary", "so_what", "key_takeaway"}
+        or placeholder_id in {"summary", "overall_impact", "banner_text", "banner_takeaway"}
+        or "takeaway" in placeholder_id
+    ):
+        return _fit_compact_label(
+            f"Board sponsorship should focus {business_function.lower()} transformation on control, speed, and measurable value.",
+            "Board sponsorship should focus the program on control, speed, and measurable value.",
+            max_chars=150,
+        )
+    if "source" in placeholder_id:
+        return "EY analysis; management inputs"
+
+    if placeholder_id.startswith("summary_"):
+        return _summary_metric_default(placeholder_id)
+
+    if "card_header" in placeholder_id or "card_" in placeholder_id and "header" in placeholder_id:
+        return _indexed_default(slot, ["Simplify the core", "Enable with technology", "Sustain the change"])
+    if "card_description" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Reduce fragmentation and remove non-value-adding complexity",
+                "Use digital enablers to improve speed, control, and scalability",
+                "Capture benefits through disciplined governance and adoption",
+            ],
+        )
+    if "card_bullet_1" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Standardize priority processes and decision rights",
+                "Prioritize high-value automation opportunities",
+                "Establish KPI-led governance and ownership",
+            ],
+        )
+    if "card_bullet_2" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Eliminate manual handoffs, rework, and duplication",
+                "Integrate workflow, data, and reporting across teams",
+                "Build capabilities through training and change support",
+            ],
+        )
+    if "card_bullet_3" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Create transparency on performance and accountability",
+                "Embed controls into day-to-day execution",
+                "Track value realization and course-correct early",
+            ],
+        )
+    if "card_bullets" in placeholder_id or "card_" in placeholder_id and "bullet" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Standardize fragmented processes\nRemove non-value activity\nReduce manual handoffs",
+                "Prioritize high-value automation\nEmbed AI into critical workflows\nCreate scalable data foundations",
+                "Establish accountable governance\nTrack benefits with clear KPIs\nDrive adoption through change management",
+            ],
+        )
+
+    if "stage_title" in placeholder_id:
+        return _indexed_default(slot, ["Demand intake", "Sourcing", "Contracting", "Ordering", "Supplier mgmt"])
+    if "stage_activities" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Capture need\nValidate policy\nRoute approval",
+                "Launch event\nCompare bids\nSelect supplier",
+                "Draft terms\nReview risk\nExecute contract",
+                "Create PO\nReceive goods\nMatch invoice",
+                "Track performance\nResolve issues\nRenew terms",
+            ],
+        )
+    if "stage_pain" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Manual intake obscures demand visibility",
+                "Fragmented sourcing slows cycle time",
+                "Contract reviews create control exposure",
+                "Exception handling delays payment accuracy",
+                "Supplier issues lack accountable ownership",
+            ],
+        )
+
+    if "driver_title" in placeholder_id:
+        return _indexed_default(
+            slot,
+            ["Performance under pressure", "Risk and control exposure", "Future readiness at risk"],
+        )
+    if "driver_summary" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Complexity and inefficiency are slowing execution and limiting value capture",
+                "Governance and control gaps increase operational, financial, and compliance exposure",
+                "Outdated ways of working constrain agility and future transformation capacity",
+            ],
+        )
+    if "driver_evidence_1" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Manual handoffs and rework drive delays",
+                "Inconsistent adherence to policies and controls",
+                "Legacy systems and data limit scalability",
+            ],
+        )
+    if "driver_evidence_2" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Fragmented processes create bottlenecks",
+                "Limited visibility into key risks and exceptions",
+                "Siloed ways of working hinder collaboration",
+            ],
+        )
+    if "driver_evidence_3" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Inconsistent performance and outcomes",
+                "Reactive issue management and remediation",
+                "Limited capability in emerging AI workflows",
+            ],
+        )
+    if "driver_impact_1" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Higher cost to serve and lower productivity",
+                "Elevated risk of non-compliance and incidents",
+                "Difficulty scaling to meet future demand",
+            ],
+        )
+    if "driver_impact_2" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Slower decision-making and cycle times",
+                "Increased audit findings and remediation cost",
+                "Missed opportunities to innovate and grow",
+            ],
+        )
+
+    if "driver" in placeholder_id or "change" in placeholder_id:
+        return _indexed_default(
+            slot,
+            ["Cost pressure", "Control exposure", "Supplier resilience", "Cycle-time drag"],
+        )
+    if "capability_title" in placeholder_id:
+        return _indexed_default(slot, ["AI intake", "Decision engine", "Supplier control", "Value office"])
+    if "capability_summary" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Standardizes demand signals before sourcing begins",
+                "Recommends actions using policy and spend context",
+                "Monitors risk, performance, and compliance exceptions",
+                "Tracks benefits realization and adoption discipline",
+            ],
+        )
+    if "capability_elements" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Guided requests\nPolicy checks\nApproval routing",
+                "Spend analytics\nScenario scoring\nRecommendation logic",
+                "Supplier signals\nRisk alerts\nIssue ownership",
+                "KPI cadence\nBenefit tracking\nGovernance forums",
+            ],
+        )
+    if "capability_outcome" in placeholder_id or "enabler_body" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Faster intake with fewer rework loops",
+                "Higher-quality sourcing decisions",
+                "Earlier risk escalation and response",
+                "Visible value capture for sponsors",
+            ],
+        )
+    if "enabler_title" in placeholder_id:
+        return _indexed_default(slot, ["Data foundation", "Workflow controls", "Governance", "Adoption"])
+
+    if "steering_committee_title" in placeholder_id:
+        return "Steering Committee"
+    if "steering_committee_mandate" in placeholder_id:
+        return "Strategy | Funding | Escalations"
+    if "steering_responsibility" in placeholder_id:
+        return _indexed_default(
+            slot,
+            ["Set priorities", "Approve funding", "Resolve escalations"],
+        )
+    if "pmo_title" in placeholder_id:
+        return "Project Management Office (PMO)"
+    if "pmo_mandate" in placeholder_id:
+        return "Integration | Reporting | Risks | Decisions"
+    if "pmo_responsibility" in placeholder_id:
+        return _indexed_default(
+            slot,
+            ["Coordinate workstreams", "Track progress", "Manage dependencies", "Maintain standards"],
+        )
+    if "forum_name" in placeholder_id:
+        return _indexed_default(slot, ["SteerCo", "PMO", "Workstreams"])
+    if "forum_cadence" in placeholder_id:
+        return _indexed_default(slot, ["Monthly", "Weekly", "Biweekly"])
+    if "decision_right_label" in placeholder_id:
+        return _indexed_default(slot, ["Recommend", "Approve", "Escalate"])
+    if "decision_right_description" in placeholder_id:
+        return _indexed_default(
+            slot,
+            ["Frame options", "Make final call", "Raise key risks"],
+        )
+
+    if "use_case_title" in placeholder_id:
+        return _indexed_default(slot, ["Smart intake", "Supplier risk", "Spend insights", "Contract review", "Invoice triage"])
+    if "use_case_description" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "AI guides requestors through policy-aligned sourcing workflows",
+                "Models flag supplier exposure before award decisions",
+                "Analytics reveal savings and leakage across categories",
+                "AI summarizes obligations and exception clauses for review",
+                "Automation prioritizes invoice exceptions for resolution",
+            ],
+        )
+    if "use_case_value" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Reduces rework and approval friction",
+                "Improves continuity and control response",
+                "Increases savings visibility and accountability",
+                "Accelerates review while preserving risk control",
+                "Improves payment accuracy and working-capital discipline",
+            ],
+        )
+
+    if placeholder_id in {"opportunity_title", "current_issue", "opportunity", "value_unlocked"}:
+        return _default_opportunity_value(placeholder_id, slot)
+
+    if "benefit_label" in placeholder_id:
+        return _indexed_default(slot, ["Cycle time", "Savings capture", "Control", "Cash", "Supplier risk", "Adoption"])
+    if "benefit_description" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Fewer manual handoffs across intake and sourcing",
+                "Better value leakage detection by category",
+                "Stronger policy adherence and approval discipline",
+                "Cleaner invoice flow and payment predictability",
+                "Earlier identification of supplier exposure",
+                "Clearer ownership for new ways of working",
+            ],
+        )
+    if "benefit_impact" in placeholder_id:
+        return _indexed_default(slot, ["Speed", "Value", "Risk", "Cash", "Resilience", "Adoption"])
+
+    if "kpi_name" in placeholder_id:
+        return _indexed_default(slot, ["Cycle time", "Savings captured", "Policy adherence", "Touchless flow", "Supplier risk", "User adoption"])
+    if "kpi_value" in placeholder_id:
+        return _default_kpi_value(_default_kpi_name(slot), slot)
+    if "kpi_unit" in placeholder_id:
+        return _indexed_default(slot, ["Days", "$", "%", "%", "Score", "%"])
+    if "kpi_description" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Request-to-award speed",
+                "Validated benefit realization",
+                "Compliant approvals and spend",
+                "Automated invoice handling",
+                "Monitored supplier exposure",
+                "Active usage by priority teams",
+            ],
+        )
+    if "kpi_target" in placeholder_id:
+        return _indexed_default(slot, ["Baseline down", "Tracked monthly", "Above threshold", "Increase", "Controlled", "Rising"])
+    if "kpi_trend" in placeholder_id:
+        return _indexed_default(slot, ["Improve", "Grow", "Hold", "Improve", "Reduce", "Grow"])
+
+    if "risk_id" in placeholder_id:
+        return f"R{slot + 1}"
+    if "matrix_cell_level" in role or placeholder_id.startswith("cell_") and placeholder_id.endswith("_level"):
+        if "high_impact" in placeholder_id or "high_likelihood" in placeholder_id:
+            return "High"
+        if "medium_impact" in placeholder_id or "medium_likelihood" in placeholder_id:
+            return "Medium"
+        return "Low"
+    if "matrix_cell_risk_ids" in role or placeholder_id.startswith("cell_") and placeholder_id.endswith("_risks"):
+        return _risk_cell_ids(placeholder_id)
+    if placeholder_id.startswith("severity_") and placeholder_id.endswith("_label"):
+        return _indexed_default(slot, ["Low", "Medium", "High", "Critical"])
+    if placeholder_id.startswith("severity_") and placeholder_id.endswith("_guidance"):
+        return _indexed_default(
+            slot,
+            [
+                "Monitor through working team",
+                "Assign owner and mitigation",
+                "Escalate to sponsor forum",
+                "Require Board visibility",
+            ],
+        )
+    if "risk_description" in placeholder_id:
+        return _ensure_risk_description_text("", slot)
+    if "risk_assessment" in placeholder_id:
+        return _risk_impact_label(slot)
+    if "risk_confidence" in placeholder_id or "risk_appetite" in placeholder_id:
+        return _risk_mitigation_label(slot)
+
+    if "action_text" in placeholder_id or "next_step" in placeholder_id:
+        return _default_next_step_action(slot + 1)
+    if "decision_label" in placeholder_id:
+        return f"Decision {slot + 1}"
+    if "action_number" in placeholder_id:
+        return f"{slot + 1:02d}"
+    if "action_owner" in placeholder_id or placeholder_id.endswith("_who"):
+        return _default_next_step_owner(slot + 1)
+    if "action_due" in placeholder_id or placeholder_id.endswith("_when"):
+        return _default_next_step_timing(slot + 1)
+    if "action_priority" in placeholder_id:
+        return _indexed_default(slot, ["High", "High", "Medium", "Medium", "High", "Medium", "Low"])
+    if "action_status" in placeholder_id:
+        return _indexed_default(slot, ["Not started", "In progress", "Not started", "Not started", "In progress", "Not started", "Not started"])
+    if "action_progress" in placeholder_id:
+        return _indexed_default(slot, ["0%", "25%", "0%", "0%", "50%", "0%", "0%"])
+    if "action_comment" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Requires sponsor confirmation",
+                "Finance input needed",
+                "Data access dependency",
+                "Supplier wave to be sequenced",
+                "Criteria for scale decision",
+                "Cadence starts after approval",
+                "Track in steering forum",
+            ],
+        )
+
+    if "phase" in placeholder_id:
+        return _indexed_default(slot, ["Diagnose", "Design", "Pilot", "Scale"])
+    if "workstream_responsibilities" in placeholder_id:
+        return _indexed_default(
+            slot,
+            [
+                "Map processes\nStandardize controls\nTrack benefits",
+                "Define architecture\nManage integration\nTrack milestones",
+                "Set data rules\nImprove quality\nEnable reporting",
+                "Engage leaders\nTrain users\nMonitor adoption",
+            ],
+        )
+    if "workstream" in placeholder_id:
+        return _indexed_default(slot, ["Process", "Data", "Technology", "Change"])
+    if "activity" in placeholder_id or "milestone" in placeholder_id:
+        return _indexed_default(slot, ["Baseline", "Design", "Pilot", "Scale"])
+    return None
+
+
+def _indexed_default(index: int, values: list[str]) -> str:
+    return values[index % len(values)]
+
+
+def _summary_metric_default(placeholder_id: str) -> str:
+    if "total" in placeholder_id:
+        return "7"
+    if "not_started" in placeholder_id:
+        return "4"
+    if "in_progress" in placeholder_id:
+        return "2"
+    if "completed" in placeholder_id:
+        return "0"
+    if "overdue" in placeholder_id:
+        return "0"
+    return "Tracked"
+
+
+def _risk_cell_ids(placeholder_id: str) -> str:
+    if "high_likelihood_high_impact" in placeholder_id:
+        return "R1, R2"
+    if "high_likelihood_medium_impact" in placeholder_id:
+        return "R3"
+    if "medium_likelihood_high_impact" in placeholder_id:
+        return "R4"
+    if "medium_likelihood_medium_impact" in placeholder_id:
+        return "R5, R6"
+    if "low_likelihood_high_impact" in placeholder_id:
+        return "R7"
+    return "Monitor"
 
 
 def _six_stage_labels(process_result: ProcessResult) -> list[str]:

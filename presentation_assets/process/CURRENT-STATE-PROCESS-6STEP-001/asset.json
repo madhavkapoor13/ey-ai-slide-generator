@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "current_process",
+  "information_shape": "sequence",
+  "purpose": "Current-state six-step process with activities and pain points for each stage.",
+  "family_aliases": [
+    "current_state",
+    "process_flow",
+    "current_process"
+  ],
+  "recommended_for": [
+    "current process",
+    "current state",
+    "as-is process",
+    "process pain points"
+  ],
+  "avoid_for": [
+    "future state",
+    "risk matrix",
+    "kpi dashboard"
+  ],
+  "density": 6,
+  "density_range": [
+    6,
+    6
+  ],
+  "fits_content_kinds": [
+    "process",
+    "current_state",
+    "pain_points"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 56,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "stage_title",
+      "role": "stage_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 28,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "stage_{N}_title_text"
+      }
+    },
+    {
+      "id": "stage_activities",
+      "role": "activities",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 5,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "stage_{N}_activities_text"
+      }
+    },
+    {
+      "id": "stage_pain_points",
+      "role": "pain_points",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 4,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "stage_{N}_pain_point_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "takeaway",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 135,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "stage_{N}",
+    "placeholders_per_group": [
+      "stage_title",
+      "stage_activities",
+      "stage_pain_points"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  },
+  "asset_id": "CURRENT-STATE-PROCESS-6STEP-001",
+  "asset_version": 1,
+  "family": "process",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-21T10:47:13.017838+00:00",
+    "preview_hash": "b99736b9ee7698b0",
+    "warnings": [],
+    "errors": []
+  }
+}

@@ -56,6 +56,13 @@ _PLACEHOLDER_LEAKAGE_VALUES = {
     "phase 1",
 }
 
+_PLACEHOLDER_LEAKAGE_PATTERNS = (
+    "uc10 employee sentiment analysis",
+    "uc11 automated meeting-summary generation",
+    "uc12 synthetic-data generation",
+    "uc13 autonomous procurement negotiation",
+)
+
 
 class PopulatorError(Exception):
     """Raised when the populator cannot resolve or populate an asset slide."""
@@ -133,14 +140,14 @@ def _populate_placeholder(
 ) -> None:
     """Populate one placeholder, handling both single and repeating bindings."""
     if placeholder.cardinality == "1":
-        shape = _resolve_shape(slide, placeholder, index=None, manifest=manifest)
-        if shape is None:
+        target = _resolve_binding_target(slide, placeholder, index=None, manifest=manifest)
+        if target is None:
             if placeholder.required:
-                logger.warning("placeholder %r: bound shape not found", placeholder.id)
+                logger.warning("placeholder %r: bound target not found", placeholder.id)
             else:
-                logger.debug("placeholder %r: optional bound shape not found", placeholder.id)
+                logger.debug("placeholder %r: optional bound target not found", placeholder.id)
             return
-        _set_shape_text(shape, value, placeholder)
+        _set_target_text(target, value, placeholder)
         return
 
     if placeholder.cardinality == "N":
@@ -155,22 +162,22 @@ def _populate_placeholder(
             value = []
 
         for index, item in enumerate(value, start=1):
-            shape = _resolve_shape(slide, placeholder, index=index, manifest=manifest)
-            if shape is None:
+            target = _resolve_binding_target(slide, placeholder, index=index, manifest=manifest)
+            if target is None:
                 if placeholder.required:
                     logger.warning(
-                        "placeholder %r: bound shape not found for index %d",
+                        "placeholder %r: bound target not found for index %d",
                         placeholder.id,
                         index,
                     )
                 else:
                     logger.debug(
-                        "placeholder %r: optional bound shape not found for index %d",
+                        "placeholder %r: optional bound target not found for index %d",
                         placeholder.id,
                         index,
                     )
                 continue
-            _set_shape_text(shape, item, placeholder)
+            _set_target_text(target, item, placeholder)
 
         # Clear any template shapes beyond the supplied content count so stale
         # text is not rendered.
@@ -178,6 +185,56 @@ def _populate_placeholder(
         return
 
     logger.warning("placeholder %r has unsupported cardinality %r", placeholder.id, placeholder.cardinality)
+
+
+def _set_target_text(target, value: Any, placeholder: AssetPlaceholder) -> None:
+    if hasattr(target, "text") and not hasattr(target, "shape_type"):
+        target.text = _coerce_text(value, placeholder)
+        return
+    if hasattr(target, "text_frame"):
+        _set_shape_text(target, value, placeholder)
+        return
+    if hasattr(target, "text"):
+        target.text = _coerce_text(value, placeholder)
+        return
+    logger.debug("placeholder %r target cannot accept text", placeholder.id)
+
+
+def _resolve_binding_target(
+    slide,
+    placeholder: AssetPlaceholder,
+    index: int | None,
+    manifest: AssetManifest,
+):
+    """Return a bound shape or table cell for ``placeholder``."""
+    cell = _resolve_table_cell(slide, placeholder, index=index, manifest=manifest)
+    if cell is not None:
+        return cell
+    return _resolve_shape(slide, placeholder, index=index, manifest=manifest)
+
+
+def _resolve_table_cell(
+    slide,
+    placeholder: AssetPlaceholder,
+    index: int | None,
+    manifest: AssetManifest,
+):
+    binding = placeholder.binding
+    table_name = binding.table_shape_name
+    if not table_name:
+        return None
+    table_shape = _find_shape_by_name(slide.shapes, table_name)
+    if table_shape is None or not getattr(table_shape, "has_table", False):
+        return None
+    row_index = binding.row_index
+    col_index = binding.col_index
+    if row_index is None or col_index is None:
+        return None
+    try:
+        return table_shape.table.cell(row_index, col_index)
+    except Exception:
+        logger.warning("placeholder %r: table cell (%s, %s) not found", placeholder.id, row_index, col_index)
+        return None
 
 
 def _resolve_shape(
@@ -229,6 +286,7 @@ def _set_shape_text(shape, value: Any, placeholder: AssetPlaceholder) -> None:
 
     text = _coerce_text(value, placeholder)
     text_frame = shape.text_frame
+    style = _capture_text_style(text_frame)
     text_frame.clear()
     paragraph = text_frame.paragraphs[0]
     run = paragraph.add_run()
@@ -237,27 +295,70 @@ def _set_shape_text(shape, value: Any, placeholder: AssetPlaceholder) -> None:
     # Apply deterministic text styling so copied assets do not inherit
     # invisible white-on-white or arbitrary template placeholder styling.
     try:
-        if not placeholder.constraints.get("preserve_font_color"):
+        if placeholder.constraints.get("preserve_font_color", True):
+            _apply_preserved_font_color(run, style)
+        else:
             run.font.color.rgb = _DEFAULT_TEXT_COLOR
-        if not placeholder.constraints.get("preserve_font_size"):
+        if placeholder.constraints.get("preserve_font_size", True):
+            _apply_preserved_font_size(run, style)
+        else:
             size = placeholder.constraints.get("font_size_pt")
             run.font.size = Pt(int(size)) if isinstance(size, int) else Pt(12)
-        if not placeholder.constraints.get("preserve_bold"):
+        if placeholder.constraints.get("preserve_bold", True):
+            if style.get("bold") is not None:
+                run.font.bold = style["bold"]
+        else:
             run.font.bold = bool(placeholder.constraints.get("bold", False))
+        if style.get("name"):
+            run.font.name = style["name"]
+        if style.get("italic") is not None:
+            run.font.italic = style["italic"]
     except Exception:
         logger.debug("could not apply deterministic text style for %r", placeholder.id)
 
-    # Apply a conservative font size hint when the manifest declares one.
-    max_size = placeholder.constraints.get("max_chars") or placeholder.constraints.get("max_lines")
-    if max_size:
-        # A small font lets dense assets fit more text; the theme engine may
-        # override later. We only set it when the placeholder is currently
-        # larger than the hint, to avoid inflating sparse assets.
+
+def _capture_text_style(text_frame) -> dict[str, Any]:
+    """Capture the first concrete run style before clearing a text frame."""
+    style: dict[str, Any] = {}
+    try:
+        paragraph = text_frame.paragraphs[0]
+        for run in paragraph.runs:
+            if not run.text:
+                continue
+            font = run.font
+            style["size"] = font.size
+            style["bold"] = font.bold
+            style["italic"] = font.italic
+            style["name"] = font.name
+            try:
+                style["color"] = font.color.rgb
+            except Exception:
+                style["color"] = None
+            return style
+        font = paragraph.font
+        style["size"] = font.size
+        style["bold"] = font.bold
+        style["italic"] = font.italic
+        style["name"] = font.name
         try:
-            if run.font.size is None or run.font.size > Pt(12):
-                run.font.size = Pt(12)
+            style["color"] = font.color.rgb
         except Exception:
-            pass
+            style["color"] = None
+    except Exception:
+        pass
+    return style
+
+
+def _apply_preserved_font_size(run, style: dict[str, Any]) -> None:
+    size = style.get("size")
+    if size is not None:
+        run.font.size = size
+
+
+def _apply_preserved_font_color(run, style: dict[str, Any]) -> None:
+    color = style.get("color")
+    if color is not None:
+        run.font.color.rgb = color
 
 
 def _clear_unbound_placeholder_leakage(slide) -> None:
@@ -267,9 +368,17 @@ def _clear_unbound_placeholder_leakage(slide) -> None:
             continue
         text = " ".join((shape.text or "").strip().split())
         normalized = text.lower()
-        if normalized in _PLACEHOLDER_LEAKAGE_VALUES:
+        if _is_placeholder_leakage(normalized):
             shape.text_frame.clear()
             logger.warning("cleared leaked placeholder text from shape %r", getattr(shape, "name", "?"))
+
+
+def _is_placeholder_leakage(normalized_text: str) -> bool:
+    if normalized_text in _PLACEHOLDER_LEAKAGE_VALUES:
+        return True
+    stripped = normalized_text
+    stripped = stripped.removeprefix("1. ").removeprefix("1) ").strip()
+    return any(pattern in stripped for pattern in _PLACEHOLDER_LEAKAGE_PATTERNS)
 
 
 def _log_layout_bounds_warnings(slide) -> None:
@@ -354,6 +463,7 @@ _P_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 _GRAPHIC_FRAME_TAG = f"{{{_P_NS}}}graphicFrame"
 _CUST_DATA_LST_TAG = f"{{{_P_NS}}}custDataLst"
 _BLIP_TAG = f"{{{_A_NS}}}blip"
+_GRAPHIC_DATA_TAG = f"{{{_A_NS}}}graphicData"
 _C_NV_PR_TAG = f"{{{_P_NS}}}cNvPr"
 _NV_SP_PR_TAG = f"{{{_P_NS}}}nvSpPr"
 _C_NV_SP_PR_TAG = f"{{{_P_NS}}}cNvSpPr"
@@ -382,6 +492,34 @@ def _strip_all_rel_refs(el):
         _strip_all_rel_refs(child)
 
 
+def _restore_embedded_image_refs(source_el, copied_el, source_part, target_part) -> None:
+    """Restore image relationships from ``source_el`` onto stripped ``copied_el``.
+
+    SVG icons are stored as ``asvg:svgBlip r:embed`` extension elements rather
+    than normal ``a:blip r:embed`` attributes. Walking the source and copied XML
+    trees together preserves both forms without re-importing or re-parsing the
+    image payload.
+    """
+    for source_node, copied_node in zip(source_el.iter(), copied_el.iter()):
+        for attr in _REL_ATTRS:
+            rel_id = source_node.get(attr)
+            if not rel_id:
+                continue
+            try:
+                rel = source_part.rels[rel_id]
+                related_part = source_part.related_part(rel_id)
+            except Exception:
+                continue
+            content_type = getattr(related_part, "content_type", "")
+            if not content_type.startswith("image/"):
+                continue
+            try:
+                copied_rel_id = target_part.relate_to(related_part, rel.reltype)
+                copied_node.set(attr, copied_rel_id)
+            except Exception:
+                logger.warning("could not restore embedded image relationship %s", rel_id)
+
+
 def _is_hidden(shape) -> bool:
     """Return True if the shape's non-visual properties mark it hidden."""
     el = getattr(shape, "element", None)
@@ -390,6 +528,18 @@ def _is_hidden(shape) -> bool:
     raw = etree.fromstring(etree.tostring(el))
     for cnv_pr in raw.iter(_C_NV_PR_TAG):
         if cnv_pr.get("hidden") == "1":
+            return True
+    return False
+
+
+def _is_table_graphic_frame(shape) -> bool:
+    """Return True for native PowerPoint tables encoded as graphicFrames."""
+    el = getattr(shape, "element", None)
+    if el is None:
+        return False
+    raw = etree.fromstring(etree.tostring(el))
+    for graphic_data in raw.iter(_GRAPHIC_DATA_TAG):
+        if graphic_data.get("uri") == "http://schemas.openxmlformats.org/drawingml/2006/table":
             return True
     return False
 
@@ -502,17 +652,20 @@ def _copy_slide(source_slide, target_prs: Presentation):
 
     The source EYP template slides contain think-cell OLE objects, embedded
     charts, and tag metadata whose package parts cannot be cleanly copied into
-    a fresh presentation.  Rather than attempting to copy those parts (which
-    produces broken relationship references and corrupts the file in
-    PowerPoint), this function:
+    a fresh presentation. Native PowerPoint tables are also graphicFrames but
+    are inline DrawingML and are safe to copy. Rather than attempting to copy
+    unsafe external parts (which produces broken relationship references and
+    corrupts the file in PowerPoint), this function:
 
-    1. **Skips** every ``<p:graphicFrame>`` shape (OLE objects, charts) and
-       any hidden think-cell tag shapes.
+    1. **Skips** non-table ``<p:graphicFrame>`` shapes (OLE objects, charts)
+       and any hidden think-cell tag shapes.
     2. **Demotes** layout placeholders to regular shapes and writes their
        effective geometry explicitly so positions survive the copy.
-    3. **Strips** all ``r:embed``, ``r:link``, and ``r:id`` attributes from
-       the remaining vector shapes and removes their ``<p:custDataLst>``
-       tag containers so no dangling references remain.
+    3. **Strips** all ``r:link`` and unrelated ``r:id`` attributes from the
+       remaining vector shapes and removes their ``<p:custDataLst>`` tag
+       containers so no dangling references remain. Embedded image refs are
+       copied into the target package and reattached so fixed asset icons stay
+       exactly as authored.
 
     The visual formatting (geometry, fills, fonts, text) lives in the shape
     XML itself, so the slides retain their full appearance.
@@ -522,12 +675,7 @@ def _copy_slide(source_slide, target_prs: Presentation):
     shape names.  This lets callers patch manifest bindings that referenced
     placeholders by index.
     """
-    try:
-        blank_layout = target_prs.slide_layouts[6]
-    except IndexError:
-        blank_layout = target_prs.slide_layouts[0]
-
-    new_slide = target_prs.slides.add_slide(blank_layout)
+    new_slide = target_prs.slides.add_slide(_matching_layout(source_slide, target_prs))
 
     # Drop any placeholders that the blank layout inserted so they do not
     # overlap or conflict with the copied template shapes.
@@ -547,7 +695,9 @@ def _copy_slide(source_slide, target_prs: Presentation):
         tag = shape.element.tag
 
         # Skip OLE objects and charts — their parts can't be copied cleanly.
-        if tag == _GRAPHIC_FRAME_TAG:
+        # Keep native tables; they are inline DrawingML and do not need copied
+        # package relationships.
+        if tag == _GRAPHIC_FRAME_TAG and not _is_table_graphic_frame(shape):
             logger.debug("skipping graphicFrame: %s", getattr(shape, "name", "?"))
             continue
 
@@ -568,6 +718,7 @@ def _copy_slide(source_slide, target_prs: Presentation):
         # Strip every remaining r:embed / r:link / r:id attribute so no
         # unresolved relationship references survive in the XML.
         _strip_all_rel_refs(new_el)
+        _restore_embedded_image_refs(shape.element, new_el, source_slide.part, new_slide.part)
 
         # Placeholders copied from the source layout lose their geometry in the
         # target layout; convert them to regular text boxes with explicit bounds.
@@ -583,3 +734,25 @@ def _copy_slide(source_slide, target_prs: Presentation):
         new_slide.shapes._spTree.insert_element_before(new_el, "p:extLst")
 
     return new_slide, placeholder_name_map
+
+
+def _matching_layout(source_slide, target_prs: Presentation):
+    """Return the target layout matching the source slide's authored layout."""
+    source_layout = getattr(source_slide, "slide_layout", None)
+    source_name = getattr(source_layout, "name", None)
+    if source_name:
+        for layout in target_prs.slide_layouts:
+            if getattr(layout, "name", None) == source_name:
+                return layout
+
+    try:
+        source_layouts = list(source_slide.part.package.presentation_part.presentation.slide_layouts)
+        source_index = source_layouts.index(source_layout)
+        return target_prs.slide_layouts[source_index]
+    except Exception:
+        pass
+
+    try:
+        return target_prs.slide_layouts[6]
+    except IndexError:
+        return target_prs.slide_layouts[0]

@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0.0",
+  "text_fit_policy": "regenerate_then_reject",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "editable",
+    "pilot"
+  ],
+  "supports_images": false,
+  "message_type": "risk_register",
+  "information_shape": "risk_table",
+  "purpose": "Implementation risk register with likelihood, impact, mitigation, owner, status, and summary counts.",
+  "family_aliases": [
+    "risk_register",
+    "implementation_risks"
+  ],
+  "recommended_for": [
+    "risk register",
+    "implementation risks",
+    "mitigation plan",
+    "risk ownership"
+  ],
+  "avoid_for": [
+    "risk heatmap only",
+    "roadmap",
+    "kpi dashboard"
+  ],
+  "density": 7,
+  "density_range": [
+    5,
+    7
+  ],
+  "fits_content_kinds": [
+    "risk",
+    "risk_register",
+    "mitigation"
+  ],
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "risk_id",
+      "role": "risk_id",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 4,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_id_text"
+      }
+    },
+    {
+      "id": "risk_description",
+      "role": "risk_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 85,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_description_text"
+      }
+    },
+    {
+      "id": "risk_likelihood",
+      "role": "likelihood",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 8,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_likelihood_text"
+      }
+    },
+    {
+      "id": "risk_impact",
+      "role": "impact",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 8,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_impact_text"
+      }
+    },
+    {
+      "id": "risk_mitigation",
+      "role": "mitigation",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 95,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_mitigation_text"
+      }
+    },
+    {
+      "id": "risk_owner",
+      "role": "owner",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 22,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_owner_text"
+      }
+    },
+    {
+      "id": "risk_status",
+      "role": "status",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 14,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "risk_{N}_status_text"
+      }
+    },
+    {
+      "id": "summary_count",
+      "role": "summary_count",
+      "kind": "metric",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 4,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_{N}_count_text"
+      }
+    },
+    {
+      "id": "summary_label",
+      "role": "summary_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 28,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_{N}_label_text"
+      }
+    },
+    {
+      "id": "summary_description",
+      "role": "summary_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 42,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_{N}_description_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "risk_{N}",
+    "placeholders_per_group": [
+      "risk_id",
+      "risk_description",
+      "risk_likelihood",
+      "risk_impact",
+      "risk_mitigation",
+      "risk_owner",
+      "risk_status"
+    ],
+    "index_token": "{N}",
+    "count": 7
+  },
+  "asset_id": "RISK-REGISTER-7ITEM-001",
+  "asset_version": 1,
+  "family": "risk",
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "44a4aa7dd62feabe",
+    "warnings": [],
+    "errors": []
+  }
+}

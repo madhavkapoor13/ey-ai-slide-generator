@@ -1,7 +1,17 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from backend.modules.content_generator import generate_slide_content
+from backend.modules.content_generator import (
+    generate_slide_content,
+    _repair_current_future_comparison,
+    _repair_current_process_6step,
+    _repair_governance_model_labels,
+    _repair_investment_case_labels,
+    _repair_kpi_scorecard_table,
+    _repair_risk_register,
+    _repair_title_so_what,
+    _repair_value_realization_roadmap,
+)
 from backend.modules.consulting_language import validate_consulting_language
 from backend.presentation_assets import asset_registry
 from backend.presentation_assets.text_fit import check_text_fit
@@ -67,6 +77,174 @@ def _visual_selection() -> VisualPatternSelection:
 
 
 class ManifestContentGeneratorTests(unittest.TestCase):
+    def test_governance_repair_backfills_optional_glance_fields(self):
+        manifest = asset_registry.get("GOVERNANCE-MODEL-001")
+        self.assertIsNotNone(manifest)
+
+        repaired = _repair_governance_model_labels(
+            {
+                "title": "Governance model ensures clear decision rights",
+                "steering_responsibility_1": "Review project milestones and approve strategic direction across the program",
+            },
+            manifest,
+        )
+
+        self.assertEqual(repaired["steering_responsibility_1"], "Set priorities")
+        self.assertEqual(repaired["forum_name"], ["SteerCo", "PMO", "Workstreams"])
+        self.assertEqual(repaired["forum_cadence"], ["Monthly", "Weekly", "Biweekly"])
+        self.assertEqual(repaired["decision_right_label"], ["Recommend", "Approve", "Escalate"])
+        self.assertEqual(repaired["decision_right_description"], ["Frame options", "Make final call", "Raise key risks"])
+
+    def test_investment_repair_compacts_overflowing_fields(self):
+        manifest = asset_registry.get("INVESTMENT-CASE-SUMMARY-001")
+        self.assertIsNotNone(manifest)
+
+        repaired = _repair_investment_case_labels(
+            {
+                "investment_scope": "Covers technology upgrades, training, and process reengineering",
+                "value_drivers": "Annual value at steady state from automation, reduced manual errors, and faster decisions",
+                "phased_approach": "Phased rollout in three phases: Assessment, Development, and Scale",
+                "investment_component_label": ["Item 1", "Item 2", "Item 3", "Item 4"],
+                "value_component_label": ["Item 1", "Item 2", "Item 3"],
+                "bridge_description": [
+                    "Item 1",
+                    "Item 2",
+                    "Item 3",
+                    "Item 4",
+                ],
+                "recommendation": "Approve the $5M investment to realize significant operational improvements and ROI.",
+            },
+            manifest,
+        )
+
+        self.assertEqual(repaired["investment_scope"], "Phase 1 funding")
+        self.assertEqual(repaired["value_drivers"], "Positive")
+        self.assertEqual(repaired["timing_value"], "12")
+        self.assertEqual(repaired["payback_value"], "18")
+        self.assertEqual(repaired["value_investment_value"], "3x")
+        self.assertEqual(repaired["phased_approach"], "Pilot, automate, scale")
+        self.assertEqual(repaired["investment_component_label"], ["Technology", "Training", "Process redesign", "Contingency"])
+        self.assertEqual(repaired["value_component_label"], ["Cost takeout", "Productivity", "Control uplift"])
+        self.assertEqual(
+            repaired["bridge_description"],
+            [
+                "Approve initial funding",
+                "Build priority capabilities",
+                "Validate benefits in pilot",
+                "Scale proven use cases",
+            ],
+        )
+        self.assertEqual(repaired["recommendation"], "Approve Phase 1 funding and review benefits monthly.")
+
+    def test_investment_title_repair_does_not_become_case_for_change(self):
+        repaired = _repair_title_so_what(
+            {"title": "Case for change centers on resilience, speed, and control"},
+            SlidePlan(
+                slide_number=1,
+                slide_role="Investment Case",
+                purpose="Summarize required investment and payback.",
+                required_inputs=[],
+                dependencies=[],
+                visualization_type="Investment Case",
+            ),
+        )
+
+        self.assertEqual(repaired["title"], "Investment case supports disciplined AI scale-up")
+
+    def test_value_realization_roadmap_repair_populates_bottom_milestones(self):
+        manifest = asset_registry.get("VALUE-REALIZATION-ROADMAP-001")
+        self.assertIsNotNone(manifest)
+
+        repaired = _repair_value_realization_roadmap(
+            {
+                "milestone_value": ["Item 1"],
+                "milestone_description": ["Item 1", "", "Full value realized through scaled adoption"],
+                "total_value": "",
+            },
+            manifest,
+        )
+
+        self.assertEqual(repaired["milestone_value"], ["10%", "45%", "100%"])
+        self.assertEqual(
+            repaired["milestone_description"],
+            ["Quick wins captured", "Automation benefits ramp", "Full value at scale"],
+        )
+        self.assertEqual(repaired["total_value"], "$50M total projected value")
+
+    def test_current_future_comparison_repair_locks_comparison_language(self):
+        manifest = asset_registry.get("CURRENT-FUTURE-COMPARISON-5SHIFT-001")
+        self.assertIsNotNone(manifest)
+
+        repaired = _repair_current_future_comparison(
+            {
+                "title": "Future-state model enables accountable capabilities",
+                "current_state": ["Item 1"],
+            },
+            manifest,
+        )
+
+        self.assertIn("Current-to-future shifts", repaired["title"])
+        self.assertIn("from fragmented work to a future-ready", repaired["subtitle"])
+        self.assertEqual(len(repaired["current_state"]), 5)
+        self.assertEqual(len(repaired["future_state"]), 5)
+        self.assertEqual(repaired["current_state"][0], "Local HR intake and routing")
+        self.assertEqual(repaired["future_state"][0], "Digital front door with clear ownership")
+        self.assertIn("reactive service delivery", repaired["takeaway"])
+
+    def test_current_process_six_step_repair_populates_business_impact(self):
+        manifest = asset_registry.get("CURRENT-STATE-PROCESS-6STEP-001")
+        self.assertIsNotNone(manifest)
+
+        repaired = _repair_current_process_6step({}, manifest)
+
+        self.assertEqual(repaired["title"], "Current supply chain friction constrains growth")
+        self.assertEqual(
+            repaired["subtitle"],
+            "Six process steps expose delays, exceptions and fragmented ownership",
+        )
+        self.assertIn("Business impact:", repaired["takeaway"])
+        self.assertIn("service, cost and resilience", repaired["takeaway"])
+
+    def test_kpi_scorecard_repair_populates_table_cells(self):
+        manifest = asset_registry.get("KPI-SCORECARD-TABLE-001")
+        self.assertIsNotNone(manifest)
+
+        repaired = _repair_kpi_scorecard_table(
+            {
+                "kpi_name_1": "Item 1",
+                "baseline_1": "Item 1",
+            },
+            manifest,
+        )
+
+        self.assertEqual(repaired["kpi_name_1"], "Close Cycle Time Days to close")
+        self.assertEqual(repaired["baseline_1"], "8 days")
+        self.assertEqual(repaired["owner_1"], "Controllership")
+        self.assertEqual(repaired["kpi_name_7"], "AI Adoption % priority users active")
+        self.assertEqual(repaired["on_track_description"], "Two KPIs meeting plan")
+
+    def test_risk_register_repair_populates_rows_and_summary(self):
+        manifest = asset_registry.get("RISK-REGISTER-7ITEM-001")
+        self.assertIsNotNone(manifest)
+
+        repaired = _repair_risk_register(
+            {
+                "risk_1_description": "Driver: fragmented data",
+                "summary_count": [],
+            },
+            manifest,
+        )
+
+        self.assertEqual(repaired["title"], "Implementation risks require accountable mitigation before scale")
+        self.assertIn("Seven priority risks", repaired["subtitle"])
+        self.assertEqual(repaired["risk_id"][0], "R1")
+        self.assertNotIn("Driver:", repaired["risk_description"][0])
+        self.assertEqual(repaired["risk_owner"][6], "PMO")
+        self.assertIn("review KPIs monthly", repaired["risk_mitigation"][6])
+        self.assertEqual(repaired["summary_count"], ["3", "3", "1", "0"])
+        self.assertEqual(repaired["summary_label"][0], "Critical / high")
+        self.assertEqual(repaired["summary_description"][2], "Monitor through PMO")
+
     """Tests for Sprint D: manifest-aware content generation."""
 
     def setUp(self):
@@ -432,6 +610,46 @@ class ManifestContentGeneratorTests(unittest.TestCase):
         self.assertNotIn("next steps require a board decision.", language.issues)
         self.assertNotIn("next steps require timing.", language.issues)
         self.assertFalse(any("unsupported numeric claim: '30 days'" in warning for warning in language.warnings))
+
+    def test_decision_request_asset_replaces_placeholder_leakage_with_board_decisions(self):
+        manifest = asset_registry.get("DECISION-REQUEST-3CARD-001")
+        self.assertIsNotNone(manifest)
+        plan = SlidePlan(
+            slide_number=1,
+            slide_role="Next Steps",
+            purpose="Define three board decisions required to proceed.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Board Decision Request",
+        )
+        payload = {placeholder.id: "Item 1" for placeholder in manifest.placeholders}
+        payload["title"] = "Generation placeholder"
+        with patch(
+            "backend.modules.content_generator._call_manifest_content_llm",
+            return_value=payload,
+        ):
+            spec = generate_slide_content(
+                _intent(),
+                _context(),
+                _process(),
+                plan,
+                visual_pattern_selection=VisualPatternSelection(
+                    pattern_id="IG-15",
+                    category="infographic",
+                    confidence=0.9,
+                    reasoning="Board decision request.",
+                ),
+                asset_id=manifest.asset_id,
+                asset_manifest=manifest,
+            )
+
+        language = validate_consulting_language(spec.raw_spec, "Next Steps")
+
+        self.assertEqual(spec.raw_spec["decision_title"][0], "Approve pilot scope")
+        self.assertEqual(spec.raw_spec["decision_1_request_detail"], "Approve pilot scope")
+        self.assertEqual(spec.raw_spec["delay_1_title"], "Pilot delay")
+        self.assertNotIn("next steps require an owner.", language.issues)
+        self.assertNotIn("next steps require timing.", language.issues)
 
     def test_manifest_path_falls_back_when_missing_required_placeholder(self):
         bad_payload = {

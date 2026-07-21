@@ -1,0 +1,191 @@
+{
+  "asset_id": "BENEFITS-6FACTOR-V2-001",
+  "asset_version": 3,
+  "schema_version": "1.0.0",
+  "family": "business_benefits",
+  "family_aliases": [
+    "benefits",
+    "value_drivers",
+    "value_case",
+    "business_value"
+  ],
+  "message_type": "business_benefits",
+  "information_shape": "benefit_factors",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Six-factor business benefits slide with benefit label, description, impact statement, and synthesis takeaway.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "program_team"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "benefits",
+    "value-case",
+    "structured"
+  ],
+  "recommended_for": [
+    "business benefits",
+    "value drivers",
+    "benefits case",
+    "value case",
+    "transformation benefits",
+    "success factors"
+  ],
+  "avoid_for": [
+    "roadmaps",
+    "risk register",
+    "process flow",
+    "case for change",
+    "kpi dashboard"
+  ],
+  "density": 6,
+  "density_range": [
+    6,
+    6
+  ],
+  "fits_content_kinds": [
+    "business_benefits",
+    "benefits",
+    "value_drivers",
+    "benefit_factors",
+    "success_factors"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 90,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "benefit_label",
+      "role": "benefit_label",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 26,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_label_text"
+      }
+    },
+    {
+      "id": "benefit_description",
+      "role": "benefit_description",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 115,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_description_text"
+      }
+    },
+    {
+      "id": "benefit_impact",
+      "role": "benefit_impact",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 80,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "benefit_{N}_impact_text"
+      }
+    },
+    {
+      "id": "takeaway",
+      "role": "so_what",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 110,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "benefit_{N}_group",
+    "placeholders_per_group": [
+      "benefit_label",
+      "benefit_description",
+      "benefit_impact"
+    ],
+    "index_token": "{N}",
+    "count": 6
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "3fafbbead1ef7d55",
+    "warnings": [],
+    "errors": []
+  }
+}

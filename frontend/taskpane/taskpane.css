@@ -62,6 +62,38 @@ h1 {
   margin-top: 24px;
 }
 
+.plan-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.plan-panel[hidden],
+.prompt-panel[hidden] {
+  display: none;
+}
+
+.plan-panel-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.plan-panel-header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 label {
   font-size: 14px;
   font-weight: 700;
@@ -81,7 +113,22 @@ textarea {
   line-height: 1.45;
 }
 
-textarea:focus {
+input,
+select {
+  width: 100%;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
   outline: 2px solid var(--ey-yellow);
   outline-offset: 2px;
   background: #ffffff;
@@ -106,6 +153,103 @@ button:hover:not(:disabled) {
 button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+.secondary-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: var(--panel);
+}
+
+.plan-list {
+  display: grid;
+  gap: 12px;
+}
+
+.slide-plan-row {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.slide-plan-header {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.slide-number {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--button);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.plan-field {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.plan-field textarea {
+  min-height: 76px;
+  font-size: 13px;
+}
+
+.row-controls,
+.plan-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.plan-actions {
+  grid-template-columns: 1fr 1fr;
+}
+
+.clarification-card {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.clarification-question {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.clarification-answer {
+  min-height: 82px;
+  font-size: 13px;
+}
+
+.clarification-reason {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .status-panel {

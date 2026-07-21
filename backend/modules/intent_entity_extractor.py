@@ -107,7 +107,7 @@ def _clean_company(value: str, entities: dict[str, Any]) -> str | None:
         changed = False
 
         # Remove trailing possessive before phrase checks.
-        if cleaned.lower().endswith("'s"):
+        if cleaned.lower().endswith(("'s", "’s")):
             cleaned = cleaned[:-2].strip()
             changed = True
 
@@ -127,6 +127,21 @@ def _clean_company(value: str, entities: dict[str, Any]) -> str | None:
             break
 
     cleaned = cleaned.rstrip(".,:;")
+    return _normalize_company_alias(cleaned) if cleaned else None
+
+
+def _normalize_company_alias(value: str) -> str | None:
+    """Normalize known company aliases and common user typos."""
+    cleaned = " ".join(value.split()).strip()
+    lowered = cleaned.lower().replace("’", "'")
+    lowered = re.sub(r"[^a-z0-9&. -]", "", lowered)
+    lowered = " ".join(lowered.split())
+
+    if lowered in {"unilever", "unilevers"}:
+        return "Unilever"
+    if "hindustan" in lowered and ("unilever" in lowered or "uniliver" in lowered):
+        return "Hindustan Unilever"
+
     return cleaned if cleaned else None
 
 
@@ -152,19 +167,21 @@ def extract_company(text: str, entities: dict[str, Any] | None = None) -> dict[s
     stop_phrases = entities.get("company_stop_phrases", [])
 
     patterns = [
+        # "company: Microsoft" or clarification answer "- company: Hindustan Unilever".
+        # Structured clarification answers should win over earlier prose in the
+        # original prompt.
+        (
+            r"\b(?:company|client|organization|organisation)\s*[:=-]\s*([A-Z][A-Za-z0-9&\.\-'’ ]{1,60}?)(?:['’]s)?(?:[.,:\n]|$)",
+            re.IGNORECASE,
+        ),
         # "for Microsoft", "about Amazon", "at Toyota" (including possessives)
         # The group is non-greedy so it stops at the first stop phrase, period,
         # or end of string. Compiled case-insensitively so capitalised stop
         # phrases like "Transformation" still terminate the match.
         (
-            r"\b(?:for|about|on|at|by)\s+([A-Z][A-Za-z0-9&\.\-' ]{1,60}?)(?:'s)?(?:\s+(?:"
+            r"\b(?:for|about|on|at|by)\s+([A-Z][A-Za-z0-9&\.\-'’ ]{1,60}?)(?:['’]s)?(?:\s+(?:"
             + "|".join(re.escape(p) for p in stop_phrases)
             + r")\b|[.,:\n]|$)",
-            re.IGNORECASE,
-        ),
-        # "company: Microsoft"
-        (
-            r"\b(?:company|client|organization)\s*[:=-]\s*([A-Z][A-Za-z0-9&\.\-' ]{1,60}?)(?:'s)?(?:[.,:\n]|$)",
             re.IGNORECASE,
         ),
     ]
@@ -193,12 +210,24 @@ def extract_industry(
     if entities is None:
         entities = load_entities()
 
+    known = entities.get("known_companies", {})
     match = _best_category_match(text, entities.get("industries", {}))
     if match:
+        weak_ai_aliases = {
+            "ai",
+            "artificial intelligence",
+            "machine learning",
+            "generative ai",
+            "genai",
+            "data analytics",
+        }
+        if company_value and match[1].lower() in weak_ai_aliases:
+            for name, industry in known.items():
+                if name.lower() == company_value.lower():
+                    return {"value": industry, "confidence": 0.85}
         return {"value": match[0], "confidence": 0.9}
 
     if company_value:
-        known = entities.get("known_companies", {})
         # Prefer case-insensitive exact match; otherwise try normalized match.
         for name, industry in known.items():
             if name.lower() == company_value.lower():

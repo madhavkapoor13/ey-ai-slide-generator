@@ -73,6 +73,20 @@ class PlaceholderBinding(BaseModel):
         default=None,
         description="Shape name (shape.name) for free-form custom-shape binding.",
     )
+    table_shape_name: Optional[str] = Field(
+        default=None,
+        description="Shape name of a native PowerPoint table for cell binding.",
+    )
+    row_index: Optional[int] = Field(
+        default=None,
+        ge=0,
+        description="Zero-based row index for native PowerPoint table cell binding.",
+    )
+    col_index: Optional[int] = Field(
+        default=None,
+        ge=0,
+        description="Zero-based column index for native PowerPoint table cell binding.",
+    )
 
 
 class AssetPlaceholder(BaseModel):
@@ -258,6 +272,11 @@ class AssetManifest(BaseModel):
         description="Content kinds (from SlidePlan) this asset can carry, e.g. ['phases', 'milestones'].",
     )
     supports_images: bool = Field(default=False, description="Whether the asset reserves space for images.")
+    source_slide_index: int = Field(
+        default=0,
+        ge=0,
+        description="Zero-based slide index in asset.pptx to copy/populate.",
+    )
     placeholders: list[AssetPlaceholder] = Field(
         ...,
         description="Fillable slots in the asset (bound to native placeholders or named shapes).",
@@ -369,4 +388,12 @@ class UserPreferences(BaseModel):
     allow_images: Optional[bool] = Field(
         default=None,
         description="Optional constraint: True requires supports_images, False forbids it.",
+    )
+    user_visual_preferences: dict[str, str] = Field(
+        default_factory=dict,
+        description=(
+            "Optional slide-type to variant override map, e.g. "
+            "{'roadmap': 'ROADMAP_3PHASE_WORKSTREAM', 'risks': 'RISK_MATRIX'}. "
+            "When present, the visual variant resolver applies it before defaults."
+        ),
     )

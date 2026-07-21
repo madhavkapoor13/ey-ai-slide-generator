@@ -38,6 +38,18 @@ class ConsultingLanguageTests(unittest.TestCase):
         self.assertTrue(result.warnings)
         self.assertTrue(any("leverage ai" in warning for warning in result.warnings))
 
+    def test_rejects_incomplete_clipped_phrases(self):
+        raw = {
+            "title": "Future-state model enables accountable",
+            "subtitle": "The target model should improve cycle time and strengthen procurement control.",
+            "summary": "This slide outlines critical risks associated with the transformation initiative, highlighting",
+        }
+
+        result = validate_consulting_language(raw, "Future State")
+
+        self.assertFalse(result.passed)
+        self.assertTrue(any("incomplete phrase" in issue for issue in result.issues))
+
     def test_asset_shaped_content_can_satisfy_so_what_without_so_what_key(self):
         raw = {
             "title": "Manual approvals slow supplier decisions and weaken spend control",
@@ -66,6 +78,25 @@ class ConsultingLanguageTests(unittest.TestCase):
         self.assertNotIn("next steps require a board decision.", result.issues)
         self.assertNotIn("next steps require timing.", result.issues)
         self.assertFalse(any("unsupported numeric claim: '30 days'" in warning for warning in result.warnings))
+
+    def test_decision_request_contract_does_not_require_action_register_owner_timing(self):
+        raw = {
+            "title": "Board decisions required to advance Finance AI",
+            "subtitle": "Three approvals unlock controlled pilot execution and value tracking.",
+            "decision_label": ["Decision 1", "Decision 2", "Decision 3"],
+            "decision_title": ["Approve pilot scope", "Authorize funding", "Confirm governance"],
+            "decision_1_why_now_detail": "Mobilization window is open",
+            "decision_1_request_detail": "Approve priority use cases",
+            "decision_1_impact_detail": "Enables controlled pilot",
+            "delay_1_title": "Pilot delay",
+            "delay_1_impact": "Slower benefits capture",
+        }
+
+        result = validate_consulting_language(raw, "Next Steps")
+
+        self.assertNotIn("next steps require an owner.", result.issues)
+        self.assertNotIn("next steps require timing.", result.issues)
+        self.assertNotIn("missing board-level so-what.", result.issues)
 
     def test_action_register_shape_suppresses_30_day_numeric_warning(self):
         raw = {
@@ -149,6 +180,21 @@ class ConsultingLanguageTests(unittest.TestCase):
 
         self.assertFalse(any("unsupported numeric claim: '30 days'" in warning for warning in result.warnings))
 
+    def test_investment_metric_value_does_not_warn_as_unsupported_numeric_claim(self):
+        raw = {
+            "title": "Investment case supports disciplined AI scale-up",
+            "subtitle": "Funding request links phased investment to measurable value",
+            "investment_required_value": "$5M",
+            "value_created_value": "$15M",
+            "value_investment_value": "4x",
+            "roi": "300%",
+            "recommendation": "Approve Phase 1 funding",
+        }
+
+        result = validate_consulting_language(raw, "Investment Case")
+
+        self.assertFalse(any("unsupported numeric claim: '4x'" in warning for warning in result.warnings))
+
     def test_post_generation_gate_rejects_role_drift(self):
         plan = SlidePlan(
             slide_number=8,
@@ -171,6 +217,112 @@ class ConsultingLanguageTests(unittest.TestCase):
 
         self.assertFalse(gated.is_valid)
         self.assertTrue(any("role-title mismatch" in issue for issue in gated.issues))
+
+    def test_post_generation_gate_keeps_decision_request_as_next_steps(self):
+        plan = SlidePlan(
+            slide_number=1,
+            slide_role="Next Steps",
+            purpose="Define board decisions required to proceed.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Board Decision Request",
+        )
+        spec = SlideSpec(
+            slide_type="operating_model",
+            raw_spec={
+                "title": "Board decisions required to advance Finance AI",
+                "subtitle": "Three approvals unlock controlled pilot execution and value tracking.",
+                "decision_label": ["Decision 1", "Decision 2", "Decision 3"],
+                "decision_title": ["Approve pilot scope", "Authorize funding", "Confirm governance"],
+                "decision_1_why_now_detail": "Mobilization window is open",
+                "decision_1_request_detail": "Approve priority use cases",
+                "decision_1_impact_detail": "Enables controlled pilot",
+                "delay_1_title": "Pilot delay",
+                "delay_1_impact": "Slower benefits capture",
+            },
+        )
+        validation = ValidationResult(is_valid=True, issues=[], claims=[], validated_spec=spec)
+
+        gated = _apply_post_generation_quality_gate(plan, spec, validation)
+
+        self.assertTrue(gated.is_valid)
+        self.assertFalse(any("role-title mismatch" in issue for issue in gated.issues))
+
+    def test_post_generation_gate_keeps_risk_register_as_risk_when_operating_model_is_mentioned(self):
+        plan = SlidePlan(
+            slide_number=1,
+            slide_role="Implementation Risks",
+            purpose="Show risk register with owners and mitigations.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Risk Register",
+        )
+        spec = SlideSpec(
+            slide_type="operating_model",
+            raw_spec={
+                "title": "Implementation risks require accountable mitigation before scale",
+                "subtitle": "Seven priority risks, owners, and mitigations for Toyota's AI operating model rollout",
+                "risk_description": ["MES / ERP data gaps delay model readiness"],
+                "risk_mitigation": ["Run data-quality sprint; assign plant data owners; validate model inputs."],
+                "risk_owner": ["Data Lead"],
+            },
+        )
+        validation = ValidationResult(is_valid=True, issues=[], claims=[], validated_spec=spec)
+
+        gated = _apply_post_generation_quality_gate(plan, spec, validation)
+
+        self.assertTrue(gated.is_valid)
+        self.assertFalse(any("role-title mismatch" in issue for issue in gated.issues))
+
+    def test_post_generation_gate_accepts_current_future_comparison_language(self):
+        plan = SlidePlan(
+            slide_number=1,
+            slide_role="Current State vs Future State",
+            purpose="Show five transformation shifts from current ways of working to the future operating model.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Current State vs Future State Comparison",
+        )
+        spec = SlideSpec(
+            slide_type="operating_model",
+            raw_spec={
+                "title": "Current-to-future shifts define the HR transformation path",
+                "subtitle": "Five shifts move Unilever HR from fragmented work to a future-ready operating model",
+                "current_state": ["Manual HR requests handled through local teams"],
+                "future_state": ["Digital front door routes work to the right owner"],
+            },
+        )
+        validation = ValidationResult(is_valid=True, issues=[], claims=[], validated_spec=spec)
+
+        gated = _apply_post_generation_quality_gate(plan, spec, validation)
+
+        self.assertTrue(gated.is_valid)
+        self.assertFalse(any("role-title mismatch" in issue for issue in gated.issues))
+
+    def test_post_generation_gate_accepts_section_divider_named_for_roadmap_section(self):
+        plan = SlidePlan(
+            slide_number=1,
+            slide_role="Section Divider",
+            purpose="Introduce the requested section using a dark section divider slide.",
+            required_inputs=[],
+            dependencies=[],
+            visualization_type="Dark Section Divider",
+        )
+        spec = SlideSpec(
+            slide_type="operating_model",
+            raw_spec={
+                "section_number": "SECTION 01",
+                "title": "Implementation Roadmap",
+                "subtitle": "Microsoft procurement transformation roadmap",
+                "tagline": "Board discussion",
+            },
+        )
+        validation = ValidationResult(is_valid=True, issues=[], claims=[], validated_spec=spec)
+
+        gated = _apply_post_generation_quality_gate(plan, spec, validation)
+
+        self.assertTrue(gated.is_valid)
+        self.assertFalse(any("role-title mismatch" in issue for issue in gated.issues))
 
     def test_visual_planner_role_overrides_for_golden_roles(self):
         cases = [

@@ -82,7 +82,7 @@ def certify_all(*, assets_dir: Path | None = None) -> dict[str, AssetCertificati
 
 
 def _binding_errors(pptx_path: Path, manifest: AssetManifest) -> list[str]:
-    shapes = enumerate_shapes(pptx_path)
+    shapes = enumerate_shapes(pptx_path, slide_index=manifest.source_slide_index)
     names = {shape.name for shape in shapes}
     placeholder_indices = {
         shape.placeholder_idx for shape in shapes if shape.placeholder_idx is not None
@@ -108,7 +108,7 @@ def _binding_errors(pptx_path: Path, manifest: AssetManifest) -> list[str]:
 def _repeating_errors(pptx_path: Path, manifest: AssetManifest) -> list[str]:
     if manifest.repeating is None:
         return []
-    shapes = enumerate_shapes(pptx_path)
+    shapes = enumerate_shapes(pptx_path, slide_index=manifest.source_slide_index)
     names = {shape.name for shape in shapes}
     errors: list[str] = []
     lo, hi = manifest.density_range
@@ -156,7 +156,7 @@ def _placeholder_leakage_errors(pptx_path: Path, manifest: AssetManifest) -> lis
     errors: list[str] = []
     try:
         prs = Presentation(str(pptx_path))
-        slide = prs.slides[0]
+        slide = prs.slides[manifest.source_slide_index]
         for shape in slide.shapes:
             text = getattr(shape, "text", "")
             normalized = " ".join(str(text).strip().lower().split())

@@ -788,5 +788,70 @@
         "density": "comfortable"
       }
     }
+  },
+  {
+    "pattern_id": "IG-16",
+    "name": "Case for Change Drivers",
+    "category": "infographic",
+    "purpose": "Explain why change is required now using three critical drivers, evidence, impact if unaddressed, and a bottom-line implication strip.",
+    "typical_use_cases": [
+      "Case for change",
+      "Change imperative",
+      "Transformation rationale",
+      "Burning platform",
+      "Why act now"
+    ],
+    "min_items": 3,
+    "max_items": 3,
+    "supports_percentages": false,
+    "supports_images": false,
+    "common_consulting_examples": [
+      "Three drivers of transformation urgency",
+      "Performance, risk and future-readiness case for change",
+      "Board-level change imperative"
+    ],
+    "placeholder_schema": {
+      "title": "string",
+      "subtitle": "string",
+      "driver_title": [
+        "string"
+      ],
+      "driver_summary": [
+        "string"
+      ],
+      "driver_evidence": [
+        "string"
+      ],
+      "driver_impact": [
+        "string"
+      ],
+      "bottom_line": [
+        "string"
+      ],
+      "source": "string (optional)"
+    },
+    "constraints": [
+      "Exactly 3 drivers",
+      "Each driver has evidence and impact if unaddressed",
+      "Bottom-line messages must be short and board-ready",
+      "Avoid generic change-management language"
+    ],
+    "design_metadata": {
+      "spacing": {
+        "cards": {
+          "count": 3,
+          "alignment": "horizontal"
+        }
+      },
+      "alignment": {
+        "cards": {
+          "default": "top",
+          "preferred": "distributed"
+        }
+      },
+      "visual_rules": {
+        "density": "dense"
+      }
+    }
   }
 ]

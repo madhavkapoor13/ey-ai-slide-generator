@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from backend.orchestrator import run_pipeline
+from backend.orchestrator import execute_approved_plan, plan_pipeline, run_pipeline
 from schemas.clarification import ClarificationQuestion, ClarificationResult
 from schemas.context import EnterpriseContext
 from schemas.deck_execution import DeckExecutionResult, SlideExecutionResult
@@ -9,6 +9,7 @@ from schemas.information import InformationResult
 from schemas.intent import IntentResult
 from schemas.pipeline_result import PipelineResult
 from schemas.presentation import DeckSpec, SlidePlan
+from schemas.presentation_asset import UserPreferences
 from schemas.process import ProcessResult
 from schemas.slide_spec import SlideSpec
 
@@ -194,6 +195,86 @@ class OrchestratorTests(unittest.TestCase):
             mock_context.assert_not_called()
             mock_process.assert_not_called()
             mock_execute.assert_not_called()
+
+    def test_plan_pipeline_returns_editable_plan_without_execution(self):
+        intent = self._intent()
+        deck_spec = self._deck_spec()
+        information_result = self._information_result(True)
+
+        with patch("backend.orchestrator.extract_intent", return_value=intent) as mock_intent, \
+             patch("backend.orchestrator.plan_presentation", return_value=deck_spec) as mock_planner, \
+             patch("backend.orchestrator.analyze_information", return_value=information_result) as mock_analyzer, \
+             patch("backend.orchestrator.build_context") as mock_context, \
+             patch("backend.orchestrator.identify_process") as mock_process, \
+             patch("backend.orchestrator.execute_deck") as mock_execute:
+
+            result = plan_pipeline("Current State", "Toyota Procurement transformation.")
+
+            self.assertEqual(result.title, "Current State")
+            self.assertEqual(result.content, "Toyota Procurement transformation.")
+            self.assertEqual(result.intent, intent)
+            self.assertEqual(result.deck_spec, deck_spec)
+            self.assertFalse(result.needs_clarification)
+            self.assertTrue(result.slide_variants)
+
+            mock_intent.assert_called_once_with("Current State", "Toyota Procurement transformation.")
+            mock_planner.assert_called_once_with("Toyota Procurement transformation.", intent)
+            mock_analyzer.assert_called_once_with("Toyota Procurement transformation.", intent, deck_spec)
+            mock_context.assert_not_called()
+            mock_process.assert_not_called()
+            mock_execute.assert_not_called()
+
+    def test_execute_approved_plan_uses_submitted_deck_order_and_preferences(self):
+        intent = self._intent()
+        edited_deck = self._deck_spec().model_copy(
+            update={
+                "slides": [
+                    SlidePlan(
+                        slide_number=1,
+                        slide_role="Roadmap",
+                        purpose="Show delivery sequence.",
+                        required_inputs=[],
+                        dependencies=[],
+                        visualization_type="Roadmap",
+                    ),
+                    SlidePlan(
+                        slide_number=2,
+                        slide_role="Executive Summary",
+                        purpose="Summarize the proposal.",
+                        required_inputs=[],
+                        dependencies=[],
+                        visualization_type="Executive Summary",
+                    ),
+                ],
+                "estimated_slide_count": 2,
+            }
+        )
+        context = self._context()
+        process_result = self._process_result()
+        execution_result = self._execution_result().model_copy(update={"deck_spec": edited_deck})
+        prefs = UserPreferences(user_visual_preferences={"roadmap": "ROADMAP_3PHASE_WORKSTREAM"})
+
+        with patch("backend.orchestrator.extract_intent", return_value=intent), \
+             patch("backend.orchestrator.build_context", return_value=context), \
+             patch("backend.orchestrator.identify_process", return_value=process_result), \
+             patch("backend.orchestrator.execute_deck", return_value=execution_result) as mock_execute:
+
+            result = execute_approved_plan(
+                "Current State",
+                "Toyota Procurement transformation.",
+                edited_deck,
+                preferences=prefs,
+            )
+
+            self.assertEqual(result.status, "COMPLETED")
+            self.assertEqual(result.deck_execution_result.deck_spec.slides[0].slide_role, "Roadmap")
+            mock_execute.assert_called_once_with(
+                edited_deck,
+                intent,
+                context,
+                process_result,
+                user_preferences=prefs,
+            )
 
     def test_completed_pipeline_bypasses_clarification(self):
         """When information is sufficient, no clarification questions are generated."""

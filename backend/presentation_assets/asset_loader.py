@@ -108,7 +108,7 @@ def _collect_shapes(shapes, group_path: list[str], out: list[ShapeInfo]) -> None
         )
 
 
-def enumerate_shapes(pptx_path: str | Path) -> list[ShapeInfo]:
+def enumerate_shapes(pptx_path: str | Path, slide_index: int = 0) -> list[ShapeInfo]:
     """
     Inspect the first slide of ``pptx_path`` and return all shapes on it.
 
@@ -119,7 +119,9 @@ def enumerate_shapes(pptx_path: str | Path) -> list[ShapeInfo]:
     prs = Presentation(str(pptx_path))
     if not prs.slides:
         return []
-    slide = prs.slides[0]
+    if slide_index < 0 or slide_index >= len(prs.slides):
+        raise IndexError(f"slide_index {slide_index} outside presentation slide count {len(prs.slides)}")
+    slide = prs.slides[slide_index]
     out: list[ShapeInfo] = []
     _collect_shapes(slide.shapes, [], out)
     return out
@@ -145,8 +147,15 @@ def open_for_population(asset_id: str, assets_dir: Path | None = None):
     if not pptx_path.exists():
         raise FileNotFoundError(f"asset.pptx not found for asset {asset_id!r}: {pptx_path}")
 
+    manifest = asset_registry.get(asset_id, assets_dir=assets_dir)
+    slide_index = manifest.source_slide_index if manifest is not None else 0
+
     prs = Presentation(str(pptx_path))
     if not prs.slides:
         raise ValueError(f"Asset {asset_id!r} has no slides in {pptx_path}")
+    if slide_index < 0 or slide_index >= len(prs.slides):
+        raise ValueError(
+            f"Asset {asset_id!r} source_slide_index {slide_index} outside slide count {len(prs.slides)}"
+        )
 
-    return prs, prs.slides[0]
+    return prs, prs.slides[slide_index]

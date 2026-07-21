@@ -35,6 +35,37 @@ _NUMERIC_CLAIM_RE = re.compile(
     re.I,
 )
 
+_INCOMPLETE_ENDING_WORDS = {
+    "and",
+    "or",
+    "of",
+    "for",
+    "to",
+    "with",
+    "through",
+    "by",
+    "in",
+    "on",
+    "as",
+    "from",
+    "into",
+    "across",
+    "between",
+    "at",
+    "all",
+    "driving",
+    "highlighting",
+    "including",
+    "enabling",
+    "leading",
+    "supporting",
+    "creating",
+    "delivering",
+    "reducing",
+    "improving",
+    "enhancing",
+}
+
 
 @dataclass
 class ConsultingLanguageResult:
@@ -56,6 +87,7 @@ def validate_consulting_language(raw: dict[str, Any], slide_role: str = "") -> C
     normalized = joined.lower()
     role = slide_role.lower()
     action_register_shape = _is_action_register_shape(raw)
+    decision_request_shape = _is_decision_request_shape(raw)
 
     for phrase in GENERIC_PHRASES:
         if phrase in normalized:
@@ -66,6 +98,8 @@ def validate_consulting_language(raw: dict[str, Any], slide_role: str = "") -> C
         if _claim_is_in_timing_field(raw, claim):
             continue
         if _claim_is_kpi_metric_value(raw, claim, role):
+            continue
+        if _claim_is_investment_metric_value(raw, claim, role):
             continue
         if _is_operational_timing_claim(
             claim,
@@ -83,8 +117,16 @@ def validate_consulting_language(raw: dict[str, Any], slide_role: str = "") -> C
         if count >= 3:
             result.warnings.append(f"repeated phrase: {phrase!r} ({count}x)")
 
+    for text in texts:
+        if _looks_incomplete_phrase(text):
+            result.issues.append(f"incomplete phrase: {text!r}")
+
     so_what = _extract_so_what(raw)
-    if not _is_board_level_so_what(so_what) and not _action_register_has_board_ready_contract(raw):
+    if (
+        not _is_board_level_so_what(so_what)
+        and not _action_register_has_board_ready_contract(raw)
+        and not _decision_request_has_board_ready_contract(raw)
+    ):
         result.issues.append("missing board-level so-what.")
 
     if "benefit" in role or "value" in role:
@@ -102,12 +144,16 @@ def validate_consulting_language(raw: dict[str, Any], slide_role: str = "") -> C
         _require_any(normalized, ("cause", "driver", "because", "due to", "root", "dependency"), "risks require cause.", result)
         _require_any(normalized, ("impact", "delay", "cost", "adoption", "control", "exposure", "disruption", "value leakage"), "risks require impact.", result)
         _require_any(normalized, ("mitigation", "mitigate", "control", "owner", "ownership", "sponsor", "accountable", "response"), "risks require mitigation and ownership.", result)
-    if "next step" in role or "decision" in role or "action" in role or action_register_shape:
-        if not _has_action_register_decision(raw):
+    if "next step" in role or "decision" in role or "action" in role or action_register_shape or decision_request_shape:
+        if decision_request_shape:
+            if not _decision_request_has_board_ready_contract(raw):
+                result.issues.append("decision request requires decision, urgency, impact, and delay consequence.")
+        elif not _has_action_register_decision(raw):
             _require_any(normalized, ("approve", "decide", "decision", "confirm", "endorse", "authorize", "fund", "prioritize", "launch"), "next steps require a board decision.", result)
-        _require_any(normalized, ("owner", "sponsor", "cfo", "coo", "cio", "procurement"), "next steps require an owner.", result)
-        if not _has_action_register_timing(raw):
-            _require_any(normalized, ("q1", "q2", "q3", "q4", "week", "month", "day", "days", "30", "60", "90", "by "), "next steps require timing.", result)
+        if not decision_request_shape:
+            _require_any(normalized, ("owner", "sponsor", "cfo", "coo", "cio", "procurement"), "next steps require an owner.", result)
+            if not _has_action_register_timing(raw):
+                _require_any(normalized, ("q1", "q2", "q3", "q4", "week", "month", "day", "days", "30", "60", "90", "by "), "next steps require timing.", result)
 
     return result
 
@@ -196,6 +242,25 @@ def _is_action_register_shape(raw: dict[str, Any]) -> bool:
     return has_row_binding or (has_action and has_timing and has_owner)
 
 
+def _is_decision_request_shape(raw: dict[str, Any]) -> bool:
+    keys = set(_walk_keys(raw))
+    has_decision_cards = any(key == "decision_title" or key.startswith("decision_") for key in keys)
+    has_why_now = any("why_now" in key for key in keys)
+    has_delay = any(key.startswith("delay_") or "delay" in key for key in keys)
+    return has_decision_cards and has_why_now and has_delay
+
+
+def _decision_request_has_board_ready_contract(raw: dict[str, Any]) -> bool:
+    if not _is_decision_request_shape(raw):
+        return False
+    text = " ".join(_walk_text(raw)).lower()
+    has_decision = any(term in text for term in ("approve", "authorize", "confirm", "endorse", "fund", "decision"))
+    has_urgency = any(term in text for term in ("now", "must", "needed", "unlock", "window", "before", "prevent"))
+    has_impact = any(term in text for term in ("impact", "enable", "protect", "control", "value", "speed", "benefit"))
+    has_delay = any(term in text for term in ("delay", "slip", "slow", "missed", "unowned", "defer"))
+    return has_decision and has_urgency and has_impact and has_delay
+
+
 def _has_action_register_decision(raw: dict[str, Any]) -> bool:
     decision_terms = ("approve", "decide", "decision", "confirm", "endorse", "authorize", "fund", "prioritize", "launch")
     for key_lower, text in _walk_key_text(raw):
@@ -251,7 +316,34 @@ def _claim_is_kpi_metric_value(raw: dict[str, Any], claim: str, role: str) -> bo
         return False
     claim_lower = claim.lower()
     for key_lower, text in _walk_key_text(raw):
-        if key_lower not in {"value", "metric", "kpi_value"} and "kpi_value" not in key_lower:
+        if (
+            key_lower not in {"value", "metric", "target", "kpi_value", "kpi_target"}
+            and "kpi_value" not in key_lower
+            and "kpi_target" not in key_lower
+        ):
+            continue
+        if claim_lower in text:
+            return True
+    return False
+
+
+def _claim_is_investment_metric_value(raw: dict[str, Any], claim: str, role: str) -> bool:
+    if not any(term in role for term in ("investment", "business case", "funding", "roi", "payback")):
+        return False
+    claim_lower = claim.lower()
+    metric_keys = (
+        "investment_required_value",
+        "value_created_value",
+        "timing_value",
+        "payback_value",
+        "value_investment_value",
+        "npv",
+        "roi",
+        "capture_value",
+        "component_value",
+    )
+    for key_lower, text in _walk_key_text(raw):
+        if not any(metric_key in key_lower for metric_key in metric_keys):
             continue
         if claim_lower in text:
             return True
@@ -260,6 +352,8 @@ def _claim_is_kpi_metric_value(raw: dict[str, Any], claim: str, role: str) -> bo
 
 def _is_board_level_so_what(text: str) -> bool:
     if not text:
+        return False
+    if _looks_incomplete_phrase(text):
         return False
     words = text.split()
     if len(words) >= 6:
@@ -306,6 +400,25 @@ def _walk_text(value: Any):
     elif isinstance(value, list):
         for child in value:
             yield from _walk_text(child)
+
+
+def _looks_incomplete_phrase(text: str) -> bool:
+    cleaned = " ".join(str(text or "").split()).strip(" -:;,.")
+    if not cleaned:
+        return False
+    words = re.findall(r"[A-Za-z][A-Za-z'-]*", cleaned)
+    if not words:
+        return False
+    last = words[-1].lower()
+    if last in _INCOMPLETE_ENDING_WORDS:
+        return True
+    return bool(
+        re.search(
+            r"\b(this slide outlines|this slide highlights|this slide shows)\b",
+            cleaned,
+            flags=re.I,
+        )
+    )
 
 
 def _walk_keys(value: Any):

@@ -27,6 +27,86 @@ class PresentationPlannerTests(unittest.TestCase):
         self.assertIn("KPIs for success", topics)
         self.assertEqual(len(topics), 10)
 
+    def test_single_slide_current_process_preserves_six_step_constraint(self):
+        prompt = (
+            "Create only one Current State Process slide for Amazon Supply Chain Modernization. "
+            "Audience: COO and Board. Show a six-step current process with activities, "
+            "pain points, and overall business impact. Do not create any other slides."
+        )
+        intent = IntentResult(
+            slide_type="process_flow",
+            raw_title="Amazon Supply Chain Modernization",
+            raw_content=prompt,
+            company="Amazon",
+            industry="Retail",
+            business_function="Supply Chain",
+        )
+
+        with patch(
+            "backend.modules.presentation_planner._call_presentation_planner_llm",
+            return_value=_toyota_procurement_deck(),
+        ):
+            deck = plan_presentation(prompt, intent)
+
+        self.assertEqual(deck.estimated_slide_count, 1)
+        self.assertEqual(deck.slides[0].slide_role, "Current Procurement Process")
+        self.assertIn("Use exactly six process steps.", deck.slides[0].purpose)
+        self.assertIn("Include activities.", deck.slides[0].purpose)
+        self.assertIn("Include pain points.", deck.slides[0].purpose)
+        self.assertIn("Include overall business impact.", deck.slides[0].purpose)
+
+    def test_single_slide_dark_section_divider_preserves_divider_role(self):
+        prompt = (
+            "Create only one dark Section Divider slide introducing the Implementation Roadmap "
+            "section for Microsoft Procurement Transformation. Audience: Board of Directors. "
+            "Do not create any other slides."
+        )
+        intent = IntentResult(
+            slide_type="section_divider",
+            raw_title="Microsoft Procurement Transformation",
+            raw_content=prompt,
+            company="Microsoft",
+            industry="Technology",
+            business_function="Procurement",
+        )
+
+        with patch(
+            "backend.modules.presentation_planner._call_presentation_planner_llm",
+            return_value=_toyota_procurement_deck(),
+        ):
+            deck = plan_presentation(prompt, intent)
+
+        self.assertEqual(deck.estimated_slide_count, 1)
+        self.assertEqual(deck.slides[0].slide_role, "Section Divider")
+        self.assertEqual(deck.slides[0].visualization_type, "Section Divider")
+        self.assertIn("dark section divider", deck.slides[0].purpose.lower())
+
+    def test_single_slide_next_steps_section_divider_uses_standard_divider_hint(self):
+        prompt = (
+            "Create only one Next Steps Section Divider slide for Finance AI Transformation. "
+            "Audience: CFO and Board Investment Committee. It should introduce the decisions "
+            "and actions required after the transformation proposal. Do not create any other slides."
+        )
+        intent = IntentResult(
+            slide_type="section_divider",
+            raw_title="Finance AI Transformation",
+            raw_content=prompt,
+            company="HSBC",
+            industry="Financial Services",
+            business_function="Finance",
+        )
+
+        with patch(
+            "backend.modules.presentation_planner._call_presentation_planner_llm",
+            return_value=_toyota_procurement_deck(),
+        ):
+            deck = plan_presentation(prompt, intent)
+
+        self.assertEqual(deck.estimated_slide_count, 1)
+        self.assertEqual(deck.slides[0].slide_role, "Section Divider")
+        self.assertEqual(deck.slides[0].visualization_type, "Section Divider")
+        self.assertNotIn("dark section divider", deck.slides[0].purpose.lower())
+
     def test_reconcile_appends_missing_enumerated_topics(self):
         # LLM omitted AI Use Cases, Transformation Timeline, and KPIs for
         # Success — the exact defect seen in Presentation4.pptx.
@@ -89,6 +169,50 @@ class PresentationPlannerTests(unittest.TestCase):
         )
         reconciled = _reconcile_enumerated_slides("Build a deck summary.", deck)
         self.assertEqual(len(reconciled.slides), 1)
+
+    def test_single_investment_slide_prompt_does_not_expand_to_story_template(self):
+        prompt = (
+            "Create only an Investment Case slide for Finance AI Transformation. "
+            "Audience: CFO and Board Investment Committee. "
+            "Do not create any other slides."
+        )
+        payload = {
+            "presentation_type": "Transformation Proposal",
+            "objective": "Finance AI Transformation",
+            "audience": "CFO and Board Investment Committee",
+            "narrative": "Investment case",
+            "estimated_slide_count": 8,
+            "slides": [
+                {
+                    "slide_number": 1,
+                    "slide_role": "Executive Summary",
+                    "purpose": "Summarize the transformation.",
+                    "required_inputs": [],
+                    "dependencies": [],
+                    "visualization_type": "Executive Summary",
+                },
+                {
+                    "slide_number": 2,
+                    "slide_role": "Investment Case",
+                    "purpose": "Summarize the value case.",
+                    "required_inputs": [],
+                    "dependencies": [],
+                    "visualization_type": "Investment Case",
+                },
+            ],
+        }
+        with patch(
+            "backend.modules.presentation_planner._call_presentation_planner_llm",
+            return_value=payload,
+        ):
+            deck = plan_presentation(
+                prompt,
+                IntentResult(company="", industry="", business_function="Finance", slide_type="Investment Case"),
+            )
+
+        self.assertEqual(deck.estimated_slide_count, 1)
+        self.assertEqual(len(deck.slides), 1)
+        self.assertEqual(deck.slides[0].slide_role, "Investment Case")
 
     def test_reconcile_orders_slides_to_enumerated_sequence(self):
         # LLM returns slides out of order; reconciliation must reorder them.
@@ -162,6 +286,37 @@ class PresentationPlannerTests(unittest.TestCase):
         self.assertEqual(visualizations["Future-State Operating Model"], "Operating Model")
         self.assertEqual(visualizations["AI Use Cases"], "Use Case Portfolio")
         self.assertEqual(visualizations["Implementation Risks"], "Risk Matrix")
+
+    def test_board_decisions_prompt_keeps_decisions_at_the_close(self):
+        incomplete = DeckSpec(
+            presentation_type="Transformation Proposal",
+            objective="o",
+            audience="Board of Directors",
+            narrative="n",
+            estimated_slide_count=4,
+            slides=[
+                SlidePlan(slide_number=1, slide_role="Board Decisions", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Board Decisions"),
+                SlidePlan(slide_number=2, slide_role="KPIs for Success", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="KPI Dashboard"),
+                SlidePlan(slide_number=3, slide_role="AI Use Cases", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Use Case Portfolio"),
+                SlidePlan(slide_number=4, slide_role="Opportunities", purpose="p",
+                          required_inputs=[], dependencies=[], visualization_type="Creative Listing"),
+            ],
+        )
+        prompt = (
+            "Create a consulting presentation for Microsoft Procurement Transformation. "
+            "Include board decisions, KPI success metrics, AI use case shortlist, "
+            "opportunity areas, risks, and next steps."
+        )
+
+        reconciled = _reconcile_enumerated_slides(prompt, incomplete)
+        roles = [s.slide_role for s in reconciled.slides]
+
+        self.assertNotEqual(roles[0], "Board Decisions")
+        self.assertEqual(roles[-1], "Next Steps")
+        self.assertIn("Next Steps", roles[-2:])
 
     def test_transformation_proposal_uses_story_template_without_client_hardcoding(self):
         user_prompt = "Create a transformation proposal for Unilever HR."
@@ -272,7 +427,7 @@ class PresentationPlannerTests(unittest.TestCase):
         prompt = "Include an Executive Summary, current state, and next steps."
         reconciled = _reconcile_enumerated_slides(prompt, with_extra)
         roles = [s.slide_role for s in reconciled.slides]
-        self.assertEqual(roles, ["Executive Summary", "Current State", "Next Steps", "Change Management"])
+        self.assertEqual(roles, ["Executive Summary", "Current State", "Change Management", "Next Steps"])
 
     def test_procurement_transformation_proposal_for_toyota(self):
         user_prompt = "Build a procurement transformation proposal for Toyota."

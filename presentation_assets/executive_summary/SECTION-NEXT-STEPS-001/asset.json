@@ -1,0 +1,121 @@
+{
+  "asset_id": "SECTION-NEXT-STEPS-001",
+  "asset_version": 1,
+  "schema_version": "1.0.0",
+  "family": "executive_summary",
+  "family_aliases": [
+    "section_divider",
+    "divider",
+    "section",
+    "next_steps"
+  ],
+  "message_type": "section_divider",
+  "information_shape": "section_break",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Section divider slide for Next Steps and Actions section.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "ey",
+    "section-divider",
+    "clean",
+    "board-ready"
+  ],
+  "recommended_for": [
+    "section divider",
+    "next steps section",
+    "section break",
+    "divider",
+    "next steps"
+  ],
+  "avoid_for": [
+    "content-heavy slides",
+    "kpi dashboard",
+    "risk matrix",
+    "roadmap",
+    "process flow"
+  ],
+  "density": 1,
+  "density_range": [
+    1,
+    1
+  ],
+  "fits_content_kinds": [
+    "section_divider",
+    "divider",
+    "section_break",
+    "next_steps_section"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "section_number",
+      "role": "section_number",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 12,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "section_number_text"
+      }
+    },
+    {
+      "id": "section_title",
+      "role": "section_title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 40,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "section_title_text"
+      }
+    },
+    {
+      "id": "section_subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 95,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "section_subtitle_text"
+      }
+    }
+  ],
+  "repeating": null,
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "72867f1b9ab14db6",
+    "warnings": [],
+    "errors": []
+  }
+}

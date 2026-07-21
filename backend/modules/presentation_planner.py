@@ -107,6 +107,12 @@ def plan_presentation(user_prompt: str, intent: IntentResult) -> DeckSpec:
         logger.warning("presentation planner LLM failed; using taxonomy fallback: %s", exc)
         deck_spec = _taxonomy_fallback_deck(user_prompt, intent, classification, taxonomy_entry)
 
+    single_slide_role = _single_slide_role_requested(user_prompt)
+    if single_slide_role is not None:
+        deck_spec = _force_single_slide_deck(user_prompt, deck_spec, single_slide_role)
+        deck_spec = _score_planner_confidence(user_prompt, deck_spec)
+        return deck_spec
+
     deck_spec = _apply_story_template(user_prompt, deck_spec)
     deck_spec = _reconcile_enumerated_slides(user_prompt, deck_spec)
     deck_spec = _score_planner_confidence(user_prompt, deck_spec)
@@ -122,6 +128,15 @@ _MAX_DECK_SLIDES = 18
 # Generic role keywords drawn from a topic name to detect existing matches.
 _ROLE_KEYWORD_BUCKETS = {
     "executive summary": ("executive summary", "summary", "overview"),
+    "section divider": (
+        "section divider", "dark section divider", "section break",
+        "chapter divider", "divider slide",
+    ),
+    "current state vs future state": (
+        "current state vs future state", "current state versus future state",
+        "current vs future", "current versus future", "from current to future",
+        "from-to", "from to", "transformation shifts",
+    ),
     "current state": (
         "current state", "current procurement challenges", "challenges",
         "baseline", "as-is", "current operating model", "current", "baseline",
@@ -130,13 +145,35 @@ _ROLE_KEYWORD_BUCKETS = {
         "future state", "future-state operating model", "future operating model",
         "target state", "vision", "future",
     ),
-    "business benefits": ("business benefits", "benefits", "value case", "benefit"),
+    "investment case": (
+        "investment case", "business case", "funding request", "funding",
+        "budget", "roi", "return on investment", "payback", "value case",
+        "financial case", "economics",
+    ),
+    "value realization roadmap": (
+        "value realization roadmap", "value realisation roadmap",
+        "value realization", "value realisation", "benefit capture roadmap",
+        "benefits roadmap", "benefit roadmap", "time-phased value",
+        "time phased value", "value capture", "benefit pools",
+    ),
+    "business benefits": ("business benefits", "benefits", "benefit"),
     "ai use cases": ("ai use cases", "use cases", "use case", "ai use case"),
     "implementation roadmap": ("implementation roadmap", "roadmap", "rollout plan"),
     "transformation timeline": ("transformation timeline", "timeline", "milestones", "schedule"),
+    "risk register": (
+        "risk register", "implementation risk register", "risk log",
+        "mitigation register", "risk table",
+    ),
     "implementation risks": ("implementation risks", "risks", "risk"),
+    "kpi scorecard table": (
+        "kpi scorecard table", "kpi scorecard", "scorecard table",
+        "metric scorecard", "performance scorecard", "management scorecard",
+    ),
     "kpis for success": ("kpis for success", "kpis", "kpi", "success metrics", "success"),
-    "next steps": ("next steps", "next step", "actions", "immediate actions", "recommendations"),
+    "next steps": (
+        "next steps", "next step", "actions", "immediate actions", "recommendations",
+        "board decisions", "board decision", "decisions", "decision", "approvals", "approval",
+    ),
     "opportunities": ("opportunities", "opportunity", "improvement areas"),
     "maturity assessment": ("maturity assessment", "maturity"),
 }
@@ -197,12 +234,114 @@ def _extract_enumerated_topics(user_prompt: str) -> list[str]:
 def _canonical_role_for_text(text: str) -> str | None:
     """Map free-form slide text to a canonical role key, or None."""
     lowered = text.lower()
+    if "section" in lowered and ("divider" in lowered or "break" in lowered):
+        return "section divider"
+    if "divider slide" in lowered or "chapter divider" in lowered:
+        return "section divider"
+    if (
+        ("current" in lowered and "future" in lowered)
+        or ("from" in lowered and "to" in lowered)
+        or "transformation shifts" in lowered
+    ):
+        return "current state vs future state"
+    if (
+        "risk register" in lowered
+        or "risk log" in lowered
+        or "mitigation register" in lowered
+        or ("risk" in lowered and "owner" in lowered and "status" in lowered)
+    ):
+        return "risk register"
+    if (
+        "scorecard" in lowered
+        and ("kpi" in lowered or "metric" in lowered or "performance" in lowered)
+    ):
+        return "kpi scorecard table"
+    if (
+        "value realization" in lowered
+        or "value realisation" in lowered
+        or "benefit capture roadmap" in lowered
+        or "benefit pools" in lowered
+        or "time-phased value" in lowered
+        or "time phased value" in lowered
+    ):
+        return "value realization roadmap"
     for role_key, keywords in _ROLE_KEYWORD_BUCKETS.items():
         if role_key in lowered:
             return role_key
         if any(k in lowered for k in keywords):
             return role_key
     return None
+
+
+def _single_slide_role_requested(user_prompt: str) -> str | None:
+    """Return the requested canonical role when the prompt hard-limits output to one slide."""
+    text = " ".join(str(user_prompt or "").lower().split())
+    if not text:
+        return None
+    single_slide_signal = (
+        "create only" in text
+        or "generate only" in text
+        or "only one slide" in text
+        or "one slide only" in text
+        or "1-slide" in text
+        or "single slide" in text
+        or "do not create any other slides" in text
+        or "do not include any other slides" in text
+        or "do not create other slides" in text
+    )
+    if not single_slide_signal:
+        return None
+    return _canonical_role_for_text(user_prompt)
+
+
+def _force_single_slide_deck(user_prompt: str, deck_spec: DeckSpec, canonical_role: str) -> DeckSpec:
+    """Honor explicit single-slide prompts before story templates can expand them."""
+    display_role = _ROLE_DISPLAY_NAMES.get(canonical_role, _titlecase_topic(canonical_role))
+    existing = next(
+        (slide for slide in deck_spec.slides if _canonical_role_for_text(slide.slide_role) == canonical_role),
+        None,
+    )
+    purpose = _purpose_for_canonical_role(display_role, canonical_role)
+    prompt_constraints = _single_slide_prompt_constraints(user_prompt)
+    if prompt_constraints:
+        purpose = f"{purpose} {prompt_constraints}"
+    slide = SlidePlan(
+        slide_number=1,
+        slide_role=display_role,
+        purpose=purpose,
+        required_inputs=existing.required_inputs if existing else [],
+        dependencies=[],
+        visualization_type=_ROLE_VISUALIZATION_HINT.get(canonical_role, display_role),
+        confidence=max(existing.confidence if existing else 0.0, 0.97),
+        confidence_reason="Explicit single-slide constraint in user prompt.",
+    )
+    return DeckSpec(
+        presentation_type=deck_spec.presentation_type,
+        objective=deck_spec.objective,
+        audience=deck_spec.audience,
+        narrative=f"Single-slide response: {display_role}.",
+        estimated_slide_count=1,
+        slides=[slide],
+    )
+
+
+def _single_slide_prompt_constraints(user_prompt: str) -> str:
+    """Preserve explicit count/content constraints when forcing one slide."""
+    text = " ".join(str(user_prompt or "").lower().split())
+    constraints: list[str] = []
+    if any(term in text for term in ("six-step", "6-step", "six step", "6 step")):
+        constraints.append("Use exactly six process steps.")
+    elif any(term in text for term in ("five-step", "5-step", "five step", "5 step")):
+        constraints.append("Use exactly five process steps.")
+    if "activities" in text:
+        constraints.append("Include activities.")
+    if "pain point" in text or "pain points" in text:
+        constraints.append("Include pain points.")
+    if "business impact" in text:
+        constraints.append("Include overall business impact.")
+    if "dark" in text:
+        constraints.append("Use a dark section divider.")
+    return " ".join(constraints)
 
 
 def _topic_matches_role(topic: str, slide_role: str) -> bool:
@@ -225,13 +364,19 @@ def _fuzzy_role_for_topic(topic: str) -> str:
 # entries where the default produces ugly casing (e.g. "Ai" / "Kpis").
 _ROLE_DISPLAY_NAMES = {
     "executive summary": "Executive Summary",
+    "section divider": "Section Divider",
+    "current state vs future state": "Current State vs Future State",
     "current state": "Current Procurement Process",
     "future state": "Future-State Operating Model",
+    "investment case": "Investment Case",
+    "value realization roadmap": "Value Realization Roadmap",
     "business benefits": "Business Benefits",
     "ai use cases": "AI Use Cases",
     "implementation roadmap": "Implementation Roadmap",
     "transformation timeline": "Transformation Timeline",
+    "risk register": "Risk Register",
     "implementation risks": "Implementation Risks",
+    "kpi scorecard table": "KPI Scorecard Table",
     "kpis for success": "KPIs for Success",
     "next steps": "Next Steps",
     "opportunities": "Opportunities",
@@ -243,13 +388,19 @@ _ROLE_DISPLAY_NAMES = {
 # this value is a planning hint rather than the final pattern decision.
 _ROLE_VISUALIZATION_HINT = {
     "executive summary": "Executive Summary",
+    "section divider": "Section Divider",
+    "current state vs future state": "Current State vs Future State Comparison",
     "current state": "Process Flow",
     "future state": "Operating Model",
+    "investment case": "Investment Case",
+    "value realization roadmap": "Value Realization Roadmap",
     "business benefits": "Benefits Stack",
     "ai use cases": "Use Case Portfolio",
     "implementation roadmap": "Roadmap",
     "transformation timeline": "Timeline",
+    "risk register": "Risk Register",
     "implementation risks": "Risk Matrix",
+    "kpi scorecard table": "KPI Scorecard Table",
     "kpis for success": "KPI Dashboard",
     "next steps": "Board Decisions",
     "opportunities": "Creative Listing",
@@ -348,6 +499,7 @@ def _reconcile_enumerated_slides(user_prompt: str, deck_spec: DeckSpec) -> DeckS
     # Re-sort slides to the user's enumerated order. Distinct extras are placed
     # immediately after their nearest enumerated neighbor.
     slides = _sort_slides_to_enumerated_order(slides, topics)
+    slides = _move_decision_slides_to_close(user_prompt, slides)
     slides = _renumber_slides(slides)
 
     logger.info(
@@ -592,10 +744,14 @@ def _purpose_for_canonical_role(role: str, canonical: str | None) -> str:
     """Return a specific, selection-friendly purpose for canonical slide roles."""
     if canonical == "executive summary":
         return "Summarize the board-level recommendation, value at stake, and decisions required."
+    if canonical == "section divider":
+        return "Introduce the requested section using a section divider slide."
     if canonical == "current state":
         return "Map the current procurement process and identify the operating friction that AI must address."
     if canonical == "future state":
         return "Describe the future-state procurement operating model, including capabilities, governance, and AI enablement."
+    if canonical == "investment case":
+        return "Summarize required investment, value created, payback, and the board approval case."
     if canonical == "business benefits":
         return "Quantify and structure the business benefits expected from the transformation."
     if canonical == "ai use cases":
@@ -604,8 +760,12 @@ def _purpose_for_canonical_role(role: str, canonical: str | None) -> str:
         return "Sequence the implementation phases, milestones, and dependencies."
     if canonical == "transformation timeline":
         return "Show the transformation timeline and major milestones."
+    if canonical == "risk register":
+        return "List seven implementation risks with likelihood, impact, mitigation, owner, status, and summary counts."
     if canonical == "implementation risks":
         return "Assess implementation risks, likely impact, and mitigations."
+    if canonical == "kpi scorecard table":
+        return "Define priority KPIs with baseline, target, owner, reporting cadence, and management summary."
     if canonical == "kpis for success":
         return "Define the KPIs and targets used to measure success."
     if canonical == "next steps":
@@ -639,6 +799,40 @@ def _sort_slides_to_enumerated_order(
     indexed = list(enumerate(slides))
     indexed.sort(key=sort_key)
     return [slide for _, slide in indexed]
+
+
+def _move_decision_slides_to_close(user_prompt: str, slides: list[SlidePlan]) -> list[SlidePlan]:
+    """Keep board decisions/actions at the close unless explicitly requested first."""
+    if _is_decision_first_prompt(user_prompt):
+        return slides
+    decision_slides = [
+        slide for slide in slides
+        if _canonical_role_for_text(slide.slide_role) == "next steps"
+        or "decision" in (slide.visualization_type or "").lower()
+        or "action" in (slide.slide_role or "").lower()
+    ]
+    if not decision_slides:
+        return slides
+    others = [slide for slide in slides if slide not in decision_slides]
+    if not others:
+        return slides
+    return others + decision_slides
+
+
+def _is_decision_first_prompt(user_prompt: str) -> bool:
+    text = " ".join(str(user_prompt or "").lower().split())
+    decision_first_signals = (
+        "decision-first",
+        "decision first",
+        "start with board decisions",
+        "lead with board decisions",
+        "open with board decisions",
+        "begin with board decisions",
+        "board memo",
+        "decision memo",
+        "approval memo",
+    )
+    return any(signal in text for signal in decision_first_signals)
 
 
 def _nearest_enumerated_index(

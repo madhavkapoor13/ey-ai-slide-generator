@@ -1,0 +1,387 @@
+{
+  "asset_id": "NEXTSTEPS-ACTION-REGISTER-7ITEM-001",
+  "asset_version": 2,
+  "schema_version": "1.0.0",
+  "family": "next_steps",
+  "family_aliases": [
+    "actions",
+    "action_register",
+    "board_decisions",
+    "decisions",
+    "next_steps"
+  ],
+  "message_type": "board_decisions",
+  "information_shape": "actions",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Seven-item action register with owners, due dates, priority, status, progress, comments, and summary counts.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee",
+    "program_team"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "action-register",
+    "table",
+    "accountability"
+  ],
+  "recommended_for": [
+    "next steps",
+    "action register",
+    "board decisions",
+    "actions",
+    "accountabilities",
+    "implementation actions"
+  ],
+  "avoid_for": [
+    "roadmaps",
+    "risk matrix",
+    "kpi dashboard",
+    "executive summary",
+    "process flow"
+  ],
+  "density": 7,
+  "density_range": [
+    7,
+    7
+  ],
+  "fits_content_kinds": [
+    "next_steps",
+    "actions",
+    "board_decisions",
+    "action_register",
+    "accountabilities"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 70,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 120,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "summary",
+      "role": "summary",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 150,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_text"
+      }
+    },
+    {
+      "id": "summary_total_actions",
+      "role": "summary_metric",
+      "kind": "metric",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 12,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_total_actions_text"
+      }
+    },
+    {
+      "id": "summary_not_started",
+      "role": "summary_metric",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_not_started_text"
+      }
+    },
+    {
+      "id": "summary_in_progress",
+      "role": "summary_metric",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_in_progress_text"
+      }
+    },
+    {
+      "id": "summary_completed",
+      "role": "summary_metric",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_completed_text"
+      }
+    },
+    {
+      "id": "summary_overdue",
+      "role": "summary_metric",
+      "kind": "body",
+      "cardinality": "1",
+      "required": false,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "summary_overdue_text"
+      }
+    },
+    {
+      "id": "action_number",
+      "role": "action_number",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 4,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_number_text"
+      }
+    },
+    {
+      "id": "action_text",
+      "role": "action",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 72,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_action_text"
+      }
+    },
+    {
+      "id": "action_owner",
+      "role": "owner",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 28,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_owner_text"
+      }
+    },
+    {
+      "id": "action_due_date",
+      "role": "timing",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 18,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_due_date_text"
+      }
+    },
+    {
+      "id": "action_priority",
+      "role": "priority",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 10,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_priority_text"
+      }
+    },
+    {
+      "id": "action_status",
+      "role": "status",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 16,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_status_text"
+      }
+    },
+    {
+      "id": "action_progress",
+      "role": "progress",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 8,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_progress_text"
+      }
+    },
+    {
+      "id": "action_comment",
+      "role": "comment",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 48,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "action_{N}_comment_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "action_{N}_row",
+    "placeholders_per_group": [
+      "action_number",
+      "action_text",
+      "action_owner",
+      "action_due_date",
+      "action_priority",
+      "action_status",
+      "action_progress",
+      "action_comment"
+    ],
+    "index_token": "{N}",
+    "count": 7
+  },
+  "certification": {
+    "certified": true,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "2dbdd76331377a70",
+    "warnings": [],
+    "errors": []
+  }
+}

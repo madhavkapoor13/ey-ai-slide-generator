@@ -553,6 +553,74 @@ class VisualAwareContentGeneratorTests(unittest.TestCase):
         self.assertEqual(spec.raw_spec.get("section_title"), "Implementation Sequence")
         self.assertEqual(spec.raw_spec["metadata"].get("visual_pattern"), "SECTION-DIVIDER")
 
+    def test_dark_section_divider_asset_uses_manifest_keys(self):
+        """Dark section divider assets return placeholder-keyed content."""
+        with patch("backend.modules.content_generator._call_content_llm") as mock_call:
+            spec = generate_slide_content(
+                IntentResult(
+                    company="Microsoft",
+                    industry="Technology",
+                    business_function="Procurement",
+                    slide_type="Section Divider",
+                    raw_content="Create only one dark Section Divider slide introducing the Implementation Roadmap section.",
+                ),
+                _context("Microsoft", "Technology", "Procurement"),
+                _process("Source-to-Pay", "Procurement"),
+                SlidePlan(
+                    slide_number=1,
+                    slide_role="Section Divider",
+                    purpose="Introduce the requested section using a dark section divider slide.",
+                    required_inputs=[],
+                    dependencies=[],
+                    visualization_type="Dark Section Divider",
+                ),
+                visual_pattern_selection=self._selection("SECTION-DIVIDER"),
+                asset_id="SECTION-DIVIDER-DARK-001",
+            )
+
+        mock_call.assert_not_called()
+        self.assertEqual(spec.asset_id, "SECTION-DIVIDER-DARK-001")
+        self.assertEqual(spec.raw_spec["section_number"], "SECTION 01")
+        self.assertEqual(spec.raw_spec["title"], "Implementation Roadmap")
+        self.assertEqual(
+            spec.raw_spec["subtitle"],
+            "Microsoft procurement transformation roadmap",
+        )
+        self.assertNotIn("section_title", spec.raw_spec)
+        self.assertNotIn("metadata", spec.raw_spec)
+
+    def test_next_steps_section_divider_asset_uses_manifest_keys(self):
+        """Standard next-steps divider assets return their manifest keys."""
+        with patch("backend.modules.content_generator._call_content_llm") as mock_call:
+            spec = generate_slide_content(
+                IntentResult(
+                    company="HSBC",
+                    industry="Financial Services",
+                    business_function="Finance",
+                    slide_type="Section Divider",
+                    raw_content="Create only one Next Steps Section Divider slide for Finance AI Transformation.",
+                ),
+                _context("HSBC", "Financial Services", "Finance"),
+                _process("Record-to-Report", "Finance"),
+                SlidePlan(
+                    slide_number=1,
+                    slide_role="Section Divider",
+                    purpose="Introduce the requested section using a section divider slide.",
+                    required_inputs=[],
+                    dependencies=[],
+                    visualization_type="Section Divider",
+                ),
+                visual_pattern_selection=self._selection("SECTION-DIVIDER"),
+                asset_id="SECTION-NEXT-STEPS-001",
+            )
+
+        mock_call.assert_not_called()
+        self.assertEqual(spec.asset_id, "SECTION-NEXT-STEPS-001")
+        self.assertEqual(spec.raw_spec["section_number"], "SECTION 01")
+        self.assertEqual(spec.raw_spec["section_title"], "NEXT STEPS\n& ACTIONS")
+        self.assertIn("Decisions, accountabilities and actions", spec.raw_spec["section_subtitle"])
+        self.assertNotIn("metadata", spec.raw_spec)
+
     def test_carries_visual_pattern_id_on_spec(self):
         """The carried pattern is stamped on the SlideSpec so slide_service can
         read it as the single source of truth instead of re-scoring."""

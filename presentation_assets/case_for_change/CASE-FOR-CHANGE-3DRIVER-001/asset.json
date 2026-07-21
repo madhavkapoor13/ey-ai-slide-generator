@@ -1,0 +1,274 @@
+{
+  "asset_id": "CASE-FOR-CHANGE-3DRIVER-001",
+  "asset_version": 2,
+  "schema_version": "1.0.0",
+  "family": "case_for_change",
+  "family_aliases": [
+    "case",
+    "change_imperative",
+    "burning_platform",
+    "why_change",
+    "drivers"
+  ],
+  "message_type": "case_for_change",
+  "information_shape": "three_drivers",
+  "text_fit_policy": "regenerate_then_reject",
+  "purpose": "Board-ready case-for-change slide with three structural drivers, evidence bullets, implication bullets, and one bottom-line action statement.",
+  "audience_tags": [
+    "board",
+    "executive",
+    "leadership",
+    "steering_committee"
+  ],
+  "style_tags": [
+    "ey",
+    "board-ready",
+    "diagnostic",
+    "driver-based",
+    "urgent"
+  ],
+  "recommended_for": [
+    "case for change",
+    "change imperative",
+    "why act now",
+    "burning platform",
+    "transformation rationale",
+    "pain points"
+  ],
+  "avoid_for": [
+    "roadmaps",
+    "kpi dashboard",
+    "next steps",
+    "detailed process flow",
+    "future-state operating model"
+  ],
+  "density": 3,
+  "density_range": [
+    3,
+    3
+  ],
+  "fits_content_kinds": [
+    "case_for_change",
+    "drivers",
+    "pain_points",
+    "change_imperative",
+    "diagnostic"
+  ],
+  "supports_images": false,
+  "placeholders": [
+    {
+      "id": "title",
+      "role": "title",
+      "kind": "title",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 60,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "title_text"
+      }
+    },
+    {
+      "id": "subtitle",
+      "role": "subtitle",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 125,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "subtitle_text"
+      }
+    },
+    {
+      "id": "driver_title",
+      "role": "driver_title",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 34,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "driver_{N}_title_text"
+      }
+    },
+    {
+      "id": "driver_summary",
+      "role": "driver_summary",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 115,
+        "max_lines": 3,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "driver_{N}_summary_text"
+      }
+    },
+    {
+      "id": "driver_evidence_1",
+      "role": "evidence",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 58,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "driver_{N}_evidence_1_text"
+      }
+    },
+    {
+      "id": "driver_evidence_2",
+      "role": "evidence",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 58,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "driver_{N}_evidence_2_text"
+      }
+    },
+    {
+      "id": "driver_evidence_3",
+      "role": "evidence",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 58,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "driver_{N}_evidence_3_text"
+      }
+    },
+    {
+      "id": "driver_impact_1",
+      "role": "impact_if_unaddressed",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 62,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "driver_{N}_impact_1_text"
+      }
+    },
+    {
+      "id": "driver_impact_2",
+      "role": "impact_if_unaddressed",
+      "kind": "body",
+      "cardinality": "N",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 62,
+        "max_lines": 2,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "driver_{N}_impact_2_text"
+      }
+    },
+    {
+      "id": "banner_takeaway",
+      "role": "key_takeaway",
+      "kind": "body",
+      "cardinality": "1",
+      "required": true,
+      "content_schema": {},
+      "constraints": {
+        "max_chars": 125,
+        "max_lines": 1,
+        "overflow_policy": "regenerate",
+        "preserve_font_size": true,
+        "preserve_font_color": true
+      },
+      "binding": {
+        "native_placeholder_idx": null,
+        "shape_name": "banner_takeaway_text"
+      }
+    }
+  ],
+  "repeating": {
+    "group_template": "driver_{N}_group",
+    "placeholders_per_group": [
+      "driver_title",
+      "driver_summary",
+      "driver_evidence_1",
+      "driver_evidence_2",
+      "driver_evidence_3",
+      "driver_impact_1",
+      "driver_impact_2"
+    ],
+    "index_token": "{N}",
+    "count": 3
+  },
+  "certification": {
+    "certified": false,
+    "certified_at": "2026-07-20T00:00:00Z",
+    "preview_hash": "6a7f0870be8dbef4",
+    "warnings": [],
+    "errors": [
+      "asset.pptx is single-slide, but driver 2/3 shapes are still named as duplicate driver_1_* shapes",
+      "rename card 2 shapes to driver_2_* and card 3 shapes to driver_3_* before certification"
+    ]
+  }
+}
